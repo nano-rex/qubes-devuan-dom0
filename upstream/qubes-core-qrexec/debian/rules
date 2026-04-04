@@ -20,7 +20,7 @@ include /usr/share/dpkg/default.mk
 export DESTDIR=$(shell pwd)/debian/tmp
 
 %:
-	dh $@ --with systemd,python3,vim_addon
+	dh $@ --with python3,vim_addon
 
 override_dh_auto_build:
 	make all-base
@@ -29,8 +29,11 @@ override_dh_auto_build:
 
 override_dh_auto_install:
 	make install-base
+	make install-dom0
 	make install-vm
 	make install-vim
+	install -d debian/tmp/etc/sv
+	cp -a $(CURDIR)/../../porting/runit/dom0/qubes-qrexec-policy-daemon debian/tmp/etc/sv/
 
 override_dh_install:
 	dh_install --fail-missing

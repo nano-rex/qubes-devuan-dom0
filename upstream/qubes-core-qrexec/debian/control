@@ -44,6 +44,20 @@ Description: Qubes qrexec agent
  Agent part of Qubes RPC system. A daemon responsible for starting processes as
  requested by dom0 or other VMs, according to dom0-enforced policy.
 
+Package: qubes-core-qrexec-dom0
+Architecture: any
+Depends:
+ qubes-core-qrexec (= ${binary:Version}),
+ libqrexec-utils4 (= ${binary:Version}),
+ python3-qrexec,
+ ${shlibs:Depends},
+ ${misc:Depends},
+ ${python3:Depends}
+Description: Qubes qrexec dom0 package for the Devuan port
+ Dom0-facing qrexec package for the Devuan+runit port. It includes dom0
+ policy files, qrexec daemon utilities, and the first runit service asset for
+ the qrexec policy daemon.
+
 Package: libqrexec-utils4
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}

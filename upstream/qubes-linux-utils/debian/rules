@@ -7,7 +7,7 @@ export DESTDIR=$(shell pwd)/debian/tmp
 #export DH_VERBOSE=1
 
 %:
-	dh $@ --with=systemd
+	dh $@
 
 override_dh_auto_build:
 	make all LIBDIR=/usr/lib DEBIANBUILD=1
@@ -17,6 +17,9 @@ override_dh_auto_install:
 	make install LIBDIR=/usr/lib DEBIANBUILD=1 PYTHON_PREFIX_ARG=--install-layout=deb
 	make install-debian-kernel-support LIBDIR=/usr/lib DEBIANBUILD=1 
 	make install-gptfix SBINDIR=/usr/sbin
+	rm -f $(DESTDIR)/lib/systemd/system/qubes-meminfo-writer.service
+	install -d $(DESTDIR)/etc/sv
+	cp -a $(CURDIR)/../../porting/runit/dom0/qubes-meminfo-writer-dom0 $(DESTDIR)/etc/sv/
 
 override_dh_install:
 	dh_install --fail-missing
