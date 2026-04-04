@@ -45,12 +45,15 @@ Compared with Artix/OpenRC, Devuan is closer to Debian-family packaging and a mo
 - `docs/component-map.md`: upstream Qubes components and required adaptations
 - `docs/build-devuan-dom0.md`: current build bootstrap path and host requirements
 - `docs/devuan-port-notes.md`: first-pass builder and init blockers
+- `docs/fedora-build-host.md`: Fedora host bootstrap path for local builder execution
 - `manifests/dom0-packages.md`: Devuan+runit dom0 package plan
+- `manifests/fedora-build-host-packages.txt`: Fedora-side package prerequisites for local builder use
 - `manifests/dom0-service-map.md`: dom0 services that must be ported to runit
 - `notes/research.md`: current assumptions and unresolved questions
 - `upstream/`: imported upstream Qubes source snapshots tracked directly in this repo
 - `configs/`: local build/config scaffolding for this standalone project
 - `scripts/run-devuan-builder.sh`: local wrapper for the vendored builder
+- `scripts/check-fedora-build-host.sh`: checks the current Fedora host against required packages
 
 ## Imported upstream sources
 
@@ -85,3 +88,4 @@ cd /home/user/github/qubes-devuan-dom0
 
 Details and assumptions:
 - [`docs/build-devuan-dom0.md`](/home/user/github/qubes-devuan-dom0/docs/build-devuan-dom0.md)
+- [`docs/fedora-build-host.md`](/home/user/github/qubes-devuan-dom0/docs/fedora-build-host.md)
