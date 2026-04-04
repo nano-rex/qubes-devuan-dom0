@@ -33,6 +33,13 @@ DEBIAN = {
     "forky": "14",
 }
 
+DEVUAN = {
+    "chimaera": "4",
+    "daedalus": "5",
+    "excalibur": "6",
+    "freia": "7",
+}
+
 # LTS
 UBUNTU = {
     "bionic": "18.04",
@@ -68,6 +75,7 @@ class QubesDistribution:
         is_fedora = FEDORA_RE.match(self.name)
         is_centos_stream = CENTOS_STREAM_RE.match(self.name)
         is_debian = DEBIAN.get(self.name, None)
+        is_devuan = DEVUAN.get(self.name, None)
         is_ubuntu = UBUNTU.get(self.name, None)
         is_archlinux = self.name == "archlinux"
         is_gentoo = self.name == "gentoo"
@@ -89,6 +97,14 @@ class QubesDistribution:
                 self.architecture, self.architecture
             )
             self.tag = f"deb{self.version}u"
+            self.type = "deb"
+        elif is_devuan:
+            self.fullname = "devuan"
+            self.version = DEVUAN[self.name]
+            self.architecture = DEBIAN_ARCHITECTURE.get(
+                self.architecture, self.architecture
+            )
+            self.tag = f"devuan{self.version}"
             self.type = "deb"
         elif is_ubuntu:
             self.fullname = "ubuntu"
@@ -140,7 +156,12 @@ class QubesDistribution:
         return False
 
     def is_deb(self) -> bool:
-        if DEBIAN.get(self.name, None):
+        if DEBIAN.get(self.name, None) or DEVUAN.get(self.name, None):
+            return True
+        return False
+
+    def is_devuan(self) -> bool:
+        if DEVUAN.get(self.name, None):
             return True
         return False
 

@@ -1,0 +1,34 @@
+git:
+  baseurl: https://github.com
+  prefix: QubesOS/qubes-
+  branch: main
+
+backend-vmm: xen
+debug: true
+verbose: true
+qubes-release: r4.3
+
+distributions:
+  - host-daedalus
+  - vm-daedalus
+
+components:
+  - builder-debian:
+      packages: false
+  - vmm-xen
+  - qubes-release
+  - linux-kernel
+  - linux-utils
+  - core-qrexec
+  - core-admin
+  - gui-daemon
+  - core-agent-linux
+  - gui-agent-linux
+
+executor:
+  type: local
+
+stages:
+  - fetch
+  - prep
+  - build

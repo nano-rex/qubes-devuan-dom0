@@ -43,9 +43,12 @@ Compared with Artix/OpenRC, Devuan is closer to Debian-family packaging and a mo
 - `docs/architecture.md`: system design and trust boundaries
 - `docs/roadmap.md`: phased implementation plan
 - `docs/component-map.md`: upstream Qubes components and required adaptations
+- `docs/devuan-port-notes.md`: first-pass builder and init blockers
 - `manifests/dom0-packages.md`: Devuan+runit dom0 package plan
+- `manifests/dom0-service-map.md`: dom0 services that must be ported to runit
 - `notes/research.md`: current assumptions and unresolved questions
 - `upstream/`: imported upstream Qubes source snapshots tracked directly in this repo
+- `configs/`: local build/config scaffolding for this standalone project
 
 ## Imported upstream sources
 

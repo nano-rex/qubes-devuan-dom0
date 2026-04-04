@@ -1,0 +1,7 @@
+#!/bin/sh
+set -eu
+if grep -Eq '(^| )qubes\.skip_autostart($| )' /proc/cmdline; then
+  exec sleep infinity
+fi
+/usr/lib/qubes/preload-dispvm
+exec sleep infinity
