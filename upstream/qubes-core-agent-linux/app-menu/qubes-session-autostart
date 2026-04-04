@@ -1,0 +1,112 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+#
+# The Qubes OS Project, http://www.qubes-os.org
+#
+# Copyright (C) 2015-2019  Marek Marczykowski-Górecki
+#                                        <marmarek@invisiblethingslab.com>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+#
+import sys
+
+from xdg.DesktopEntry import DesktopEntry
+from qubesagent.xdg import launch, find_dropins, \
+    load_desktop_entry_with_dropins
+import xdg.BaseDirectory
+import os
+import re
+
+
+QUBES_XDG_CONFIG_DROPINS = '/etc/qubes/autostart'
+
+
+def check_file_existence(path: str) -> bool:
+    if os.path.isabs(path):
+        return os.path.exists(path)
+    else:
+        return os.path.exists(os.path.join(xdg.BaseDirectory.xdg_config_home, path))
+
+
+def entry_should_be_started(entry, environments):
+    """
+
+    :type entry: DesktopEntry
+    """
+    if entry.getHidden():
+        return False
+
+    # Handle AutostartCondition keys. Not part of the official XDG specification but documented here:
+    # https://lists.freedesktop.org/archives/xdg/2007-January/007436.html
+    # Only if-exists and unless-exists keywords are supported
+    # Invalid syntax is ignored
+    for autostart_condition in entry.get('AutostartCondition', list=True):
+        search = re.search(r'^\s*(if|unless)-exists (.*)', autostart_condition)
+        if search:
+            should_exists = search.group(1) == 'if'
+            if should_exists != check_file_existence(search.group(2)):
+                return False
+
+    if entry.getOnlyShowIn():
+        return bool(set(entry.getOnlyShowIn()).intersection(environments))
+    if entry.getNotShowIn():
+        return not bool(set(entry.getNotShowIn()).intersection(environments))
+    return True
+
+
+def process_autostart(environments):
+    # handle only "most important" entry
+    processed_entries = {}
+    for path in xdg.BaseDirectory.load_config_paths('autostart'):
+        try:
+            entries = os.listdir(path)
+        except Exception as e:
+            print(
+                "Failed to process path '{}': {}".format(path, str(e)),
+                file=sys.stderr
+            )
+            continue
+
+        for entry_name in entries:
+            if entry_name in processed_entries:
+                continue
+
+            # make the entry as processed, even if not actually started
+            processed_entries[entry_name] = True
+
+            try:
+                entry_path = os.path.join(path, entry_name)
+                # files in $HOME have higher priority than dropins
+                if not path.startswith(xdg.BaseDirectory.xdg_config_home):
+                    dropins = find_dropins(
+                        entry_path, QUBES_XDG_CONFIG_DROPINS)
+                    entry = load_desktop_entry_with_dropins(
+                        entry_path, dropins)
+                else:
+                    entry = DesktopEntry(entry_path)
+                if entry_should_be_started(entry, environments):
+                    launch(entry, wait=False)
+            except Exception as e:
+                print("Failed to process '{}': {}".format(
+                    entry_name, str(e)),
+                    file=sys.stderr
+                )
+
+def main():
+    process_autostart(sys.argv[1:])
+
+if __name__ == '__main__':
+    main()

@@ -1,0 +1,67 @@
+#!/usr/bin/python3
+# -*- encoding: utf8 -*-
+#
+# The Qubes OS Project, http://www.qubes-os.org
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+
+import os
+import re
+import subprocess
+import sys
+
+def main():
+    os.environ['LC_ALL'] = 'C'
+    untrusted_date_out = sys.stdin.buffer.read(36)
+    try:
+        untrusted_date_out.decode('ascii', 'strict')
+    except UnicodeDecodeError:
+        sys.stderr.write('Received non-ASCII date, aborting!\n')
+        sys.exit(1)
+    untrusted_date_len = len(untrusted_date_out)
+    if untrusted_date_len == 36: # new format, nanosecond precision
+        regexp = rb'\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2},[0-9]{9}\+00:00\n\Z'
+        precision = b'ns'
+    elif untrusted_date_len == 26: # old format, second precision
+        regexp = rb'\A\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+00:00\n\Z'
+        precision = b'seconds'
+    else:
+        sys.stderr.write('Invalid date length (expected 26 or 36 bytes, got {})'
+                         ', aborting!\n'.format(untrusted_date_len))
+        sys.exit(1)
+    if untrusted_date_out[-7:] != b'+00:00\n':
+        sys.stderr.write('Date not in UTC, aborting!\n')
+        sys.exit(1)
+    if not re.match(regexp, untrusted_date_out):
+        sys.stderr.write('Invalid date received, aborting!\n')
+        sys.exit(1)
+    # this time is arbitrary, something better should be used instead
+    if untrusted_date_out[:19] <= b'2022-07-10T17:08:31':
+        sys.stderr.write('Received a date older than this program, aborting!\n')
+        sys.exit(1)
+    date_out = untrusted_date_out
+    try:
+        subprocess.check_call([b'date', b'-u', b'-I' + precision, b'-s',
+                               date_out[:-1]],
+            stdout=subprocess.DEVNULL)
+    except subprocess.CalledProcessError as e:
+        # input is trusted here, so it can be safely printed
+        sys.stderr.write('Unable to set the date: process {!r} failed.\n'.format(e.cmd))
+        sys.exit(e.returncode)
+
+if __name__ == '__main__':
+    main()
+

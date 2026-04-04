@@ -1,0 +1,11 @@
+<interface type="ethernet">
+    <mac address="{{ vm.mac }}" />
+    <ip address="{{ vm.ip }}" />
+{% if vm.ip6 %}
+    <ip address="{{ vm.ip6 }}" family='ipv6' />
+{% endif %}
+    <backenddomain name="{{ vm.netvm.name }}" />
+    <script path="vif-route-qubes" />
+</interface>
+
+{# vim: set ft=jinja ts=4 sts=4 sw=4 et : #}

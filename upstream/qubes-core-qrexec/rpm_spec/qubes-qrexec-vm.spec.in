@@ -1,0 +1,150 @@
+#
+# This is the SPEC file for creating binary RPMs for the Dom0.
+#
+#
+# The Qubes OS Project, http://www.qubes-os.org
+#
+# Copyright (C) 2010  Joanna Rutkowska <joanna@invisiblethingslab.com>
+# Copyright (C) 2010  Rafal Wojtczuk  <rafal@invisiblethingslab.com>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, see <https://www.gnu.org/licenses/>.
+#
+#
+
+Name:		qubes-core-qrexec-vm
+Version:	@VERSION@
+Release:	1%{dist}
+Summary:	The Qubes qrexec files (qube side)
+
+Group:		Qubes
+Vendor:		Invisible Things Lab
+License:	GPL
+URL:		http://www.qubes-os.org
+
+BuildRequires:	gcc
+BuildRequires:	pam-devel
+BuildRequires:	pandoc
+BuildRequires:	qubes-libvchan-devel
+BuildRequires:	qubes-core-qrexec-devel
+BuildRequires:	systemd-devel
+BuildRequires:	pkgconfig(systemd)
+
+Requires:   python%{python3_pkgversion}
+Requires:   qubes-core-qrexec = %{version}-%{release}
+# The library is backwards compatible (new library works with old programs)
+# but not forwards compatible (old library does not work with new programs)
+Requires:   qubes-core-qrexec-libs >= %{version}-%{release}
+
+Provides:   qubes-core-agent-qrexec = 4.1.0-1
+Obsoletes:  qubes-core-agent-qrexec < 4.1.0-1
+
+Source0: qubes-core-qrexec-%{version}.tar.gz
+
+Requires: (%{name}-selinux if selinux-policy)
+
+%package selinux
+BuildRequires: selinux-policy
+BuildRequires: selinux-policy-devel
+%{?selinux_requires}
+Requires(post): qubes-core-agent-selinux
+Summary: SELinux policies for qrexec
+License: GPLv2+
+
+%description selinux
+The SELinux policies for qrexec.  You need this package if you want to have
+SELinux enforcing in a qube.
+
+%description
+The Qubes qrexec files for installation on a qube.
+
+%prep
+%setup -qn qubes-core-qrexec-%{version}
+
+%build
+%{?set_build_flags}
+make all-vm all-vm-selinux
+#make -C doc PYTHON=%{__python3} SPHINXBUILD=sphinx-build-%{python3_version} man
+
+%install
+make install-vm install-vm-selinux \
+    DESTDIR=$RPM_BUILD_ROOT \
+    UNITDIR=%{_unitdir} \
+    PYTHON_SITEPATH=%{python3_sitelib} \
+    SYSCONFDIR=%{_sysconfdir}
+
+#make -C doc DESTDIR=$RPM_BUILD_ROOT \
+#    PYTHON=%{__python3} SPHINXBUILD=sphinx-build-%{python3_version} \
+#    install
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+rm -f %{name}-%{version}
+
+%post
+%systemd_post qubes-qrexec-agent.service
+
+%preun
+%systemd_preun qubes-qrexec-agent.service
+
+%postun
+%systemd_postun_with_restart qubes-qrexec-agent.service
+
+%pre selinux
+%selinux_relabel_pre
+
+%post selinux
+%selinux_modules_install %{_datadir}/selinux/packages/qubes-core-qrexec.pp || :
+
+%postun selinux
+if [ "$1" -eq 0 ]; then
+    %selinux_modules_uninstall %{_datadir}/selinux/packages/qubes-core-qrexec.pp
+fi || :
+
+%posttrans selinux
+%selinux_relabel_post
+exit 0
+
+%posttrans
+# when upgrading from R4.0, %%postun of qubes-core-agent-qrexec will revert
+# %%post of this package. Redo the action in %%posttrans
+%systemd_post qubes-qrexec-agent.service
+# and then start it back
+if [ -e /run/systemd/system ] && systemctl is-enabled qubes-qrexec-agent.service >/dev/null 2>&1; then
+    systemctl start qubes-qrexec-agent.service
+fi
+
+%files
+%defattr(-,root,root,-)
+%config(noreplace) /etc/pam.d/qrexec
+%dir /etc/qubes
+%dir /etc/qubes/rpc-config
+/etc/qubes/rpc-config/README
+
+%{_bindir}/qrexec-client-vm
+%{_bindir}/qrexec-fork-server
+
+%{_mandir}/man1/qrexec-client-vm.1*
+
+%dir /usr/lib/qubes
+/usr/lib/qubes/qrexec-agent
+/usr/lib/qubes/qrexec-client-vm
+/usr/lib/qubes/qrexec_client_vm
+%{_unitdir}/qubes-qrexec-agent.service
+
+%files selinux
+%{_datadir}/selinux/devel/include/contrib/ipp-qubes-core-qrexec.if
+%{_datadir}/selinux/packages/qubes-core-qrexec.pp
+
+%changelog
+@CHANGELOG@

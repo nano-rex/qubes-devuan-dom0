@@ -1,0 +1,93 @@
+#!/bin/bash
+#
+# The Qubes OS Project, http://www.qubes-os.org
+#
+# Copyright (C) 2010  Rafal Wojtczuk  <rafal@invisiblethingslab.com>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+
+set -e -o pipefail
+
+set_qdbus() {
+    for cmd in qdbus qdbus-qt{6,5}; do
+        type "$cmd" >&2 || continue
+        qdbus=$cmd
+        return 0
+    done
+
+    unset qdbus
+    return 1
+}
+
+copy() {
+    PROGRESS_TYPE=gui /usr/lib/qubes/qrexec-client-vm \
+        --filter-escape-chars-stderr -- @default \
+        "$service" /usr/lib/qubes/qfile-agent "$@"
+}
+
+progress_kdialog() {
+    local pos ref
+
+    (while read -r pos; do
+        if [[ $pos == 0 ]]; then
+            # shellcheck disable=SC2207
+            ref=( $(kdialog --progressbar "$description") )
+            trap '"$qdbus" "${ref[@]}" close' EXIT  # for this subshell
+        fi
+
+        "$qdbus" "${ref[@]}" value $((100 * pos / size))
+    done) >/dev/null  # hide qdbus's empty output lines
+}
+
+progress_zenity() {
+    local pos fd
+
+    (while read -r pos; do
+        if [[ $pos == 0 ]]; then
+            trap 'kill -- $!' EXIT  # for this subshell
+            exec {fd}> >(exec zenity --progress --text="$description")
+        fi
+
+        echo $((100 * pos / size)) >&$fd
+    done)
+}
+
+
+if size=$(/usr/lib/qubes/qubes-fs-tree-check \
+    --allow-symlinks --allow-directories --machine -- "$@"); then
+    service=qubes.Filecopy
+else
+    status=$?
+    if [[ "$status" -ne 2 ]]; then exit "$status"; fi
+    service=qubes.Filecopy+allow-all-names
+fi
+
+if [[ ${0##*/} == qvm-move-to-vm.* ]]; then
+    description="Moving files..."
+    trap '[[ $? == 0 ]] && rm -rf -- "$@"' EXIT
+else
+    description="Copying files..."
+fi
+
+if [[ $size == 0 ]]; then
+    copy "$@" >/dev/null
+elif [[ $0 == *.kde ]] && type kdialog >/dev/null && set_qdbus; then
+    copy "$@" | progress_kdialog
+elif type zenity >/dev/null; then
+    copy "$@" | progress_zenity
+else
+    copy "$@" >/dev/null
+fi

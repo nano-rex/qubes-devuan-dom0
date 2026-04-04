@@ -1,0 +1,24 @@
+#!/bin/sh
+
+export INSTALLDIR=$1
+
+. ./builder_setup
+
+set -e
+
+if ! [ $# -eq 1 ]; then
+	echo "usage $0 <mount_point>"
+	exit 1
+fi
+
+
+if ! [ -d $INSTALLDIR ]; then
+	echo $INSTALLDIR does not exist
+	exit 1
+fi	
+
+echo "--> Cleaning up image file..."
+$SCRIPTSDIR/09_cleanup.sh
+
+echo "--> Compacting image file..."
+/sbin/fstrim -v "$INSTALLDIR"

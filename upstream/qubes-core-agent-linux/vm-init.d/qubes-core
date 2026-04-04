@@ -1,0 +1,66 @@
+#!/bin/bash
+#
+# chkconfig: 345 90 90
+# description: Executes supplementary Qubes core scripts at VM boot
+#
+# Source function library.
+# shellcheck disable=SC1091
+. /etc/rc.d/init.d/functions
+
+# Source Qubes library.
+# shellcheck source=init/functions
+. /usr/lib/qubes/init/functions
+
+start()
+{
+	have_qubesdb || return
+
+	# Start AppVM specific services
+	for svc in cups ntpd ; do
+		if qsvc $svc && test -e /etc/init.d/$svc ; then
+			/sbin/service $svc start
+		fi
+	done
+
+	echo -n $"Finagling printer icon:"
+	/usr/lib/qubes/init/control-printer-icon.sh
+	success
+	echo
+
+	if qsvc meminfo-writer ; then
+		MEM_CHANGE_THRESHOLD_KB=30000
+		MEMINFO_DELAY_USEC=100000
+		echo -n $"Starting Qubes memory information service:"
+		/usr/lib/qubes/meminfo-writer $MEM_CHANGE_THRESHOLD_KB $MEMINFO_DELAY_USEC /var/run/meminfo-writer.pid
+		success
+		echo ""
+	fi
+
+	echo -n $"Executing Qubes misc post scripts:"
+    # shellcheck disable=SC2015
+	/usr/lib/qubes/init/misc-post.sh && success || failure
+	echo
+}
+
+stop()
+{
+	have_qubesdb || return
+
+	/usr/lib/qubes/init/misc-post-stop.sh
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  *)
+	echo $"Usage: $0 {start|stop}"
+	exit 3
+	;;
+esac
+
+# shellcheck disable=SC2086
+exit $RETVAL

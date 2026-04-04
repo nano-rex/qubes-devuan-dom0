@@ -1,0 +1,117 @@
+#!/bin/bash
+#
+# tinyproxy     Startup script for the tinyproxy server as Qubes updates proxy
+#
+# chkconfig: 345 85 15
+# description: small, efficient HTTP/SSL proxy daemon
+#
+# processname: tinyproxy
+# config:      /etc/tinyproxy/tinyproxy-updates.conf
+# config:      /etc/sysconfig/tinyproxy-updates
+# pidfile:     /var/run/tinyproxy/tinyproxy-updates.pid
+#
+# Note: pidfile is created by tinyproxy in its config
+# see PidFile in the configuration file.
+
+# Source function library.
+# shellcheck disable=SC1091
+. /etc/rc.d/init.d/functions
+
+# Source Qubes library.
+# shellcheck source=init/functions
+. /usr/lib/qubes/init/functions
+
+# Source networking configuration.
+# shellcheck disable=SC1091
+.  /etc/sysconfig/network
+
+# Check that networking is up.
+[ "$NETWORKING" = "no" ] && exit 0
+
+exec="/usr/bin/tinyproxy"
+prog=$(basename "$exec") || exit 2
+config="/etc/tinyproxy/tinyproxy-updates.conf"
+pidfile="/var/run/tinyproxy-updates/tinyproxy.pid"
+
+# shellcheck disable=SC1091
+[ -e /etc/sysconfig/tinyproxy-updates ] && . /etc/sysconfig/tinyproxy-updates
+
+lockfile=/var/lock/subsys/tinyproxy-updates
+
+start() {
+    have_qubesdb || return
+
+    if qsvc qubes-updates-proxy ; then
+        # Updates proxy disabled
+        exit 0
+    fi
+
+    [ -x "$exec" ] || exit 5
+    [ -f "$config" ] || exit 6
+
+    echo -n "Starting $prog (as Qubes updates proxy): "
+    daemon "$exec" -c "$config"
+    retval=$?
+    echo
+    [ "$retval" -eq 0 ] && touch -- "$lockfile"
+    return "$retval"
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc -p "$pidfile" "$prog"
+    retval=$?
+    echo
+    [ "$retval" -eq 0 ] && rm -f -- "$lockfile"
+    return "$retval"
+}
+
+restart() {
+    stop
+    start
+}
+
+force_reload() {
+    restart
+}
+
+rh_status() {
+    status "$prog"
+}
+
+rh_status_q() {
+    rh_status >/dev/null 2>&1
+}
+
+case "$1" in
+    start)
+        rh_status_q && exit 0
+        $1
+        ;;
+    stop)
+        rh_status_q || exit 0
+        $1
+        ;;
+    restart)
+        $1
+        ;;
+    reload)
+        rh_status_q || exit 7
+        $1
+        ;;
+    force-reload)
+        force_reload
+        ;;
+    status)
+        rh_status
+        ;;
+    condrestart|try-restart)
+        rh_status_q || exit 0
+        restart
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+        exit 2
+esac
+exit $?
+

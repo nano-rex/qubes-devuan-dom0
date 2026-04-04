@@ -1,0 +1,10 @@
+[Unit]
+Description=Update system time each 6h
+ConditionPathExists=!/var/run/qubes-service/clocksync
+
+[Timer]
+OnBootSec=10s
+OnUnitActiveSec=6h
+
+[Install]
+WantedBy=multi-user.target

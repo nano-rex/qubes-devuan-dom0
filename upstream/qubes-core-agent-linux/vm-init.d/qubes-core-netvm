@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# chkconfig: 345 90 90
+# description: Executes Qubes core scripts at NetVM boot
+#
+# Source function library.
+# shellcheck disable=SC1091
+. /etc/rc.d/init.d/functions
+
+# Source Qubes library.
+# shellcheck source=init/functions
+. /usr/lib/qubes/init/functions
+
+start()
+{
+	have_qubesdb || return
+
+	if is_netvm; then
+		/usr/lib/qubes/network-manager-prepare-conf-dir
+		/sbin/service NetworkManager start
+	fi
+
+	echo -n $"Executing Qubes Core scripts NetVM:"
+    # shellcheck disable=SC2015
+	/usr/lib/qubes/init/network-proxy-setup && success || failure
+	echo
+}
+
+stop()
+{
+	return 0
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  *)
+	echo $"Usage: $0 {start|stop}"
+	exit 3
+	;;
+esac
+
+# shellcheck disable=SC2086
+exit $RETVAL

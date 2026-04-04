@@ -1,0 +1,22 @@
+#!/bin/bash --
+set -euo pipefail
+
+lock="/run/qubes/$QREXEC_REQUESTED_TARGET.terminal.lock"
+
+# use temporary file, because env variables deal poorly with \0 inside
+tmpfile=$(mktemp)
+trap 'rm -f -- "$tmpfile"' EXIT
+# exit if qubesd returned an error
+if ! qubesd-query -e --fail -- \
+        "$QREXEC_REMOTE_DOMAIN" \
+        "admin.vm.Console" \
+        "$QREXEC_REQUESTED_TARGET" \
+        ${1+"$1"} >"$tmpfile"; then
+    cat -- "$tmpfile"
+    exit 1
+fi
+path=$(tail -c +3 -- "$tmpfile")
+
+# Create an exclusive lock to ensure that multiple qubes cannot access to the same socket
+# In the case of multiple qrexec calls it returns a specific exit code
+sudo flock -n -E 200 -x "$lock" socat - OPEN:"$path"

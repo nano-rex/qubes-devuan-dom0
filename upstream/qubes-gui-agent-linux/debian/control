@@ -1,0 +1,147 @@
+Source: qubes-gui-agent
+Section: admin
+Priority: extra
+Maintainer: Qubes OS Team <qubes-devel@googlegroups.com>
+Build-Depends:
+    debhelper,
+    libpam0g-dev,
+    libpulse-dev,
+    libtool,
+    automake,
+    xserver-xorg-dev,
+    xutils-dev,
+    libvchan-dev,
+    libx11-dev,
+    libgbm-dev,
+    libxcomposite-dev,
+    libxdamage-dev,
+    libxfixes-dev,
+    x11proto-xf86dga-dev,
+    libxt-dev,
+    libxen-dev,
+    lsb-release,
+    libpipewire-0.3-dev,
+    quilt,
+    qubes-gui-common (>= 4.3.0),
+    qubesdb-dev,
+    libltdl-dev,
+    libunistring-dev,
+    libdbus-1-dev,
+Standards-Version: 4.4.0.1
+Homepage: http://www.qubes-os.org/
+#Vcs-Git: git://git.debian.org/collab-maint/qubes-gui-agent.git
+#Vcs-Browser: http://git.debian.org/?p=collab-maint/qubes-gui-agent.git;a=summary
+
+Package: qubes-gui-agent
+Architecture: any
+Depends:
+    xserver-xorg-core,
+    xinit,
+    x11-xserver-utils,
+    qubes-core-agent (>= 3.0.14),
+    qubesdb-vm (>= 4.1.4),
+    libxdamage1,
+    libxcomposite1,
+    libxfixes3,
+    libxt6,
+    libx11-6,
+    libpam-systemd,
+    python3,
+    python3-xcffib,
+    xcvt,
+    xserver-xorg-video-dummyqbs (= ${binary:Version}),
+    xserver-xorg-input-qubes (= ${binary:Version}),
+    ${shlibs:Depends},
+    ${misc:Depends}
+Recommends: qt4-qtconfig, pulseaudio-qubes
+Provides: x-display-manager
+Description: Makes X11 windows available to qubes dom0
+ The Qubes GUI agent allows the forwarding of running app windows to the
+ qubes dom0. It also includes various extras such as copy/paste support.
+
+Package: xserver-xorg-qubes-common
+Architecture: any
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: Common functions for qubes xserver driver
+ Shared library which contains common functions of the Qubes xserver drivers.
+
+Package: xserver-xorg-video-dummyqbs
+Architecture: any
+Depends:
+ ${xviddriver:Depends},
+ ${shlibs:Depends},
+ ${misc:Depends},
+ xserver-xorg-qubes-common (= ${binary:Version})
+Provides:
+ ${xviddriver:Provides}
+Replaces: qubes-gui-agent (<< 3.2.11-1)
+Breaks: qubes-gui-agent (<< 3.2.11-1)
+Description: Dummy X video driver for qubes-gui-agent
+ Dummy X video driver for Qubes VM, with XRandr support.
+
+Package: xserver-xorg-input-qubes
+Architecture: any
+Depends:
+ ${xinpdriver:Depends},
+ ${shlibs:Depends},
+ ${misc:Depends},
+ xserver-xorg-qubes-common (= ${binary:Version})
+Provides:
+ ${xinpdriver:Provides}
+Replaces: qubes-gui-agent (<< 3.2.11-1)
+Breaks: qubes-gui-agent (<< 3.2.11-1)
+Description: X input driver for injecting events from qubes-gui-agent
+ This driver inject input events delivered through qubes-gui-agent.
+ Additionally it helps retrieving composition buffers of windows.
+
+Package: pulseaudio-qubes
+Architecture: any
+Depends:
+    qubesdb-vm (>= 4.1.4),
+    pulseaudio,
+    libpulse0,
+    ${shlibs:Depends},
+    ${pulse:Depends},
+    ${misc:Depends},
+Conflicts: pipewire-qubes
+Replaces:
+ qubes-gui-agent (<< 4.1.9-1),
+ qubes-core-agent (<< 4.2.5-1),
+Breaks:
+ qubes-gui-agent (<< 4.1.9-1),
+ qubes-core-agent (<< 4.2.5-1),
+Description: Audio support for Qubes VM
+ Pulseaudio module to enable sound support in Qubes VM
+
+Package: pipewire-qubes
+Architecture: any
+Depends:
+ qubesdb-vm (>= 4.1.4),
+ ${shlibs:Depends},
+ ${misc:Depends}
+Conflicts: pulseaudio-qubes
+Recommends: pipewire-pulse
+Description: PipeWire module to enable sound support in Qubes VM
+ PipeWire module to enable sound support in Qubes VMs.  Unlike the
+ PulseAudio support in the pulseaudio-qubes package, this works with
+ the stock PipeWire service and does not depend on internal
+ PipeWire headers.
+
+Package: qubes-gui-agent-xfce
+Architecture: any
+Depends:
+    ${shlibs:Depends},
+    ${misc:Depends}
+Description: XFCE desktop support for Qubes VM
+ XFCE desktop support for Qubes VM
+
+Package: qubes-gui-vnc
+Architecture: any
+Depends:
+    x11vnc
+    ${shlibs:Depends},
+    ${misc:Depends}
+Description: Remote GuiVM support using VNC
+ Remote GuiVM support using VNC

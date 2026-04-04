@@ -1,0 +1,1289 @@
+qubes-utils (4.3.16) unstable; urgency=medium
+
+  [ Piotr Bartman-Szwarc ]
+  * add qubes_pure_sanitize_string_safe_for_display
+  * implement @DemiMarie comments
+  * implement @DemiMarie comments
+  * include null terminator to parsed length
+  * make `max_(text_)line_length` const to avoid ambiguity
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 18 Mar 2026 20:12:57 +0100
+
+qubes-utils (4.3.15) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * tests: remove last-lba header from gptfixer/layout
+  * tests: update gptfixer test expected output
+
+  [ Oleg Drokin ]
+  * Do not use full path to gptfix in dracut scripts
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 12 Jan 2026 12:56:55 +0100
+
+qubes-utils (4.3.14) unstable; urgency=medium
+
+  [ Ali Mirjamali ]
+  * Do not announce ZRAM devices as block device
+
+  [ Marek Marczykowski-Górecki ]
+  * Hide disks that other udev rules marked as hidden from udisks
+
+  [ Ali Mirjamali ]
+  * Prevent Selinux scriptlet  errors during upgrades
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 23 Dec 2025 11:01:56 +0100
+
+qubes-utils (4.3.13) unstable; urgency=medium
+
+  [ Marcus Ofenhed ]
+  * Added exceptions to qubes udev device export
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 11 Oct 2025 05:49:49 +0200
+
+qubes-utils (4.3.12) unstable; urgency=medium
+
+  [ 3np ]
+  * arch: fix SPDX license
+  * fix(arch): create qubes group if missing on preinstall
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 19 Sep 2025 03:27:08 +0200
+
+qubes-utils (4.3.11) unstable; urgency=medium
+
+  [ Ali Mirjamali ]
+  * Replace `numpy.fromstring` with `numpy.frombuffer`
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 20 Jun 2025 18:44:59 +0200
+
+qubes-utils (4.3.10) unstable; urgency=medium
+
+  [ Saswat Padhi ]
+  * Add gptfix and swapon to Arch Linux initramfs
+  * Fix the order of mkinitcpio hooks
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: allow BR: systemd-mini on openSUSE
+  * rpm: relax regex in %files
+  * archlinux: include scrub_pages initrd hook
+  * archlinux/initcpio: add required modules directly
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 30 May 2025 04:41:46 +0200
+
+qubes-utils (4.3.9) unstable; urgency=medium
+
+  * Move meminfo-writer to /usr/bin
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 03 Mar 2025 05:07:15 +0100
+
+qubes-utils (4.3.8) unstable; urgency=medium
+
+  * Force C17 standard in qrexec-lib/validator-test.c
+  * Fix installing files with unified sbin
+  * ci: switch to R4.3
+  * gptfixer test: ignore irrelevant message from sfdisk
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 26 Feb 2025 22:51:46 +0100
+
+qubes-utils (4.3.7) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: adjust SELinux snippets for relabeling
+
+  [ Demi Marie Obenour ]
+  * Ensure that qubesdb SELinux labels are correct on Fedora 41
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 25 Dec 2024 05:11:06 +0100
+
+qubes-utils (4.3.6) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Add tool to adjust partition tables when sector size changes
+  * Fix up the GPT in the initramfs
+  * Add test case
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 08 Dec 2024 05:39:16 +0100
+
+qubes-utils (4.3.5) unstable; urgency=medium
+
+  [ Rusty Bird ]
+  * qubes-block: disable direct I/O for now
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 06 Nov 2024 01:08:19 +0100
+
+qubes-utils (4.3.4) unstable; urgency=medium
+
+  [ Ali Mirjamali ]
+  * Add qubes version to boot menu
+
+  [ Marek Marczykowski-Górecki ]
+  * tests: assertEquals -> assertEqual
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 24 Aug 2024 02:41:12 +0200
+
+qubes-utils (4.3.3) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Do not redefine compiler flags that are up to build env to define
+
+  [ Demi Marie Obenour ]
+  * Do not use path containing "/" in linkat() or stat()
+  * Do not use fchmodat() because it follows symlinks
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 05 Jul 2024 17:31:25 +0200
+
+qubes-utils (4.3.2) unstable; urgency=medium
+
+  * debian: bump required versions for libs
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 17 Jun 2024 04:38:28 +0200
+
+qubes-utils (4.3.1) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Document algorithm used to sanitize paths
+  * Allow symlinks ending in ".."
+  * Test that symbolic links can end in '/'
+  * Move path validation tests before charset tests
+  * Document the pretty-printer in the code generator
+  * Avoid casting away const when not needed
+  * Fix -Wmissing-declarations and -Wmissing-prototypes warnings
+  * Avoid redundantly validating symbolic link names
+  * Better error message for forbidden symbolic links
+  * Allow disabling character set filtering
+  * Improve symlink tests
+  * Use for loop instead of do-while
+  * Add flag to allow non-canonical symbolic links
+  * Allow disabling symbolic link checking
+  * Don't allow trailing slashes in paths being unpacked
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 17 Jun 2024 04:33:01 +0200
+
+qubes-utils (4.3.0) unstable; urgency=medium
+
+  [ Piotr Bartman ]
+  * q-dev: add data to qubesdb needed by new API
+
+  [ Marek Marczykowski-Górecki ]
+  * ci: update tags
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 15 Jun 2024 19:38:29 +0200
+
+qubes-utils (4.2.16) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * ci: collect test coverage from qrexec-lib too
+  * Fix imgconverter tests
+  * Switch to sequoia for codecov signature check
+
+  [ Demi Marie Obenour ]
+  * Math and currency symbols are safe for display
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 02 May 2024 02:41:30 +0200
+
+qubes-utils (4.2.15) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: fix missing directory ownership
+  * genfs: fix build/link flags
+  * rpm: adjust dependencies for openSUSE
+
+  [ Demi Marie Obenour ]
+  * Avoid writing junk into Xenstore
+
+  [ Rusty Bird ]
+  * qrexec-lib/pack: don't use curly quotes in error messages
+  * qrexec-lib/pack: sanitize straight quotes in remote filenames
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 04 Dec 2023 02:46:39 +0100
+
+qubes-utils (4.2.14) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Expose code point allowlist checking API
+
+  [ Rusty Bird ]
+  * qrexec-lib/unpack: fail on EOF before end of transfer marker
+
+  [ Demi Marie Obenour ]
+  * Block Zalgo text
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 28 Sep 2023 01:50:12 +0200
+
+qubes-utils (4.2.13) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Link against just-built libqubes-pure
+  * Stricter symbolic link checks
+  * Test rejection of codepoints past 0x10FFFFF
+  * Make qubes_pure_string_safe_for_display() usable
+  * Drop unmaintained asynctest library
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 10 Sep 2023 04:22:12 +0200
+
+qubes-utils (4.2.12) unstable; urgency=medium
+
+  * debian: split libqubes-pure into separate package
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 20 Aug 2023 03:11:55 +0200
+
+qubes-utils (4.2.11) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Add missing entries to .gitignore
+  * libqubes-pure: Add function for qube name validation
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 04 Jul 2023 03:22:14 +0200
+
+qubes-utils (4.2.10) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * initramfs: Handle the case where device-mapper is a module
+  * Update the character allowlist
+
+  [ Marek Marczykowski-Górecki ]
+  * debian: reduce initramfs size
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 30 Jun 2023 17:02:09 +0200
+
+qubes-utils (4.2.9) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Allow meminfo-writer to create and use AF_UNIX stream sockets
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 29 May 2023 19:22:44 +0200
+
+qubes-utils (4.2.8) unstable; urgency=medium
+
+  [ Rusty Bird ]
+  * qubes-block: force logical block size 512 for loop device
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 13 May 2023 01:11:13 +0200
+
+qubes-utils (4.2.7) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Switch to new codecov uploader
+  * ci: make git happy about source clone owned by a different user
+
+  [ Demi Marie Obenour ]
+  * Fix multiple bugs in block script
+  * qubes-block: Only destroy loop devices qubes-block created
+
+  [ Frédéric Pierret (fepitre) ]
+  * Rework Archlinux packaging
+  * archlinux: support for new packaging in legacy builder
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 26 Apr 2023 03:18:41 +0200
+
+qubes-utils (4.2.6) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Sanitize paths in qfile-unpacker
+  * Initial work on safe open
+  * Allow UTF-8 characters outside of ASCII
+  * Add a blocklist of bad characters
+  * Simplify rejection of invalid codepoints
+  * Use a generated blocklist
+  * Use FD-based versions chmod and utime
+  * Remove useless check
+  * Use simpler check to allow spaces in file names
+  * Do not allow UTIME_OMIT and UTIME_NOW
+  * Make code_point computations consistent
+  * Clarify differences between code and RFC3629
+  * Use GCC case ranges more
+  * Handle too-large code points in generated code
+  * Use "surrogates" instead of "category Cs"
+  * gentlb.py: Flush stdout before exiting
+  * Rename open_safe to opendir_safe and document it
+  * Avoid using a mutable static variable
+  * Avoid closing AT_FDCWD
+  * Avoid unit testing strchr()
+  * Forbid trailing slashes in paths
+  * Remove redundant code in pathname handling
+  * Drop a call to strlen()
+  * Simplify loop
+  * Reject all unassigned and invalid Unicode codepoints
+  * Misc cleanup
+  * Add fast path for ASCII
+  * Reject bidirectional text
+  * Only allow a subset of scripts
+  * Do not allow non-ASCII symbols in filenames
+  * Only allow scripts recommended for identifiers
+  * Create libqubes-pure: a library of Qubes-specific code that does no
+    I/O
+  * Fix CentOS 8 build
+  * Add some tests
+  * Generate allowlist at compile-time
+  * Use uint8_t* with U8_APPEND macros
+  * fix signs
+  * Link testsuite to ICU
+  * C block script implementation
+  * test
+  * more logs
+  * more logs
+  * Actually open files to be written for writing :)
+  * Do not rely on autoclear
+  * Working block script
+  * Allow xenstore watch
+  * Use new "opened" Xenstore key to indicate device open
+  * Use "opened" Xenstore key instead of magic file in /etc
+  * Use different physical-device format for autoclear-enabled kernels
+  * Always use permissive mode
+  * Retry LOOP_CONFIGURE as well as open
+  * Clean up some error checks
+  * Work around bug in LOOP_CTL_GET_FREE
+  * Serialize loop device opening
+  * deduplicate loop opening code
+  * Add some static assertions
+  * Avoid setting a size limit for the loop device
+  * Always write "diskseq" entry
+  * Respond to suggestions from code review
+  * Write /dev/loopN to physical-device-path
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 10 Apr 2023 02:23:11 +0200
+
+qubes-utils (4.2.5) unstable; urgency=medium
+
+  * qubes-prepare-vm-kernel: make resize2fs work even if system time is
+    off
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 27 Jan 2023 22:39:09 +0100
+
+qubes-utils (4.2.4) unstable; urgency=medium
+
+  * rpm: add e2fsprogs as qubes-prepare-vm-kernel dependency
+  * dracut: drop legacy xenstore-read qubes-vm-type
+  * dracut: detect VM based on file presence, no runtime query to
+    qubesdb
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 15 Jan 2023 03:43:25 +0100
+
+qubes-utils (4.2.3) unstable; urgency=medium
+
+  * debian: do not install qubes-prepare-vm-kernel
+  * Build and install vm-modules-genfs
+  * qubes-prepare-vm-kernel: sync with pre-built package features
+  * qubes-prepare-vm-kernel: make initramfs smaller
+  * rpm: provide virtual qubes-prepare-vm-kernel capability
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 06 Jan 2023 15:40:55 +0100
+
+qubes-utils (4.2.2) unstable; urgency=medium
+
+  [ Mateusz Piórkowski ]
+  * Replace ImageMagick with GraphicsMagick
+
+  [ Demi Marie Obenour ]
+  * SELinux policy for meminfo-writer
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 01 Jan 2023 15:15:32 +0100
+
+qubes-utils (4.2.1) unstable; urgency=medium
+
+  [ Rusty Bird ]
+  * initramfs: remove unused variable
+  * initramfs: sector-size agnostic partitioning of volatile volume
+
+  [ Demi Marie Obenour ]
+  * Fix sed regex for mkinitcpio.conf
+  * Fix up /etc/default/grub in postinstall script
+  * Add comments to /etc/default/grub
+  * Ensure that /etc/default/grub is not empty
+  * Install and source grub.qubes-kernel-vm-support
+  * Add spaces after function names
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 08 Dec 2022 15:20:17 +0100
+
+qubes-utils (4.2.0) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * Drop Travis CI
+  * Add Qubes Builder v2 integration
+  * .qubesbuilder: replace 'spec' by 'build'
+
+  [ Gaurav ]
+  * Make use of static variables
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 11 Oct 2022 23:22:06 +0200
+
+qubes-utils (4.1.16) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * spec: allow matching python3.10 in %files
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 20 Oct 2021 01:31:11 +0200
+
+qubes-utils (4.1.15) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Use a flexable array member instead of an empty array
+  * Add do_unpack_ext to limit what can be unpacked
+  * Force exporting of loop devices
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 18 Jun 2021 04:09:49 +0200
+
+qubes-utils (4.1.14) wheezy; urgency=medium
+
+  [ Shawn Anastasio ]
+  * Makefile: remove broken 32-bit host check
+
+  [ Frédéric Pierret (fepitre) ]
+  * kernel-vm-support: add make as BR
+  * kernel-vm-support: fix spec indentation
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 13 May 2021 06:26:01 +0200
+
+qubes-utils (4.1.13) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * Add .gitlab-ci.yml
+
+  [ Marek Marczykowski-Górecki ]
+  * gitlab-ci: add custom jobs
+  * ci: add coverage
+  * tests: fix IncompleteReadError exception location
+
+  [ Frédéric Pierret (fepitre) ]
+  * debian: update control
+  * debian: update compat
+
+  [ Demi Marie Obenour ]
+  * Fix some links to more modern versions
+  * Validate remote filename before displaying it
+  * Meminfo writer comes before user logins
+  * Modernize systemd unit files
+
+  [ Marek Marczykowski-Górecki ]
+  * archlinux: add makedepends on qubes-vm-xen
+
+  [ Demi Marie Obenour ]
+  * Mass replace: ‘/var/run’ → ‘/run’
+  * Fix CI
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 07 Jan 2021 15:03:46 +0100
+
+qubes-utils (4.1.12) unstable; urgency=medium
+
+  * dracut: remove useless use of basename
+  * debian: don't fail package install on missing /var/lib/qubes
+  * travis: fix build/install jobs
+  * dracut: enable swap as early as possible
+  * Set /dev/xen/* permissions early
+  * rpm,deb: /lib is a symlink to /usr/lib, move the files appropriately
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 13 Nov 2020 04:25:11 +0100
+
+qubes-utils (4.1.11) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * Update travis
+
+  [ Marek Marczykowski-Górecki ]
+  * travis: restore 'language: python'
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 12 Aug 2020 03:13:57 +0200
+
+qubes-utils (4.1.10) unstable; urgency=medium
+
+  * debian: adjust dependencies for split python3-qubesimgconverter
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 29 Jun 2020 06:22:44 +0200
+
+qubes-utils (4.1.9) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * debian: split python qubesimgconverter
+  * debian: add python3-cairo dependency
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 20 Jun 2020 15:14:12 +0200
+
+qubes-utils (4.1.8) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * debian: drop python2 from dependencies
+
+  [ Rusty Bird ]
+  * imgconverter: make output reproducible by omitting timestamps
+
+  [ null pointer exception ]
+  * Fix typo
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 19 Jun 2020 16:41:50 +0200
+
+qubes-utils (4.1.7) unstable; urgency=medium
+
+  * makefile: specify PYTHON at build stage too
+  * qrexec-lib/unpack: option to wait for free disk space
+  * debian: bump libqubes-rpc-filecopy2 required version
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 01 May 2020 01:52:37 +0200
+
+qubes-utils (4.1.6) unstable; urgency=medium
+
+  [ Paweł Marczewski ]
+  * Image.get_from_stream_async(): fix large sizes
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 01 Apr 2020 05:58:21 +0200
+
+qubes-utils (4.1.5) unstable; urgency=medium
+
+  [ Paweł Marczewski ]
+  * Image.get_through_dvm: support Python 3
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 22 Mar 2020 03:40:02 +0100
+
+qubes-utils (4.1.4) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * travis: switch to dom0 Fedora 31
+
+  [ Rusty Bird ]
+  * Remove syncfs fallback for ancient glibc (Debian 7)
+
+  [ Paweł Marczewski ]
+  * Add Image.get_from_stream_async
+  * Drop Python 2 support
+  * Image.get_through_dvm: update for Python 3
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 17 Mar 2020 02:33:41 +0100
+
+qubes-utils (4.1.3) unstable; urgency=medium
+
+  [ xaki23 ]
+  * partition full volatile for non-COW setups too
+
+  [ Frédéric Pierret (fepitre) ]
+  * travis: switch to bionic
+
+  [ Marek Marczykowski-Górecki ]
+  * travis: update python versions
+
+  [ Patrick Schleizer ]
+  * qubes-kernel-vm-support.preinst create folder /boot/grub
+  * qubes-kernel-vm-support.postinst run update-grub
+
+  [ Marek Marczykowski-Górecki ]
+  * debian: fix dependencies of qubes-kernel-vm-support pkg
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 07 Dec 2019 05:50:26 +0100
+
+qubes-utils (4.1.2) unstable; urgency=medium
+
+  [ xaki23 ]
+  * align volatile swap partition to 1Mb instead of 512b
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: update python2 deps
+  * Disable BLS config style in grub
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 22 Sep 2019 05:10:19 +0200
+
+qubes-utils (4.1.1) unstable; urgency=medium
+
+  * initrd: mount / rw for the overlayfs setup time
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 10 Jun 2019 00:48:40 +0200
+
+qubes-utils (4.1.0) unstable; urgency=medium
+
+  * Remove qrexec related files
+  * Remove u2mfn module
+  * travis: update to R4.1
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 08 Jun 2019 03:20:55 +0200
+
+qubes-utils (4.0.24) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Declare u2mfn module version, skip build for qubes kernels
+
+  [ Frédéric Pierret (fepitre) ]
+  * python3: use macro pkgversion
+  * travis: switch to xenial
+  * travis: remove older Fedora releases and add Fedora 30
+
+  [ Marek Marczykowski-Górecki ]
+  * initramfs: use overlayfs for /lib/modules, if available
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 06 Jun 2019 21:30:30 +0200
+
+qubes-utils (4.0.23) unstable; urgency=medium
+
+  * Disable scrubbing memory pages during initial balloon down
+  * dracut: fix checking for "Root filesystem" label, improve udev sync
+  * dracut: add a flag file indicating scrub-pages option support
+  * Adjust permissions of /dev/xen/hypercall
+  * Do not use /proc/xen for detecting dom0 anymore
+  * Really install xen-scrub-pages dracut module
+  * Add xen_scrub_pages=0 kernel option only if initramfs was rebuilt
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 25 Feb 2019 21:46:52 +0100
+
+qubes-utils (4.0.22) unstable; urgency=medium
+
+  * tests: skip img converter test if qubes-img-converter is not
+    installed
+  * imgconverter: allow icons up to 2048x2048
+  * tests: skip the other img converter test too
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 29 Oct 2018 01:03:59 +0100
+
+qubes-utils (4.0.21) unstable; urgency=medium
+
+  [ Rusty Bird ]
+  * Order qubes-meminfo-writer-dom0 before systemd-user-sessions
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: adjust for fc29
+  * travis: update Fedora and Debian versions
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 09 Oct 2018 00:25:11 +0200
+
+qubes-utils (4.0.20) unstable; urgency=medium
+
+  * udev: create /dev/mapper/dmroot -> xvda3 symlink when its mounted
+    directly
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 03 Jul 2018 21:11:00 +0200
+
+qubes-utils (4.0.19) unstable; urgency=medium
+
+  * rpm: use proper macros for systemd handling
+  * travis: add centos7
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 02 May 2018 17:55:09 +0200
+
+qubes-utils (4.0.18) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: don't call udev-block-add-change for devices excluded by other
+    rules
+  * rpm: preparation for src.rpm building
+
+  [ Frédéric Pierret ]
+  * Makefile.builder: currently disable Mock
+  * Remove _builddir
+  * Fix debug symbols
+  * spec.in: add changelog placeholder
+
+  [ Marek Marczykowski-Górecki ]
+  * travis: update Fedora versions
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 21 Apr 2018 14:36:39 +0200
+
+qubes-utils (4.0.17) unstable; urgency=medium
+
+  [ Frédéric Pierret ]
+  * Fix python3 package names with respect to CentOS for consistency
+    with python34 names
+  * Remove busybox as it is not provided in RHEL7 anymore
+  * centos: fix python packages names
+  * drop busybox dependance
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 27 Feb 2018 15:17:12 +0100
+
+qubes-utils (4.0.16) unstable; urgency=medium
+
+  * qrexec: provide common function for handling service call
+  * debian: adjust required version after adding new function
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 20 Feb 2018 00:05:31 +0100
+
+qubes-utils (4.0.15) unstable; urgency=medium
+
+  * udev: update detecting usbip-connected devices
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 18 Jan 2018 19:07:40 +0100
+
+qubes-utils (4.0.14) unstable; urgency=medium
+
+  [ Reynir Björnsson ]
+  * Remove duplicate #define
+
+  [ Rusty Bird ]
+  * udev-block-add-change: ignore unconnected Network Block Device
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 12 Jan 2018 06:16:05 +0100
+
+qubes-utils (4.0.13) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * imgconverter: fix make_padlock function
+  * Update tests
+  * travis: run imgconverter unit tests
+  * Make tests python3 compatible
+  * travis: run tests also on python3
+  * travis: enable deploy stage for master-staging -> master gate
+
+  [ Gianluca Guida ]
+  * Fix qrexec-lib headers
+
+  [ Marek Marczykowski-Górecki ]
+  * imgconverter: fix handling explicit file type
+  * tests: integration tests for qvm-convert-img
+  * travis: run only unit tests
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 23 Dec 2017 02:50:19 +0100
+
+qubes-utils (4.0.12) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * debian: make it easier to spot missing files in debian/*.install
+  * debian: include drauct module in qubes-kernel-vm-support
+
+  [ Patrick Schleizer ]
+  * qubes-kernel-vm-support compatibility with dracut
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 12 Dec 2017 01:41:52 +0100
+
+qubes-utils (4.0.11) unstable; urgency=medium
+
+  [ qubesuser ]
+  * remove unused cairo import
+  * add Python pillow and numpy dependencies
+  * use PIL image library instead of ImageMagick to load/save images
+    when tinting
+  * reimplement tint algorithm with numpy for reasonable performance
+  * replace tinting algorithm with one that partially preserves
+    saturation too
+
+  [ Marek Marczykowski-Górecki ]
+  * Add missing classmethod decorator
+  * Make udev-block-add-change executable again
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 21 Nov 2017 05:34:50 +0100
+
+qubes-utils (4.0.10) unstable; urgency=medium
+
+  [ Olivier MEDOC ]
+  * archlinux: build imgconverter with both python2 and python3
+
+  [ qubesuser ]
+  * Speed up udev-block-add-change by not using xenstore
+
+  [ Your Name ]
+  * This commit specifies the integer width explicitly to match
+    `result_header_ext` etc.
+
+  [ Marek Marczykowski-Górecki ]
+  * Initialize pad field in filecopy final response
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 21 Nov 2017 04:46:49 +0100
+
+qubes-utils (4.0.9) unstable; urgency=medium
+
+  * Fix initramfs scripts on Debian
+  * qubes-prepare-vm-kernel: Include kernel and initramfs inside
+    modules.img
+  * initramfs: add support for variable partitions layout
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 17 Oct 2017 23:54:15 +0200
+
+qubes-utils (4.0.8) unstable; urgency=medium
+
+  [ Frédéric Pierret ]
+  * Fix CentOS dependencies: python3
+
+  [ Marek Marczykowski-Górecki ]
+  * travis: add fc26 build
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 30 Sep 2017 01:59:38 +0200
+
+qubes-utils (4.0.7) unstable; urgency=medium
+
+  [ Olivier MEDOC ]
+  * Fix gcc Werror because of a typo in a switch/case explicit
+    fallthrough comment
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: fix loop devices exclusion based on directory flagfile
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 15 Sep 2017 13:43:18 +0200
+
+qubes-utils (4.0.6) unstable; urgency=medium
+
+  [ Jean-Philippe Ouellet ]
+  * Fix off-by-one error in header length calculation
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: major cleanup in block devices handling
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 12 Sep 2017 04:52:48 +0200
+
+qubes-utils (4.0.5) unstable; urgency=medium
+
+  * udev: filter-out QEMU devices
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 11 Aug 2017 13:34:11 +0200
+
+qubes-utils (4.0.4) unstable; urgency=medium
+
+  [ HW42 ]
+  * u2mfn: get mfn via pte
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 29 Jul 2017 05:19:34 +0200
+
+qubes-utils (4.0.3) unstable; urgency=medium
+
+  [ Rusty Bird ]
+  * Fall back to sync() if syncfs() is unavailable
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: don't list in qvm-block any device marked to be ignored by
+    udev
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 06 Jul 2017 19:41:04 +0200
+
+qubes-utils (4.0.2) unstable; urgency=medium
+
+  [ Paras Chetal ]
+  * Fix include header syntax
+
+  [ Marek Marczykowski-Górecki ]
+  * initramfs: use symlink for rw root.img, instead of dm-linear
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 24 Jun 2017 14:55:03 +0200
+
+qubes-utils (4.0.1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * travis: switch to Qubes 4.0
+  * rpm: add missing build requires
+  * travis: drop fc23 vm packages building
+
+  [ unman ]
+  * Improve error message when file exists
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: packge qubesimgconverter for both python2 and python3
+  * imgconverter: make it really work on python3
+  * imgconverter: use core3 API in get_from_vm()
+  * rpm: add missing build requires
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 18 May 2017 01:54:46 +0200
+
+qubes-utils (4.0.0) unstable; urgency=medium
+
+  [ Wojtek Porczyk ]
+  * debian/control: remove unneeded qubesdb dependency
+  * Package imgconverter as separate Python module
+  * Move imggen module from artwork.
+
+  [ Marek Marczykowski-Górecki ]
+  * dracut: add missing 'die' function to 'simple' module
+  * qmemman-meminfo-writer: send simplified meminfo value
+  * Add python-setuptools to build depends
+  * debian: adjust file list
+  * Install python modules to /usr
+  * initramfs: move qubes_cow_setup hook to pre-trigger
+  * initramfs: add support for root.img with partition table
+  * debian: fix install location of python files
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 08 Apr 2017 13:58:53 +0200
+
+qubes-utils (3.2.4) unstable; urgency=medium
+
+  [ Johanna A ]
+  * Builds against 4.9
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: use DM ignore device flag only for DM devices
+
+  [ Olivier MEDOC ]
+  * archlinux: clean up qubes-prepare-vm-kernel
+  * archlinux: clean up PKGBUILD and bump version number
+
+  [ Marek Marczykowski-Górecki ]
+  * travis: drop debootstrap workaround
+
+  [ Olivier MEDOC ]
+  * archlinux: use dracut native file instead of our own
+
+  [ M. Vefa Bicakci ]
+  * qubes-prepare-vm-kernel: Do not hardcode path to dracut
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 23 Mar 2017 11:34:01 +0100
+
+qubes-utils (3.2.3) wheezy; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: make USB device version detection more generic
+  * debian: reformat Build-Depends
+  * debian: add pkg-config to Build-Depends
+
+  [ Rusty Bird ]
+  * udev-block-add-change: better mount status check
+  * udev-block-add-change: don't exclude already attached devs
+  * udev-block-add-change: simplify a check
+
+  [ Marek Marczykowski-Górecki ]
+  * udev-block-add-change: fix checking if partition is mounted
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 17 Jul 2016 05:17:40 +0200
+
+qubes-utils (3.2.2) wheezy; urgency=medium
+
+  * udev: expose USB 3.0 devices for PV USB
+  * udev: ignore usbip-connected USB devices
+  * udev: fix removing USB entries
+  * qrexec-lib: convert tabs to spaces
+  * travis: initial version
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 02 Jun 2016 02:55:11 +0200
+
+qubes-utils (3.2.1) wheezy; urgency=medium
+
+  * udev: fix deadlock on xenstore access during dom0 boot
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 18 May 2016 02:59:37 +0200
+
+qubes-utils (3.2.0) wheezy; urgency=medium
+
+  [ Johanna A ]
+  * Builds against linux v4.6-rc4
+
+  [ Marek Marczykowski-Górecki ]
+  * u2mfn: build for both 4.6+ and older kernels
+  * udev/qvm-block: exclude devices used elsewhere
+  * udev/qvm-block: exclude device if its partition is already attached
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 16 May 2016 11:54:16 +0200
+
+qubes-utils (3.1.8) wheezy; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: fix hiding devices from qvm-block
+
+  [ Olivier MEDOC ]
+  * archlinux: ensure gcc, make and pkgconfig are makedependencies
+  * archlinux: implement kernel-support
+  * kernel-support: compile u2mfn from source even if it has been never
+    built
+  * archlinux: add an install file specifically for vm-kernel-support
+  * archlinux: fix syntax errors in install file
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 08 Feb 2016 05:06:21 +0100
+
+qubes-utils (3.1.7) wheezy; urgency=medium
+
+  [ pqg ]
+  * Fix build (installation) on Archlinux
+
+  [ Marek Marczykowski-Górecki ]
+  * Fix building Fedora package after Archlinux build fixes
+  * udev: do not assume static device-mapper major number
+  * udev: ignore devices set to be ignore elsewhere
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 07 Jan 2016 05:59:40 +0100
+
+qubes-utils (3.1.6) wheezy; urgency=medium
+
+  [ HW42 ]
+  * debian: remove obsolete conffiles in /etc/udev/rules.d
+
+  [ Marek Marczykowski-Górecki ]
+  * qrexec-lib: add glibc version test check for having syncfs
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 13 Dec 2015 04:38:27 +0100
+
+qubes-utils (3.1.5) wheezy; urgency=medium
+
+  * Fix for "debian: split libraries out of qubes-utils package"
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 30 Nov 2015 05:55:14 +0100
+
+qubes-utils (3.1.4) wheezy; urgency=medium
+
+  [ qubesuser ]
+  * Fix u2mfn.ko for > 16TB RAM by not truncating to 32-bit improperly
+
+  [ Rusty Bird ]
+  * Check if QubesIncoming filesystem supports O_TMPFILE
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: disable debuginfo subpackage in qubes-kernel-vm-support
+  * initramfs: fix swap size
+  * qrexec: add clarification commends in qrexec.h
+
+  [ Rusty Bird ]
+  * qfile-unpacker: syncfs() to avoid qvm-move-to-vm data loss
+
+  [ Marek Marczykowski-Górecki ]
+  * initramfs: use units of sectors in sfdisk call
+  * initramfs: initialize volatile.img partition table also in
+    TemplateVM
+  * qubes-prepare-vm-kernel: ensure proper permissions on initramfs
+  * debian: resolve quilt-build-dep-but-no-series-file lintian warning
+  * Move udev scripts to /usr/lib/qubes, move rules to /lib/udev/
+  * makefile: honor build env CFLAGS and LDFLAGS
+  * debian: split libraries out of qubes-utils package
+  * debian: break hardlink before modifying debian/....dkms
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 27 Nov 2015 20:44:04 +0100
+
+qubes-utils (3.1.3) wheezy; urgency=medium
+
+  * qrexec-lib: add qfile packing functions to libqubes-rpc-filecopy
+  * dracut: split 'full' dracut module into 'full-dmroot' and 'full-
+    modules'
+  * dracut: fix qubes-vm module dependencies
+  * dracut: mount only subdirectory of /lib/modules
+  * kernel-modules: build/install u2mfn module by default
+  * dracut: add dmsetup --noudevsync since we're running in pre-udev
+    hook
+  * debian: introduce qubes-kernel-vm-support package
+  * dracut: add a safety check preventing qubes_cow_setup.sh running in
+    dom0
+  * qrexec: define NOGUI_CMD_PREFIX
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 11 Nov 2015 05:12:11 +0100
+
+qubes-utils (3.1.2) wheezy; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * dracut: expand tabs to spaces
+  * dracut: abort on dmroot assemble error
+  * dracut: initialize volatile.img partitions
+  * libqrexec-utils: fix linker options
+  * libqrexec-utils: bring back buffered write helpers
+  * libqrexec-utils: bump SO version because of ABI change
+
+  [ qubesuser ]
+  * Fix u2mfn.ko for > 16TB RAM by not truncating to 32-bit improperly
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 24 Oct 2015 23:05:02 +0200
+
+qubes-utils (3.1.1) wheezy; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * qfile-unpacker: do not call fdatasync() at each file (#1257)
+
+  [ qubesuser ]
+  * Report Xen balloon current size instead of Linux total memory
+  * use 64-bit integers for memory sizes to support > 2 TB RAM
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 11 Oct 2015 02:48:12 +0200
+
+qubes-utils (3.1.0) wheezy; urgency=medium
+
+  * impconverter: add icon data getters
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 30 Sep 2015 22:13:51 +0200
+
+qubes-utils (3.0.10) wheezy; urgency=medium
+
+  [ Olivier MEDOC ]
+  * archlinux: update to match new dependancies and archlinux /usr/lib
+    guidelines
+  * archlinux: ensure /usr/sbin is not use to follow archlinux packaging
+    guidelines
+
+  [ Marek Marczykowski-Górecki ]
+  * imgconverter: ensure that connection to the VM is properly closed
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 08 Aug 2015 04:23:00 +0200
+
+qubes-utils (3.0.9) wheezy; urgency=medium
+
+  * imgconverter: use more meaningful error for empty icon image
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 08 Jul 2015 05:58:15 +0200
+
+qubes-utils (3.0.8) wheezy; urgency=medium
+
+  * fedora: fix systemd service files permission
+  * udev: do not use a separate lock for udev block scripts
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 01 Jul 2015 07:11:28 +0200
+
+qubes-utils (3.0.7) wheezy; urgency=medium
+
+  * imgconverter: add eq operation for Image class
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 28 Apr 2015 13:23:09 +0200
+
+qubes-utils (3.0.6) wheezy; urgency=medium
+
+  * imgconverter: do not start gui daemon
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 15 Apr 2015 18:49:02 +0200
+
+qubes-utils (3.0.5) wheezy; urgency=medium
+
+  * udev: fix block devices ignoring rule
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 03 Apr 2015 11:26:47 +0200
+
+qubes-utils (3.0.4) wheezy; urgency=medium
+
+  * udev: ignore temporary devices created during VM startup
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 01 Apr 2015 00:11:15 +0200
+
+qubes-utils (3.0.3) wheezy; urgency=medium
+
+  * qrexec-lib: enable compiler optimization
+  * udev: allow normal user to access /dev/xen/xenbus for vchan
+    connections
+  * Add VM kernel related files as qubes-core-vm-kernel-support package
+  * dracut: do not assume full udevd running inside initramfs
+  * Provide a script to generate VM kernel files
+  * dracut: Provide minimalistic initramfs files - no udev, no systemd
+  * dracut: load ext4 module manually in minimalistic dracut module
+  * Compile u2mfn module only when not already present
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 26 Mar 2015 23:57:42 +0100
+
+qubes-utils (3.0.2) jessie; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * qrexec: create stdin/out/err as sockets instead of pipes
+  * debian: O_TMPFILE already defined
+
+  [ Jason Mehring ]
+  * Removed -Werror from qrexec Makefile to allow unpack to compile for
+    both Fedora 20 and 21
+  * debian:  Modified control file for new R3 Debian depends
+  * debian: Updated changelog to reflect 3.0.1 version change
+  * debian:  Added qubesdb-vm as a depend
+  * debian: Revert back to using libxen-dev as depend
+
+  [ Marek Marczykowski-Górecki ]
+  * Revert "Removed -Werror from qrexec Makefile to allow unpack to
+    compile for both Fedora 20 and 21"
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 17 Feb 2015 14:22:38 +0100
+
+qubes-utils (3.0.1) jessie; urgency=medium
+
+  [ Wojciech Zygmunt Porczyk ]
+  * v3.0.1
+  * This has to be versioned because of dependency in core-agent-linux.
+
+  [ Marek Marczykowski-Górecki ]
+  * Update for new vchan API, remove code not needed anymore
+  * filecopy: fix handling ENOENT error
+  * Do not fail when file was successfully created.
+  * I will test before commit. I will test before commit. I will...
+
+  [ Marek Marczykowski-Górecki ]
+  * filecopy: really do not use O_TMPFILE when use_tmpfile==0
+  * When file opened with O_TMPFILE but use_tmpfile==0, the file will not be
+    linked to the directory (the code at the end of process_one_file_reg).
+    Additionally it is waste of time trying using O_TMPFILE when it's
+    already known it shouldn't be.
+    Also use_tmpfile==0 can mean we don't have access to /proc
+    (set_procfs_fd wasn't called), so even if linking the file to its
+    directory would be attempted, it would fail. This is the case for
+    dom0-updates copy.
+
+  [ Marek Marczykowski-Górecki ]
+  * filecopy: create new file unaccessible to the user until fully written
+    Otherwise source domain can modify (append) the file while the user
+    already is accessing it. While incoming files should be treated as
+    untrusted, this problem could allow file modification after the user
+    makes some sanity checks.
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: update hotplug block scripts for QubesDB
+  * Some initial work was done, but apparently not complete and buggy.
+
+  [ Marek Marczykowski-Górecki ]
+  * version 3.0.0
+
+  [ Marek Marczykowski-Górecki ]
+  * Fix compile warnings
+
+  [ Marek Marczykowski-Górecki ]
+  * qrexec-utils: add read_vchan_all and write_vchan_all
+  * Similar to read_all and write_all.
+
+  [ Marek Marczykowski-Górecki ]
+  * qrexec: update protocol
+    - add new messages
+    - uniform packet header
+    - organize #defines
+
+  [ Marek Marczykowski-Górecki ]
+  * code style: change tabs to spaces
+
+  [ Marek Marczykowski-Górecki ]
+  * qrexec-utils: disable write-stdin (buffered writes) compilation
+  * Not compatible with new qrexec protocol yet. To be done.
+
+  [ Marek Marczykowski-Górecki ]
+  * New qrexec protocol
+  * Use separate vchan to pass I/O for each process, which greatly simplify
+    protocol implementation (eg. no flow control needed).
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: setup permissions on xen device nodes
+
+  [ Marek Marczykowski ]
+  * qrexec-lib: prevent deadlock on vchan
+    It can happen that we already cleared libvchan_fd pending state via
+    libvchan_wait, but data arrived later. This is especially true just
+    after connection, when client send unsolicited notification to server,
+    which can confuse it with some requested notification.
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 10 Feb 2015 00:00:00 +0100
+
+qubes-utils (3.0.0) jessie; urgency=medium
+
+  [ HW42 ]
+  * use systemd in debian
+
+  [ Marek Marczykowski ]
+  * Update for new vchan API, remove code not needed anymore
+  * Use Qubes DB instead of Xenstore
+  * qrexec-lib: prevent deadlock on vchan
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: setup permissions on xen device nodes
+  * New qrexec protocol
+  * qrexec-utils: disable write-stdin (buffered writes) compilation
+  * code style: change tabs to spaces
+  * qrexec: update protocol
+  * qrexec-utils: add read_vchan_all and write_vchan_all
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 22 Nov 2014 16:24:11 +0100
+qubes-utils (2.0.14) jessie; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * qrexec-lib: use _exit in child process to not fire atexit hooks
+  * version 2.0.9
+
+  [ Wojciech Zygmunt Porczyk ]
+  * move site-packages/qubes/__init__.py from core-admin
+  * imgconverter.py: really close stdout in get_through_dvm
+
+  [ Marek Marczykowski-Górecki ]
+  * udev: better support device-mapper/LVM
+  * version 2.0.10
+  * udev: fix perms of udev-block-add-change
+  * udev: skip empty device-mapper nodes
+  * version 2.0.11
+  * udev: filter out template's root device
+  * udev: convert device description to ascii only
+  * version 2.0.12
+  * rpm: add missing dependency
+
+  [ Joanna Rutkowska ]
+  * version 2.0.13
+
+  [ Davíð Steinn Geirsson ]
+  * Add qmemman to make clean
+  * Use xenstore.h when xen >= 4.2
+  * Initial native debian packaging
+
+  [ Marek Marczykowski-Górecki ]
+  * debian: rename package to qubes-utils, update deps
+  * gitignore
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 28 Jul 2014 02:46:39 +0200
+
+qubes-utils (2.0.8) jessie; urgency=low
+
+  * Initial Release.
+
+ -- Davíð Steinn Geirsson <david@dsg.is>  Sun, 20 Apr 2014 21:47:01 +0000

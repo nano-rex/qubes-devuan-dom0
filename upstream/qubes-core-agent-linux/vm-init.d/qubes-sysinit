@@ -1,0 +1,37 @@
+#!/bin/bash
+#
+# chkconfig: 345 80 80
+# description: Executes Qubes system initialization scripts at VM boot
+#
+
+# Source function library.
+# shellcheck disable=SC1091
+. /etc/rc.d/init.d/functions
+
+start()
+{
+	echo -n $"Executing Qubes system initialization scripts:"
+    # shellcheck disable=SC2015
+	/usr/lib/qubes/init/qubes-sysinit.sh && success || failure ; echo
+}
+
+stop()
+{
+	return 0
+}
+
+case "$1" in
+  start)
+	start
+	;;
+  stop)
+	stop
+	;;
+  *)
+	echo $"Usage: $0 {start|stop}"
+	exit 3
+	;;
+esac
+
+# shellcheck disable=SC2086
+exit $RETVAL

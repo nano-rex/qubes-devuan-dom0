@@ -1,0 +1,12 @@
+[Unit]
+Description=Qubes misc post-boot actions
+After=network-pre.target qubes-bind-dirs.service qubes-network.service qubes-firewall.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/qubes/init/misc-post.sh
+ExecStop=/usr/lib/qubes/init/misc-post-stop.sh
+
+[Install]
+WantedBy=multi-user.target

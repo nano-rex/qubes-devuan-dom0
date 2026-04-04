@@ -1,0 +1,1164 @@
+qubes-core-qrexec (4.4.1-1) unstable; urgency=medium
+
+  [ Ben Grande ]
+  * Add Vim Qrexec companion for policy breakers
+  * Migrate to vim9script
+
+  [ Marek Marczykowski-Górecki ]
+  * Increase default connection timeout to 10s
+
+  [ Rohit Yadav ]
+  * qrexec: validate socket fd before use
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 27 Mar 2026 16:44:08 +0100
+
+qubes-core-qrexec (4.4.0-1) unstable; urgency=medium
+
+  [ parulin ]
+  * Migrate from recommonmark to myst-parser (doc)
+  * Update the RPC policy format in documentation
+  * Link to the online documentation in README
+  * Change recommonmark to myst in build dependencies
+
+  [ Ben Grande ]
+  * Read link to canonical path
+  * Change WaitForSession to wait for user session
+
+  [ Marek Marczykowski-Górecki ]
+  * Adjust package dependencies for clean update
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 17 Mar 2026 17:25:54 +0100
+
+qubes-core-qrexec (4.3.12-1) unstable; urgency=medium
+
+  [ Ben Grande ]
+  * Fix pylint complaints
+  * Lint with Black 25.1.0
+
+  [ Marek Marczykowski-Górecki ]
+  * policy: make policy_path arg to FilePolicy optional
+  * Fix building on F44
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 20 Feb 2026 04:38:29 +0100
+
+qubes-core-qrexec (4.3.11-1) unstable; urgency=medium
+
+  * policy: ignore (with warning) non-allowed default_target=
+  * Fix warning about wrong default_target
+  * rpm: don't fail posttrans scriptlet when running in chroot/container
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 31 Aug 2025 14:10:02 +0200
+
+qubes-core-qrexec (4.3.10-1) unstable; urgency=medium
+
+  * selinux: fix qrexec-agent restart
+  * qrexec-agent: remove socket on shutdown
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 01 Jun 2025 20:54:08 +0200
+
+qubes-core-qrexec (4.3.9-1) unstable; urgency=medium
+
+  [ Ben Grande ]
+  * Remove internal qubes from being target of ask
+
+  [ Marek Marczykowski-Górecki ]
+  * archlinux: restart qubes-qrexec-agent on update
+  * Use glib's native asyncio integration when available
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 30 May 2025 03:55:21 +0200
+
+qubes-core-qrexec (4.3.8-1) unstable; urgency=medium
+
+  [ Simon Gaiser ]
+  * tests: always mock get_system_info when mock_request is used
+  * tests: Fix test for too long destination qube name
+  * qrexec-policy-daemon: reject policy.Eval for an empty service name
+  * Fix uuid_to_name
+  * Fix TestClient::test_run_dom0_service_socket_no_read
+  * Re-add target override tests
+  * tests/policy_parser: Cleanup commented out code
+  * qrexec-policy-agent: Replace usage of deprecated
+    Gtk.Entry.set_icon_from_stock
+  * Don't translate dom0 to @adminvm
+
+  [ Marek Marczykowski-Górecki ]
+  * Restart qrexec-agent on update
+  * rpm: fix systemd unit installation
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 24 May 2025 19:19:22 +0200
+
+qubes-core-qrexec (4.3.7-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Add RTD config file
+
+  [ Frédéric Pierret (fepitre) ]
+  * Support for source domain in RPC service
+  * Introduce ParserTestCase to allow specifying SYSTEM_INFO to us
+  * Use path for filepath and ignore and expected FullSystemInfo
+  * tests: add more tests for policy parser and RemoteVM
+  * tests: add loopback detection
+  * Several fixes for doc inclusion
+  * Add documentation about using RemoteVM
+  * doc: add SSHProxy example for qrexec-remotevm
+  * Ignore user directive in policy for RemoteVM
+  * Improve parser lines handling
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 23 Apr 2025 18:24:13 +0200
+
+qubes-core-qrexec (4.3.6-1) unstable; urgency=medium
+
+  * Fix protocol version negotiation on agent reconnect
+  * rpm: add BR: pkgconfig(systemd)
+  * Add error messages to few more QREXEC_EXIT_PROBLEM cases
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 14 Apr 2025 04:22:23 +0200
+
+qubes-core-qrexec (4.3.5-1) unstable; urgency=medium
+
+  [ Aaron Rainbolt ]
+  * Define additional default RPC config paths
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 24 Mar 2025 04:29:46 +0100
+
+qubes-core-qrexec (4.3.4-1) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * qrexec-agent: Require an argument to --fork-server-socket
+  * Use QREXEC_EXIT_PROBLEM for errors spawning child process
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: drop BR: lsb-core-noarch
+
+  [ Demi Marie Obenour ]
+  * Fix checking for memory allocation errors
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 27 Feb 2025 01:11:44 +0100
+
+qubes-core-qrexec (4.3.3-1) unstable; urgency=medium
+
+  * Ignore SIGPIPE in qrexec-fork-server too
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 09 Feb 2025 18:14:57 +0100
+
+qubes-core-qrexec (4.3.2-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: adjust SELinux snippets for relabeling
+
+  [ Zaz Brown ]
+  * docs: qrexec-client accepts user:command not command
+
+  [ Demi Marie Obenour ]
+  * Add additional tests for running services in dom0
+  * Test that stderr from qrexec-agent is properly received
+  * Fix spurious newline in error message
+  * Add type annotation to Python code
+  * Python: Assert that there is no space in command arguments
+  * Python: Add "--" to qrexec-client-vm call
+  * Call abort() if there is a qrexec buffer problem
+  * Test that opening /proc/self/fd/2 for writing works
+  * Stop using qubes-rpc-multiplexer for service calls
+  * Avoid qubes-rpc-multiplexer for dom0 -> dom0 calls
+  * Strip "QUBESRPC " prefix from service call commands
+  * libqrexec SONAME bump
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 04 Feb 2025 02:35:27 +0100
+
+qubes-core-qrexec (4.3.1-1) unstable; urgency=medium
+
+  [ Ali Mirjamali ]
+  * Pipe `qrexec-client(-vm) --help` output to stdout
+
+  [ Frédéric Pierret (fepitre) ]
+  * Blacken the whole repository and add CI job
+
+  [ Marek Marczykowski-Górecki ]
+  * Try to retrieve exit code of a failed service call
+  * Add a test for qrexec-client race condition
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 11 Dec 2024 01:22:56 +0100
+
+qubes-core-qrexec (4.3.0-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * daemon: restore SIGTERM default handler in child process
+
+  [ Frédéric Pierret (fepitre) ]
+  * tests: fix POLICY_PROGRAM and update documentation
+
+  [ Demi Marie Obenour ]
+  * Support additional policy directories
+  * Use fully-qualified exception names in .pylintrc
+
+  [ Marek Marczykowski-Górecki ]
+  * daemon: log a bit more info on errors
+
+  [ Frédéric Pierret (fepitre) ]
+  * qrexec-client-vm: fix missing option in usage and reorder it
+
+  [ Marek Marczykowski-Górecki ]
+  * pylint: deal with too-many-positional-arguments
+  * Remove unused test
+
+  [ Ali Mirjamali ]
+  * Provide clear error on invalid policy file name
+
+  [ Demi Marie Obenour ]
+  * Implement UUID support in qrexec
+
+  [ Marek Marczykowski-Górecki ]
+  * daemon: document --uuid and require it to start
+  * rpm: adjust version constraint for UUID identification
+  * ci: switch to R4.3
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 10 Oct 2024 00:57:37 +0200
+
+qubes-core-qrexec (4.2.22-1) unstable; urgency=medium
+
+  [ Piotr Bartman-Szwarc ]
+  * actually sanitize service name
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 18 Aug 2024 01:47:31 +0200
+
+qubes-core-qrexec (4.2.21-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * daemon: attempt starting target vm only if not running yet
+  * Make stderr line-buffered for logging
+  * Remove redundant log line
+  * doc: fix class names in API docs
+
+  [ Demi Marie Obenour ]
+  * tests: Actually check that stdout was expected value
+
+  [ Marta Marczykowska-Górecka ]
+  * Remove deprecated pkg_resources, replace with importlib
+
+  [ Marek Marczykowski-Górecki ]
+  * Make pylint happy
+  * policy-daemon: invalidate cache on file move too
+  * tests: policy cache reacting to moving files
+
+  [ Ali Mirjamali ]
+  * Support substring matching in qube name text fields
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 05 Jul 2024 17:29:51 +0200
+
+qubes-core-qrexec (4.2.20-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Mute pylint false positive
+
+  [ Demi Marie Obenour ]
+  * qrexec-daemon: Use close_range where possible
+
+  [ Ben Grande ]
+  * Document rpc config until exit-on-server-eof
+
+  [ Demi Marie Obenour ]
+  * Command and API documentation
+
+  [ Marek Marczykowski-Górecki ]
+  * Downgrade errors about incompatible service config to warnings
+
+  [ Demi Marie Obenour ]
+  * Always send EOF on stderr
+  * Send EOF on stdout when exiting due to EOF on stdin
+  * Send EOF whenever closing stdout
+  * Avoid closing stderr when MSG_DATA_EXIT_CODE is received
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 15 Jun 2024 00:07:47 +0200
+
+qubes-core-qrexec (4.2.19-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Switch to sequoia for codecov signature check
+
+  [ Demi Marie Obenour ]
+  * tests: tolerate alternate orders of messages
+  * tests: prevent unexpected message combining
+  * tests: don't use sleep(1) to enforce message ordering
+  * tests: treat ECONNRESET as EOF
+  * tests: Allow altering arguments to test script
+  * tests: Allow running tests under ASAN+UBSAN
+  * Move TOML parsing function to private header
+  * Clean up configuration loading
+  * Test service configuration better
+  * Cleanly terminate connections if command or config is invalid
+  * Support not passing metadata to socket-based services
+  * Add test for broken symbolic links as services
+  * find_file(): Check for broken symlinks and I/O errors
+  * Add test for unsetting QREXEC_* variables
+  * Explicitly unset QREXEC_ variables
+  * Add test for missing service arguments
+  * Search for qubes.Service+ if call for qubes.Service is made
+  * Add test for invalid service name for old protocol version
+  * Forbid empty service names in legacy MSG_TRIGGER_SERVICE
+  * Avoid using /tmp for qrexec return pipes
+  * Test that service configs are found in all places they should be
+  * Test that config in a long path is loaded
+  * Load service configuration files with long names
+  * Test for errors reading a service config file
+  * Fail service call if config file cannot be read
+  * qrexec-client: fail if service configuration loading fails
+  * qrexec-client: Better validation of arguments
+  * Check return value of snprintf() and unlink()
+  * Pass the correct sockaddr len to connect()
+  * qrexec-client: Use XID to connect to qrexec daemon when possible
+  * qrexec-client: remove unreachable code
+  * qrexec-client: do not prepare event loop for VM -> VM calls
+  * qrexec-client: Use bool instead of int for booleans
+  * qrexec-client: remove unneeded local variable
+  * qrexec-client: Factor some duplicated code
+  * qubes_sendmsg_all: Avoid infinite loop on empty iovec
+  * Use relative symlinks
+  * Make all paths relative to socket directory
+  * Rip out unused fork_and_flush_buffer()
+  * Document extensions to the qrexec policy daemon protocol
+  * Avoid qrexec-client for VM -> VM calls
+  * Test VM => dom0 calls with skip-service-descriptor=true
+  * Avoid qrexec-client for VM -> dom0 calls
+  * Check for dom0 messages in more agent tests
+  * Fix flaky qrexec agent tests
+
+  [ Marek Marczykowski-Górecki ]
+  * Add missing include
+
+  [ Demi Marie Obenour ]
+  * Support socket services with MSG_JUST_EXEC
+  * Add exit codes to qrexec.h
+  * Avoid using alarm(2) for timeouts
+  * Use sigemptyset() to initialize signal sets
+  * Use a pipe instead of signals to notify readiness
+  * Use SOCK_CLOEXEC instead of setting O_CLOEXEC manually
+  * Avoid using signal() to establish a signal handler
+  * Use libvchan_client_init_async() instead of parent process timeout
+  * Don't close file descriptor 0
+  * Treat zero timeout as infinite
+  * Test that services can be symbolic links to executables
+  * Rip out stale comment
+  * Use VM GitLab runner
+  * Use flexible array member for 'struct trigger_service_params3'
+  * find_file(): Check for symlinks to /dev/tcp/
+  * Implement connections to TCP-based services
+  * Make more functions in agent tests idempotent
+  * Do not close stdin, stdout, or stderr
+  * Use _exit() in child process after fork()
+  * Report correct statuses for service execution failure
+  * Do not skip "nogui:" prefix in agent
+  * Ensure consistent treatment of "QUBESRPC" followed by non-space
+  * Check for empty source domain names
+  * qrexec-daemon: partially validate messages from client
+  * qrexec-daemon: Take advantage of flexible array members
+  * qrexec-agent: Take advantage of flexible array members
+  * qrexec-daemon: Do not check service identifier for DEFAULT: keyword
+  * qrexec-daemon: check for valid messages from clients
+  * Avoid allocating a big buffer for each loop iteration
+  * Add visibility attributes and use -fvisibility=hidden
+  * Avoid pointlessly setting argv[0]
+  * Use calloc() instead of malloc() + memset()
+  * Eradicate VLAs from the codebase
+  * Adjust test to reflect reality
+  * Avoid warnings from pytest
+  * Share qrexec-daemon VM -> VM call code with qrexec-client
+  * Avoid leaking vchans
+  * If skip-service-descriptor=true, do not use fork server
+  * Forbide skip-service-descriptor=true with explicit username
+  * Refuse executable service with skip-service-descriptor=true
+  * Fix memory leak in load_service_config()
+  * fix_fds(): check that input FDs are okay
+  * Use close_range() instead of close loop
+  * do_fork_exec(): Drop status pipe
+  * Prefer close() to shutdown()
+  * Document the file descriptrs for struct process_io_request
+  * Ensure that EOF is propagated to stdout
+  * Avoid writing to an uninitialized file descriptor
+  * Do not use a timeout if QREXEC_STARTUP_NOWAIT is set
+  * Check for dup2() errors and avoid FD leak
+  * Ensure proper RPM dependency ordering
+  * Explain why there is no use after free vulnerability
+
+  [ Marek Marczykowski-Górecki ]
+  * Restore correct log path
+  * Fix build error on redefined _FORTIFY_SOURCE
+
+  [ Demi Marie Obenour ]
+  * Check at startup that standard streams are open
+  * Better logging for socket services
+  * Add support for exiting on client or service EOF
+  * tests: do not write to maybe-closed socket
+  * Avoid passing stderr_fd to handle_data_client
+  * Fail early if the service config cannot be found
+  * Test if a service config directory itself is invalid
+  * Fix SIGUSR1 after stdin_fd closed
+
+  [ Ben Grande ]
+  * Document rpc-config until skip-service-descriptor
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 09 May 2024 03:13:08 +0200
+
+qubes-core-qrexec (4.2.18-1) unstable; urgency=medium
+
+  * agent: fix calloc parameters order
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 05 Feb 2024 04:49:33 +0100
+
+qubes-core-qrexec (4.2.17-1) unstable; urgency=medium
+
+  * Remove leftover debug print
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 19 Jan 2024 00:51:32 +0100
+
+qubes-core-qrexec (4.2.16-1) unstable; urgency=medium
+
+  [ Ben Grande ]
+  * Add missing dependency inotify
+
+  [ Marek Marczykowski-Górecki ]
+  * qrexec-policy-graph: fix handling of default target
+  * qrexec-policy-graph: validate and normalize source/target arguments
+  * qrexec-policy-graph: print wildcard rules when specific argument
+    requested
+  * qrexec-policy-graph: add basic tests
+  * qrexec-policy-graph: fix output with --full-output
+  * qrexec-policy-graph: add specific argument on the graph with --full-
+    output
+  * qrexec-policy-graph: make output order deterministic
+
+  [ Frédéric Pierret (fepitre) ]
+  * Add dedicated PAM file for Gentoo
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: use https URL
+  * rpm: drop unused BR: python3-dbus
+  * rpm: use virtual provides python3dist(sphinx)
+  * rpm: adjust BR: python-rpm-macros for opneSUSE
+  * rpm: add missing directory ownership
+  * rpm: move libqrexec-utils.so to -devel subpackage
+  * rpm: do not fail the build on symlinks to /var/run
+  * rpm: own /etc/qubes/rpc-config dir too
+  * rpm: adjust pyinotify pkg name for openSUSE
+  * rpm: add missing directory ownership
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 14 Nov 2023 05:31:10 +0100
+
+qubes-core-qrexec (4.2.15-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * ci: upload gcov coverage data too
+  * ci: fixup coverage data collection
+
+  [ Demi Marie Obenour ]
+  * Don't wait for stdin if there is unsent prefix data
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 22 Oct 2023 04:07:58 +0200
+
+qubes-core-qrexec (4.2.14-1) unstable; urgency=medium
+
+  [ Marta Marczykowska-Górecka ]
+  * Fix conversion rules for input policy
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 12 Oct 2023 22:30:00 +0200
+
+qubes-core-qrexec (4.2.13-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Adjust pylint config
+
+  [ Marta Marczykowska-Górecka ]
+  * Add a tool to convert legacy policy files to new format
+  * Modify qrexec-policy-graph for more flexibility
+  * Tests for legacy policy convert tool
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 11 Oct 2023 00:38:20 +0200
+
+qubes-core-qrexec (4.2.12-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Fix qrexec-policy-graph tool
+
+  [ Demi Marie Obenour ]
+  * Add a missing printf attribute
+  * Use _exit(), not exit(), in child process after fork
+  * qrexec-fork-server: validate data from qrexec-agent
+  * Prepare for parsing username from service config
+  * Allow specifying a username in service config
+  * Ensure that VLAs do not creep back into the code
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 06 Oct 2023 04:18:15 +0200
+
+qubes-core-qrexec (4.2.11-1) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * Support for Fedora 39
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 09 Sep 2023 11:39:19 +0200
+
+qubes-core-qrexec (4.2.10-1) unstable; urgency=medium
+
+  [ Ben Grande ]
+  * Add lint and editor policy tools
+
+  [ Marek Marczykowski-Górecki ]
+  * Add connection timeout on the VM side too
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 02 Sep 2023 23:55:36 +0200
+
+qubes-core-qrexec (4.2.9-1) unstable; urgency=medium
+
+  [ Ben Grande ]
+  * Fix policy.Replace changing mode and owners
+  * parser: Change warning of invalid path to error
+
+  [ Marek Marczykowski-Górecki ]
+  * cleanup pylintrc
+  * Fix issues in qrexec-policy-agent found by pylint
+  * policy/admin: fix handling missing 'qubes' group
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 27 Aug 2023 00:13:29 +0200
+
+qubes-core-qrexec (4.2.8-1) unstable; urgency=medium
+
+  * Make policy.RegisterArgument use new policy format
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 21 Jul 2023 05:17:11 +0200
+
+qubes-core-qrexec (4.2.7-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Restore VMToken properties/methods
+  * daemon: add missing return to the main() function
+  * daemon: prepare handle_message_from_agent() for fuzzing
+  * fuzz: add mockup of libvchan_client_init()
+  * fuzz: fix generating seed corpus
+  * fuzz: daemon->handle_message_from_agent()
+  * Revert "Use close_range(2) instead of manual close loop"
+
+  [ Ben Grande ]
+  * Fix missing include in RPC names in admin_client
+
+  [ Demi Marie Obenour ]
+  * Support Debian 11
+  * Shut up pylint
+  * Reject requests with invalid request ID
+  * Fix header validation by qrexec agent
+
+  [ Marek Marczykowski-Górecki ]
+  * daemon: add missing brackets in validate_request_id
+  * daemon: fix memory leak
+
+  [ Ben Grande ]
+  * Fix python3-qrexec missing on qubes-core-qrexec
+
+  [ Demi Marie Obenour ]
+  * Banish old-style function declarations
+  * Ensure that all external variables are type-checked
+  * Move variables into MSG_TRIGGER_SERVICE3 block
+  * Reject interior NUL bytes in service name
+  * Reject service names that start with +
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 02 Jul 2023 04:06:22 +0200
+
+qubes-core-qrexec (4.2.6-1) unstable; urgency=medium
+
+  * daemon: fix off-by-one in MSG_TRIGGER_SERVICE3 validation
+  * Do not use 'annotation' future extension
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 11 May 2023 15:58:08 +0200
+
+qubes-core-qrexec (4.2.5-1) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Check the return value of strdup()
+  * Use close_range(2) instead of manual close loop
+  * Check return value of snprintf()
+  * Fix signal handling bugs
+  * Ignore stopped or continued children
+  * Ensure all data is sent to policy daemon
+  * Avoid K&R function declarations
+  * Fix reserved identifier violations
+  * Slightly better validation of data from dom0
+  * Correctly detect SOCK_CLOEXEC
+  * More consistency checks in buffer code
+  * Add a missing #include
+  * Add missing static
+  * Avoid option injection for usernames starting with "-"
+  * Forcibly rebuild C code for socket tests
+  * Fix some mypy errors
+  * Fix make install when already installed
+  * Clean up gcov cruft in 'make clean'
+  * avoid option injection in 'make clean'
+  * Add new utility functions to libqrexec
+  * qrexec-client: Allow killing the VM before exiting
+  * Add types to Python code
+  * Use pytest_asyncio.fixture() for async test fixtures
+  * Avoid having qrexec-policy-daemon handle connections
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 03 May 2023 02:52:09 +0200
+
+qubes-core-qrexec (4.2.4-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Fix policy permissions on upgrade too
+
+  [ Maja Kądziołka ]
+  * Fix man page format
+
+  [ Marek Marczykowski-Górecki ]
+  * Switch to new codecov uploader
+
+  [ Frédéric Pierret (fepitre) ]
+  * Rework Archlinux packaging
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 26 Apr 2023 03:44:30 +0200
+
+qubes-core-qrexec (4.2.3-1) unstable; urgency=medium
+
+  * Wrap coroutine in a task before passing to asyncio.wait
+  * Do not call asyncio.get_event_loop() before creating one
+  * Make pylint happy
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 28 Jan 2023 03:39:36 +0100
+
+qubes-core-qrexec (4.2.2-1) unstable; urgency=medium
+
+  * debian: drop explicit dependency on libvchan-xen
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 09 Jan 2023 11:02:14 +0100
+
+qubes-core-qrexec (4.2.1-1) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Only spawn services via exec
+  * Prevent log injection into qrexec-agent
+
+  [ Marek Marczykowski-Górecki ]
+  * Update fuzzer wrapper
+  * Relax validation of MSG_DATA_STDIN/MSG_DATA_STDOUT
+
+  [ Demi Marie Obenour ]
+  * Zero-initialize some stack variables
+  * Add some error checking
+  * More error checking
+  * qrexec-client-vm: add --help
+  * Prefix data support
+  * Remove the connect_existing variable
+  * Replace one use of select(2) with poll(2)
+  * Add a ppoll_vchan() function
+  * Abort on bad return from select()
+  * Replace one use of select(2) with ppoll(2)
+  * simplify fd_set code
+  * Remove another use of select()
+  * Move CLIENT_INVALID check to handle_message_from_client
+  * Use a NULL fdset instead of an empty one
+  * Remove last use of select(2)
+  * Use clock_gettime() instead of gettimeofday()
+  * Drop FD_SETSIZE check
+  * Do not exit successfully if local process failed
+
+  [ Marek Marczykowski-Górecki ]
+  * ci: drop R4.1
+
+  [ Demi Marie Obenour ]
+  * Add SELinux policy for qrexec
+  * Allow user_t to use qrexec if a boolean is set
+  * Allow qrexec to exec systemctl
+  * Set agent SELinux context in systemd unit file
+  * Set SELinux context in qrexec too
+  * Avoid running /bin/sh as local_login_t
+  * Try to fix an SELinux denial
+  * Allow qrexec to start systemd services
+  * fix for systemd selinux rules
+  * try to fix more denials
+  * Allow qrexec to connect to anything
+  * Allow qrexec to connect to any socket
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 30 Dec 2022 06:12:11 +0100
+
+qubes-core-qrexec (4.2.0-1) unstable; urgency=medium
+
+  [ Marek Marczykowski-Górecki ]
+  * Ignore oversensitive pylint warnings
+  * Reformat code to be PEP8 compliant
+
+  [ Frédéric Pierret (fepitre) ]
+  * Drop Travis CI
+
+  [ Marek Marczykowski-Górecki ]
+  * ci: add codecov-wrapper
+
+  [ Marta Marczykowska-Górecka ]
+  * Fix incorrect ownership of policy dirs
+
+  [ Locria Cyber ]
+  * In PKGBUILD: copy instead of symlink
+
+  [ locriacyber ]
+  * Update archlinux/PKGBUILD
+
+  [ Marek Marczykowski-Górecki ]
+  * ci: install extra packages necessary for unit tests
+
+  [ Frédéric Pierret (fepitre) ]
+  * Add Qubes Builder v2 integration
+
+  [ Marta Marczykowska-Górecka ]
+  * Add get_files to policy admin client
+  * Remove root user requirement for policy admin client
+  * Add str representation to policy rule objects
+  * add more tests to placate codecov
+  * Apply @marmarek's code review
+  * Fix empty file list in PolicyClient.get_files
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 11 Oct 2022 17:58:34 +0200
+
+qubes-core-qrexec (4.1.18-1) unstable; urgency=medium
+
+  * Fix parsing legacy policy files
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 05 Mar 2022 05:47:18 +0100
+
+qubes-core-qrexec (4.1.17-1) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Check the return value of snprintf
+
+  [ Marek Marczykowski-Górecki ]
+  * Fix error return value in allocate_vchan_port
+  * policy: fix notification on refused autostart
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 18 Feb 2022 05:21:30 +0100
+
+qubes-core-qrexec (4.1.16-1) unstable; urgency=medium
+
+  [ Demi Marie Obenour ]
+  * Add assertions that FD_SETSIZE is not exceeded
+
+  [ Marek Marczykowski-Górecki ]
+  * policy: fix reporting failed target start
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 17 Dec 2021 04:56:52 +0100
+
+qubes-core-qrexec (4.1.15-1) unstable; urgency=medium
+
+  * Fix FD leak causing DispVMs not being cleaned up properly
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 01 Jul 2021 05:48:23 +0200
+
+qubes-core-qrexec (4.1.14-1) unstable; urgency=medium
+
+  [ Dmitry Fedorov ]
+  * winusb: allow to build without pam
+  * winusb: set guivm to None on unknown source
+  * winusb: append LDLIBS
+  * winsub: fix broad exception
+  * winusb: check if pam include file exists and set appropriate flags
+
+  [ Marek Marczykowski-Górecki ]
+  * Adjust vchan_{send,recv} error checking
+  * daemon: fix checking qrexec-policy-daemon response
+
+  [ Demi Marie Obenour ]
+  * Switch from __gcov_flush to __gcov_dump + __gcov_reset
+  * Be stricter about command-line parsing
+  * Create a DispVMTemplate instance when needed
+
+  [ Marek Marczykowski-Górecki ]
+  * Use generic 'guivm' service to tell if running inside GUI VM
+
+  [ Demi Marie Obenour ]
+  * Add a policy.EvalSimple qrexec service
+  * Add unit tests for policy.EvalSimple
+  * Tell pylint not to whine about extra parentheses
+  * Add policy.EvalGUI service
+  * Do not use the asynctest module
+  * Use separate sockets for different services
+  * Lots of unit tests and some bug fixes
+  * Shut up pylint
+  * Set socket modes properly
+  * Handle partial reads from StreamReader.read
+  * Automatically install dependencies when possible
+  * Avoid calling get_system_info() twice
+  * Parse the qrexec call metadata before untrusted data
+  * Add a test for qrexec policy allowing an operation
+
+  [ Marek Marczykowski-Górecki ]
+  * Force color pytest output in gitlab
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 18 Jun 2021 03:33:11 +0200
+
+qubes-core-qrexec (4.1.13-1) unstable; urgency=medium
+
+  * agent: do not interrupt established connections on restart
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 10 Jan 2021 03:14:46 +0100
+
+qubes-core-qrexec (4.1.12-1) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * Set default BACKEND_VMM value to xen
+  * Use pkg-config to get BACKEND_VMM
+
+  [ Marek Marczykowski-Górecki ]
+  * Allow to override vchan variant selection with BACKEND_VMM variable
+
+  [ Frédéric Pierret (fepitre) ]
+  * Add .gitlab-ci.yml
+
+  [ Marek Marczykowski-Górecki ]
+  * gitlab-ci: include custom jobs
+  * pylint: temporarily disable unsubscriptable-object - buggy with
+    py3.9
+
+  [ Frédéric Pierret (fepitre) ]
+  * debian: update control
+  * debian: update compat
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 05 Jan 2021 22:22:23 +0100
+
+qubes-core-qrexec (4.1.11-1) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * Add ArchLinux packaging
+  * archlinux: ensure python-setuptools make deps
+  * archlinux: don't need to qubes-vm-utils
+  * makefile: /lib is SYSLIBDIR
+  * archlinux: ensure PKGBUILD.install
+
+  [ icequbes1 ]
+  * [archlinux] Fix qrexec installing wrong qrexec.pam file
+
+  [ Marek Marczykowski-Górecki ]
+  * daemon: fix handling multiple parallel qrexec-policy processes
+  * libqrexec: fix calling qubes.WaitForSession
+  * tests: minor adjustment
+  * qrexec-policy-agent: do not patch event loop on module import
+  * Start qrexec-agent only after systemd let in normal users
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 13 Nov 2020 03:43:37 +0100
+
+qubes-core-qrexec (4.1.10-1) unstable; urgency=medium
+
+  * agent: do not crash on spurious MSG_SERVICE_CONNECT from the daemon
+  * daemon: do not send MSG_SERVICE_* messages twice for a given
+    connection
+  * policy: adjust call target for allow action too
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 11 Oct 2020 19:10:47 +0200
+
+qubes-core-qrexec (4.1.9-1) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * Update travis
+
+  [ Marek Marczykowski-Górecki ]
+  * travis: restore language option
+  * policy: interpret invalid requested target as @default
+
+  [ Paweł Marczewski ]
+  * Add 'autostart=no' option to policy
+  * policy: allow '*' as source and target
+  * Add a QubesRPC API for policy
+  * policy admin: change API to use policy.include.*
+  * policy admin: add tokens to prevent concurrent modification
+  * policy admin: add client API and command-line tool
+  * policy admin: package
+  * policy admin: add default configuration
+  * Handle Pylint upgrade
+
+  [ Frédéric Pierret (fepitre) ]
+  * Fix documentation build
+  * Fix sphinx build
+
+  [ Marek Marczykowski-Górecki ]
+  * Fix handling default_target in ask action
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 10 Oct 2020 05:15:15 +0200
+
+qubes-core-qrexec (4.1.8-1) unstable; urgency=medium
+
+  * Fix dangerous-default-value pylint warning
+  * test: downgrade pytest-asyncio
+  * Revert "test: downgrade pytest-asyncio"
+  * Update for changed qubesd socket protocol
+  * rpm: restart qrexec-policy-daemon on upgrade
+  * Fix documentation for relative paths in !include directive
+  * parser: ignore .rpmsave/.rpmnew/.swp and .* policy files...
+  * Update qrexec-policy-graph tool for new qrexec module
+  * rpm: adjust depencency on qubes-core-dom0
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sun, 24 May 2020 04:38:25 +0200
+
+qubes-core-qrexec (4.1.7-1) unstable; urgency=medium
+
+  [ Paweł Marczewski ]
+  * fuzzer: use C++ compiler for linking
+
+  [ Marek Marczykowski-Górecki ]
+  * Adjust dependencies to avoid breaking USB proxy
+  * policy/utils: fix pyinotify cleanup
+
+  [ Paweł Marczewski ]
+  * Remove false error message on vchan disconnect
+  * qrexec-agent, qrexec-daemon: unblock signals before exec()
+  * qrexec-client: handle failed service exec
+
+  [ Frédéric Pierret (fepitre) ]
+  * spec: fix hardcoded python3 prefix for CentOS
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 04 Apr 2020 19:18:23 +0200
+
+qubes-core-qrexec (4.1.6-1) unstable; urgency=medium
+
+  [ Paweł Marczewski ]
+  * Factor out parse_qubes_rpc_command
+  * Add a fuzzer for parse_qubes_rpc_command
+  * Add a fuzzer for handle_remote_data
+  * daemon, agent: unify main loop
+
+  [ Marek Marczykowski-Górecki ]
+  * rpm: add BR: systemd-devel to packages using %systemd_* macros
+
+  [ Paweł Marczewski ]
+  * Rewrite CLI tests
+  * qrexec-policy-exec: don't use exit() directly in --just-ask
+  * qrexec-policy-agent: prepare for GuiVM
+  * qrexec-policy-agent: install in the common package, use socket
+    activation
+  * qrexec-policy-agent: enable systemd socket
+  * travis: run pylint from docker
+  * Add missing license header
+  * qrexec-policy-agent: add policy.Notify call
+  * Support notifications on allowed and denied calls
+  * Refactor socket server into a more reusable SocketService class
+  * qrexec-policy-exec: recover from failure when notifying
+  * qrexec-policy-exec: handle 'execution failed' corner case
+  * Change format for 'ask' response
+  * qrexec-policy-daemon: don't reply with result=allow before execution
+  * Add a test for no-GuiVM notifications
+  * Document qrexec-policy-agent API
+  * Refactor socket service handling
+  * Clean up call() and call_async()
+  * Add a requirement for qubes-core-dom0 version >= 4.1.9
+  * policy-agent: use autostart program, not systemd service
+  * qrexec-policy-agent: always show service argument
+  * Factor out parsing service configuration
+  * Support wait-for-session in dom0
+  * travis: add job names, add fuzzer
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 28 Mar 2020 04:08:39 +0100
+
+qubes-core-qrexec (4.1.5-1) unstable; urgency=medium
+
+  * daemon: fix makefile
+  * Isolate *-base, *-dom0 and *-vm make targets
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Thu, 26 Mar 2020 00:08:32 +0100
+
+qubes-core-qrexec (4.1.4-1) unstable; urgency=medium
+
+  [ Pawel Marczewski ]
+  * qrexec-client: ignore SIGPIPE
+  * Separate GTK test classes from object under test
+  * Skip GTK tests when DISPLAY is not set or empty
+  * agent: add options for alternative socket paths
+  * agent: don't try to change user if not necessary
+  * Add tests for agent using vchan-socket
+  * Move socket tests to qrexec/tests/socket
+  * Add tests for MSG_SERVICE_REFUSED
+  * daemon: add options to enable testing
+  * Add tests for qrexec-daemon
+  * Don't run tests as root in Docker
+  * qrexec-daemon: don't open log file when run with --direct
+  * daemon: don't listen to clients while reconnecting to agent
+
+  [ Paweł Marczewski ]
+  * agent: don't skip PAM setup outside of tests
+  * Add tests for agent communication
+  * Test that agent is sending MSG_CONNECTION_TERMINATED
+  * daemon: add tests for port allocation and connecting a service
+  * Add --socket-dir option to qrexec-client
+  * qrexec-client: close vchan before exiting
+  * Add tests for qrexec-client
+  * Add a test for client with both remote and local cmdline
+
+  [ Demi M. Obenour ]
+  * Add more generated files to .gitignore
+  * Makefile improvements
+  * Add assertions and fix compiler warnings
+  * Ensure that stdout and stdin use distinct file descriptors
+  * Working socket-based qrexec
+  * Pass service parameters to sockets
+  * Prevent socket-based services in dom0 from hanging
+  * flush_client_data(-1, buffer) should be a no-op
+  * Socket-based services do not have a local process
+  * Do not try to close the same file descriptor twice
+  * Avoid closing local_stdout_fd if writing to local_stdin_fd fails
+  * Socket-based services have no child processes
+
+  [ Marek Marczykowski-Górecki ]
+  * Add coveragerc
+
+  [ Demi M. Obenour ]
+  * Close the vchan when exiting
+  * make some variables static
+  * Fix exit status of qrexec-client
+
+  [ Paweł Marczewski ]
+  * daemon: prevent collisions between port numbers
+
+  [ Marek Marczykowski-Górecki ]
+  * tests: adjust after recent changes
+  * travis: workaround for coverage 5.0 incompatibility
+  * Collect test coverage data about C programs too
+  * daemon: minor cleanup of SIGCHLD setup
+  * daemon: add SIGTERM handler for graceful exit
+  * daemon: fix handling EINTR in the main loop
+  * tests: terminate daemon before client
+  * agent: add SIGTERM handler for graceful exit
+  * policy: move source=target check later
+
+  [ Paweł Marczewski ]
+  * Refactor execute_parsed_qubes_rpc_command
+  * Add a test for QUBESRPC and socket-based services
+  * Add a wait to port allocation test
+  * Add a TODO about test_run_dom0_command_and_connect_vm
+  * client tests: always wait for client to end
+  * tests: run strace detached (-D)
+  * Add test for terminating agent before restarting
+
+  [ Marta Marczykowska-Górecka ]
+  * Qrexec policy daemon and tests
+  * Working qrexec-policy-daemon
+  * Fixed assorted errors and better handling for logging
+  * Fixed tests and assorted bugs discovered with them
+  * Added policy caching
+  * Added tests to PolicyCache
+  * Typos cleanup
+
+  [ Paweł Marczewski ]
+  * Remove _GNU_SOURCE (definition moved to Makefile)
+  * Update qrexec-client error handling
+  * Make trailing whitespace in tests visible
+  * Add a TODO about test_run_dom0_command_and_connect_vm
+
+  [ Marek Marczykowski-Górecki ]
+  * PolicyCache: add option to lazy load policy
+
+  [ Paweł Marczewski ]
+  * daemon, agent: ensure proper shutdown
+  * Remove ConfirmCreate (unused)
+  * Compile C programs with -std=gnu11
+  * Add more tests for qrexec
+  * Add tests that cover writing into closed stdin
+  * Add tests that trigger WRITE_STDIN_BUFFERED
+
+  [ Marek Marczykowski-Górecki ]
+  * policy: don't fail if policy directory doesn't exist
+  * policy: improve PolicyCache.cleanup()
+
+  [ Paweł Marczewski ]
+  * Extract do_replace_chars()
+  * Factor out handle_remote_data to libqrexec
+  * qrexec-client: use handle_remote_data instead of handle_vchan_data
+  * Factor out handle_input from qrexec-agent-data.c
+  * qrexec-client: use the common handle_input
+  * Factor out send_exit_code()
+  * Fix replace_chars usage
+  * Factor out process_child_io
+  * qrexec-client: use common code for process_io
+  * agent: fix error path on failed service exec
+  * Fix reading from a dead process (ECONNRESET on read)
+  * Add a test in which we wait for a granchild to close streams
+  * Move all closing code to process_io.c; don't exit early
+  * Fix timeout in wait_for_vchan_or_argfd
+  * Always return remote exit status
+  * qrexec-client-vm: pass local process PID to process_io
+  * Split handle_new_process_common
+  * Add a test for replace_chars
+  * Remove debug print
+  * Fix test_exit_before_closing_streams
+  * Handle SIGPIPE in qrexec-client-vm
+  * Test stdio socket for client-vm as well
+
+  [ Marek Marczykowski-Górecki ]
+  * Use different error messages for different error paths
+  * qrexec-client{,-vm}: do not fail if cannot sent just final EOF
+  * libqrexec: fix cleanup on qubes_connect error
+  * Add '[Install]' section to qubes-qrexec-policy-daemon.service
+  * gitignore: ignore 'build' dir
+  * policy daemon: fix double ++ in logs
+  * Fix not closed file descriptors in qubes-rpc-multiplexer
+  * Test closing stdout early also through qrexec service
+  * Ensure matching libqrexec-utils package
+  * Adjust dependencies to avoid breaking non-executable services
+
+  [ Paweł Marczewski ]
+  * Add logging macros
+  * Convert error messages to logging macros
+  * Fix "executed user pid" message
+  * Include program name in logs
+  * Update log messages
+  * process_io: use poll, detect socket close
+  * Handle POLLERR for stdin as well as POLLHUP
+  * Add an error message in case of early break
+  * Fix race condition in process_io
+  * Fix qrexec-fork-server handling of MSG_JUST_EXEC
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 25 Mar 2020 16:08:16 +0100
+
+qubes-core-qrexec (4.1.3-1) unstable; urgency=medium
+
+  [ Frédéric Pierret (fepitre) ]
+  * travis: switch to bionic
+
+  [ Marek Marczykowski-Górecki ]
+  * travis: switch to python 3.6
+  * Remove extra header
+
+  [ pierwill ]
+  * Add README
+
+  [ Marek Marczykowski-Górecki ]
+  * travis: run tests in docker
+  * travis: install codecov outside docker too
+
+  [ pierwill ]
+  * Update documentation info in qrexec.h
+
+  [ Frédéric Pierret (fepitre) ]
+  * travis: switch to dom0 Fedora 31
+
+  [ Pawel Marczewski ]
+  * Fix utf8 headers
+  * Handle error while executing qrexec-client
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 18 Jan 2020 04:37:25 +0100
+
+qubes-core-qrexec (4.1.2-1) unstable; urgency=medium
+
+  * policy: fix dropped call argument
+  * policy: fix @dispvm default template evaluation
+  * tests: revive qrexec-policy-exec tests
+  * policy: fix keyword-based intended target argument for actual
+    service call
+  * policy: revive some more tests, add few policy eval tests
+  * qrexec-client-vm: add option to replace control characters on
+    stdout/err
+  * Make pylint happy
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 09 Oct 2019 04:12:00 +0200
+
+qubes-core-qrexec (4.1.1-1) wheezy; urgency=medium
+
+  * rpm: fix build with mock
+  * debian: add Build-Depends: lsb-release
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Mon, 01 Jul 2019 02:29:17 +0200
+
+qubes-core-qrexec (4.1.0-1) unstable; urgency=medium
+
+  * Initial debian packaging
+
+ -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Fri, 05 Apr 2019 03:51:22 +0200

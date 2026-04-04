@@ -1,0 +1,42 @@
+checks:pylint:
+  before_script:
+  - sudo dnf install -y python3-pip python3-pyxdg python3-pytest-qt
+  - pip3 install --quiet -r ci/requirements.txt
+  - git clone https://github.com/QubesOS/qubes-core-admin-client ~/core-admin-client
+  - (cd ~/core-admin-client; if [ -f setup.py ]; then python3 setup.py egg_info; else python3 -m pip install --quiet --no-deps -e .; fi)
+  - git clone https://github.com/QubesOS/qubes-linux-utils ~/linux-utils
+  - (cd ~/linux-utils/imgconverter;sudo python3 setup.py install)
+  script:
+  - PYTHONPATH=~/core-admin-client python3 -m pylint qubesmanager
+  stage: checks
+include:
+- file: /devel/gitlab-base.yml
+  project: QubesOS/qubes-continuous-integration
+- file: /devel/gitlab-host.yml
+  project: QubesOS/qubes-continuous-integration
+- file: /devel/gitlab-vm.yml
+  project: QubesOS/qubes-continuous-integration
+
+checks:tests:
+  stage: checks
+  variables:
+    PYTEST_ADDOPTS: "--color=yes"
+    BLACK_ARGS: -l88 -v --diff --color --check
+  before_script: &before-script
+    - "PATH=$PATH:$HOME/.local/bin"
+    - sudo dnf install -y python3-gobject python3-pytest python3-pytest-asyncio
+      python3-coverage sequoia-sqv python3-pip python3-pytest-qt
+      xorg-x11-server-Xvfb python3-PyQt6-devel python3-pyqt6
+    - pip3 install --quiet -r ci/requirements.txt
+    - git clone https://github.com/QubesOS/qubes-core-admin-client ~/core-admin-client
+    - (cd ~/core-admin-client; if [ -f setup.py ]; then python3 setup.py egg_info; else python3 -m pip install --quiet --no-deps -e .; fi)
+    - git clone https://github.com/QubesOS/qubes-linux-utils ~/linux-utils
+    - (cd ~/linux-utils/imgconverter;sudo python3 setup.py install)
+  script:
+    - make ui
+    - make res
+    - PYTHONPATH=~/core-admin-client:~/manager:. xvfb-run ./run-tests.sh
+    - coverage report
+  after_script:
+    - "PATH=$PATH:$HOME/.local/bin"
+    - ci/codecov-wrapper

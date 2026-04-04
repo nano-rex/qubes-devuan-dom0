@@ -1,0 +1,65 @@
+#!/bin/bash
+# shellcheck disable=SC2016
+
+# send .desktop files from directories persisting across VM restarts, specifically:
+#  - any directory in case of "full" persistence
+#  - directories stored on /rw in case of "rw-only" persistence
+#  - nothing, otherwise
+
+# Reload scripts in /etc/profile.d/, in case they register additional
+# directories in XDG_DATA_DIRS and we forgot them
+# (e.g. because we are running under sudo).
+# shellcheck disable=SC1091
+source /etc/profile
+
+if [ -z "$XDG_DATA_HOME" ]; then
+    user="$(whoami)"
+    # In case we are running under sudo, use default-user.
+    if [ "$user" = "root" ]; then
+        user="$(qubesdb-read /default-user || echo user)"
+    fi
+    home="$(eval echo "~$user")"
+    XDG_DATA_HOME="$home/.local/share"
+fi
+if [ -z "$XDG_DATA_DIRS" ]; then
+    XDG_DATA_DIRS="/usr/local/share/:/usr/share/"
+fi
+
+# if read fails for some reason, default to full
+persistence=$(qubesdb-read /qubes-vm-persistence || echo full)
+rw_devno=$(stat -c %D /rw)
+
+apps_dirs_to_consider=( "$XDG_DATA_HOME" )
+old_IFS="$IFS"
+IFS=:
+# shellcheck disable=SC2206
+apps_dirs_to_consider+=( $XDG_DATA_DIRS )
+IFS="$old_IFS"
+
+apps_dirs=()
+for dir in "${apps_dirs_to_consider[@]}"; do
+    if [ "$persistence" = "full" ]; then
+        apps_dirs+=( "$dir/applications" )
+    elif [ "$persistence" = "rw-only" ] && \
+            [ "$(stat -c %D "$dir")" = "$rw_devno" ]; then
+        apps_dirs+=( "$dir/applications" )
+    fi
+done
+
+for i in "${apps_dirs[@]}"; do
+    case $i in (/*) :;; (*) continue;; esac
+    ([[ -d "$i" ]] && cd "$i" &&
+    # Every filename from “find” will start with “./”, so no need to worry about
+    # option injection.
+    exec find . -name '*.desktop' -exec awk -b '
+     BEGINFILE { if (ERRNO) nextfile; entry=""; file = substr(FILENAME, 3); gsub(/\//, "-", file) }
+     /^\[/ { if (tolower($0) != "\[desktop entry\]") nextfile }
+     /^Exec *=/ { entry = entry file ":Exec=qubes-desktop-run " file "\n"; next }
+     /^NoDisplay *= *true$/ { entry=""; nextfile }
+     /^Categories *= *Screensaver;$/ { entry=""; nextfile }
+     /=/ { entry = entry file ":" $0 "\n" }
+     ENDFILE { print entry }
+     ' 2> /dev/null '{}' +)
+done
+
+exit 0

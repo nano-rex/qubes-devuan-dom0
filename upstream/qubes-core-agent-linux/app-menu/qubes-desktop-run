@@ -1,0 +1,7 @@
+#!/usr/bin/python3
+
+from qubesagent.xdg import launch
+import sys
+
+if __name__ == '__main__':
+    launch(*sys.argv[1:])

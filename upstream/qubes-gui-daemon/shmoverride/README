@@ -1,0 +1,22 @@
+	The shmoverride.so library is supposed to be loaded by Xorg server
+(via LD_PRELOAD). It intercepts the mmap, munmap, and fstat glibc calls, so
+that when xcb_shm_attach_fd is called (by qubes_guid) with a file descriptor
+pointing to /dev/xen/gntdev, then instead of attaching regular shared memory,
+memory from a foreign domain is attached via xc_map_foreign_pages or
+xengntdev_map_domain_grant_refs. This mechanism is used to map composition
+buffers from a foreign domain into Xorg server.
+	During its init, shmoverride.so creates a shared memory segment
+(cmd_pages) and writes its shmid to /var/run/qubes/shm.id.$DISPLAY. All
+instances of qubes_guid map this segment and communicate with shmoverride.so
+code by setting its fields. When qubes_guid wants its
+xcb_shm_attach_fd(...xen_fd...) call to be handled by shmoverride.so, it passes
+a file descriptor pointing to /dev/xen/gntdev.  fstat (implemented in
+shmoverride.so) checks whether it was passed a file descriptor to
+/dev/xen/gntdev, and if so, sets st_size in the returned `struct stat` to the
+the size memory buffer to map.  The shmoverride.so implementation of mmap()
+calls fstat() on its fifth argument, and checks the st_dev, st_ino, and st_rdev
+fields to determine if a file descriptor to /dev/xen/gntdev was passed.  If so,
+it uses cmd_pages to determine which frames or grant pages should be mapped and
+from which domain.  The munmap() implementation checks if the address is one
+that shmoverride.so had previously mapped, and if so, calls the appropriate Xen
+API functions to release the memory.

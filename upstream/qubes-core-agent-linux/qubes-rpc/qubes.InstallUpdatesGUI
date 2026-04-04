@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# This script should open some GUI to install updates.
+# If you are creating package for other distribution, feel free to replace it
+# with distribution-specific script.
+
+if [ -e /etc/redhat-release ] && [ -x /usr/bin/dnf ]; then
+    update_cmd='dnf update --best'
+elif [ -e /etc/redhat-release ] && [ -x /usr/bin/yum ]; then
+    update_cmd='yum update'
+elif [ -e /etc/debian_version ]; then
+    update_cmd='apt-get update && apt-get -V dist-upgrade'
+elif [ -e /etc/arch-release ] && [ -x /usr/bin/powerpill ]; then
+    update_cmd='powerpill -Suy'
+elif [ -e /etc/arch-release ]; then
+    update_cmd='pacman -Suy'
+else
+    update_cmd='echo Unsupported distribution, install updates manually; bash -i'
+fi
+xterm -title update -e su -s /bin/sh -l -c "$update_cmd; echo Done.; test -f /var/run/qubes/this-is-templatevm && { echo Press Enter to shutdown the template, or Ctrl-C to just close this window; read x && poweroff; } ;"
+
+# Notify dom0 about installed updates
+if [ -e /etc/arch-release ]; then
+    su -s /bin/sh -c 'systemctl start qubes-update-check'
+else
+    su -s /bin/sh -c 'service qubes-update-check start'
+fi

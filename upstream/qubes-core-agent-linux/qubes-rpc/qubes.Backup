@@ -1,0 +1,26 @@
+#!/bin/sh
+
+echo Starting Backupcopy
+read -r args
+echo Arguments: "$args"
+if [ -d "$args" ] ; then
+  sync --file-system -- "$args"
+  echo "Performing backup to directory $args"
+  TARGET="$args/qubes-backup-$(date +'%Y-%m-%dT%H%M%S')"
+  echo "Copying STDIN data to $TARGET"
+  dd bs=128K iflag=fullblock conv=fsync of="$TARGET" && sync -- "$args"
+else
+  echo "Checking if arguments is matching a command"
+  COMMAND=$(echo "$args" | cut -d ' ' -f 1)
+  if command -v "$COMMAND" >/dev/null; then
+    sync
+    echo "Redirecting STDIN to $args"
+    # Parsing args to handle quotes correctly
+    # Dangerous method if args are uncontrolled
+    eval "set -- $args"
+    "$@" && sync
+  else
+    echo "Invalid command $COMMAND"
+    exit 1
+  fi
+fi

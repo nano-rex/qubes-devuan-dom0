@@ -1,0 +1,254 @@
+{% if vm.audiovm is defined and vm.audiovm %}
+ {% set audiovm_xid = vm.audiovm.xid %}
+{% else %}
+ {% set audiovm_xid = -1 %}
+{% endif %}
+<domain type="xen">
+    {% block basic %}
+        <name>{{ vm.name }}</name>
+        <uuid>{{ vm.uuid }}</uuid>
+        {% if ((vm.virt_mode == 'hvm' and vm.devices['pci'].get_assigned_devices() | list)
+            or vm.maxmem == 0) -%}
+            <memory unit="MiB">{{ vm.memory }}</memory>
+        {% elif vm.use_memory_hotplug %}
+            <memory unit="MiB">{{ vm.memory }}</memory>
+            <maxMemory unit="MiB" slots="1">{{ vm.maxmem }}</maxMemory>
+        {% else -%}
+            <memory unit="MiB">{{ vm.maxmem }}</memory>
+        {% endif -%}
+        <currentMemory unit="MiB">{{ vm.memory }}</currentMemory>
+        <vcpu placement="static">{{ vm.vcpus }}</vcpu>
+    {% endblock %}
+    {% block cpu %}
+    {% if vm.virt_mode != 'pv' %}
+        <cpu mode='host-passthrough'>
+            <!-- disable nested HVM -->
+            <feature name='vmx' policy='disable'/>
+            <feature name='svm' policy='disable'/>
+            {% if vm.app.host.cpu_family_model in [(6, 58), (6, 62)] -%}
+                <feature name='rdrand' policy='disable'/>
+            {% endif -%}
+            <!-- let the guest know the TSC is safe to use (no migration) -->
+            <feature name='invtsc' policy='require'/>
+        </cpu>
+    {% endif %}
+    {% endblock %}
+    <os>
+        {% block os %}
+            {% if vm.virt_mode == 'hvm' %}
+                <type arch="x86_64" machine="xenfv">hvm</type>
+                <!--
+                     For the libxl backend libvirt switches between OVMF (UEFI)
+                     and SeaBIOS based on the loader type. This has nothing to
+                     do with the hvmloader binary.
+                -->
+                {% if vm.features.check_with_template('uefi', False) -%}
+                <loader type="pflash">/usr/share/edk2/xen/OVMF.fd</loader>
+                {% else -%}
+                <loader type="rom">hvmloader</loader>
+                {% endif -%}
+                <boot dev="cdrom" />
+                <boot dev="hd" />
+            {% else %}
+                {% if vm.virt_mode == 'pvh' %}
+                    <type arch="x86_64" machine="xenpvh">xenpvh</type>
+                {% elif vm.virt_mode == 'pv' %}
+                    <type arch="x86_64" machine="xenpv">linux</type>
+                {% elif bug("Bad virt mode %r", vm.virt_mode) %}{% endif %}
+                <kernel>{{ vm.kernel_path }}</kernel>
+                {% if vm.initramfs_path -%}
+                <initrd>{{ vm.initramfs_path }}</initrd>
+                {% endif -%}
+            {% endif %}
+            {% if vm.kernel %}
+                {% if vm.features.check_with_template('no-default-kernelopts', False) -%}
+                <cmdline>{{ vm.kernelopts }}{{ vm.bootmode_kernelopts }}</cmdline>
+                {% elif vm.features.check_with_template('apparmor', '0') == '1' -%}
+                <cmdline>{{ vm.kernelopts_common }}{{ vm.kernelopts }} apparmor=1 security=apparmor{{ vm.bootmode_kernelopts }}</cmdline>
+                {% elif vm.features.check_with_template('selinux', '0') == '1' -%}
+                <cmdline>{{ vm.kernelopts_common }}{{ vm.kernelopts }} selinux=1 security=selinux{{ vm.bootmode_kernelopts }}</cmdline>
+                {% else -%}
+                <cmdline>{{ vm.kernelopts_common }}{{ vm.kernelopts }}{{ vm.bootmode_kernelopts }}</cmdline>
+                {% endif -%}
+            {% endif %}
+        {% endblock %}
+    </os>
+
+    <features>
+        {% block features %}
+            {% if vm.virt_mode != 'pv' %}
+                <pae/>
+                <acpi/>
+                <apic/>
+                <viridian/>
+            {% endif %}
+
+            {% if vm.devices['pci'].get_assigned_devices() | list
+                    and vm.features.get('pci-e820-host', True) %}
+                <xen>
+                    <e820_host state="on"/>
+                </xen>
+            {% endif %}
+        {% endblock %}
+    </features>
+
+    {% block clock %}
+        {% if vm.virt_mode == 'hvm' %}
+            {% set timezone = vm.features.check_with_template('timezone', '').lower() %}
+            {% if timezone == 'localtime' %}
+                <clock offset="variable" adjustment="0" basis="localtime" />
+            {% elif timezone.strip('-').isdigit() %}
+                <clock offset="variable" adjustment="{{ timezone }}" basis="utc" />
+            {% else %}
+                <clock offset="variable" adjustment="0" basis="utc" />
+            {% endif %}
+        {% else %}
+            <clock offset='utc' adjustment='reset'>
+                <timer name="tsc" mode="native"/>
+            </clock>
+        {% endif %}
+    {% endblock %}
+
+    {% block on %}
+        <on_poweroff>destroy</on_poweroff>
+        <on_reboot>destroy</on_reboot>
+        <on_crash>destroy</on_crash>
+    {% endblock %}
+
+    <devices>
+        {% block devices %}
+            {#
+                HACK: The letter counter is implemented in this way because
+                Jinja does not allow you to increment variables in a loop
+                anymore. As of Jinja 2.10, we will be able to replace this
+                with:
+                {% set counter = namespace(i=0) %}
+                {% set counter.i = counter.i + 1 %}
+            #}
+            {% set counter = {'i': 0} %}
+            {# TODO Allow more volumes out of the box #}
+            {% set dd = ['e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p',
+                'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y']
+            %}
+            {% for device in vm.block_devices %}
+                <disk type="block" device="{{ device.devtype }}">
+                    <driver name="phy" />
+                    <source dev="{{ device.path }}" />
+                    {% if device.name == 'root' %}
+                        <target dev="xvda" />
+                    {% elif device.name == 'private' %}
+                        <target dev="xvdb" />
+                    {% elif device.name == 'volatile' %}
+                        <target dev="xvdc" />
+                    {% elif device.name == 'kernel' %}
+                        <target dev="xvdd" />
+                    {% else %}
+                        <target dev="xvd{{dd[counter.i]}}" />
+                        {% if counter.update({'i': counter.i + 1}) %}{% endif %}
+                    {% endif %}
+
+                    {% if not device.rw %}
+                        <readonly />
+                    {% endif %}
+
+                    {% if device.domain %}
+                        <backenddomain name="{{ device.domain }}" />
+                    {% endif %}
+                    <script path="/etc/xen/scripts/qubes-block" />
+                </disk>
+            {% endfor %}
+
+            {# start external devices from xvdi #}
+            {% set counter = {'i': 4} %}
+            {% for assignment in vm.devices.block.get_assigned_devices(True) %}
+                {% for device in assignment.devices %}
+                    {% set options = assignment.options %}
+                    {% include 'libvirt/devices/block.xml' %}
+                {% endfor %}
+            {% endfor %}
+
+            {% block network %}
+                {% if vm.netvm %}
+                    {% include 'libvirt/devices/net.xml' with context %}
+                {% endif %}
+            {% endblock %}
+
+            {% for assignment in vm.devices.pci.get_assigned_devices(True) %}
+                {% for device in assignment.devices %}
+                    {% set options = assignment.options %}
+                    {% set power_mgmt =
+                        vm.app.domains[0].features.get('suspend-s0ix', False) %}
+                    {% include 'libvirt/devices/pci.xml' %}
+                {% endfor %}
+            {% endfor %}
+
+            {% if vm.virt_mode == 'hvm' %}
+                <!-- server_ip is the address of stubdomain. It hosts it's own DNS server. -->
+                {% set qemu_opts_common = "-qubes-audio:audiovm_xid=" ~
+                    audiovm_xid ~ " " ~
+                    vm.features.check_with_template('qemu-extra-args', '') -%}
+                {% set qemu_opts_common = qemu_opts_common | trim -%}
+                {% set qemu_opts_common = qemu_opts_common ~
+                    (" -trace xen_platform_log" if vm.debug else "") -%}
+                <emulator
+                    {% if vm.features.check_with_template('linux-stubdom', True) %}
+                        type="stubdom-linux"
+                    {% else %}
+                        type="stubdom"
+                    {% endif %}
+                    {% if vm.netvm %}
+                      {% if vm.features.check_with_template('linux-stubdom', True) %}
+                        cmdline="{{ qemu_opts_common }} -qubes-net:client_ip={{ vm.ip -}}
+                            ,dns_0={{ vm.dns[0] -}}
+                            ,dns_1={{ vm.dns[1] -}}
+                            ,gw={{ vm.netvm.gateway -}}
+                            ,netmask={{ vm.netmask }}"
+                      {% else %}
+                        cmdline="{{ qemu_opts_common }} -net lwip,client_ip={{ vm.ip -}}
+                            ,server_ip={{ vm.dns[1] -}}
+                            ,dns={{ vm.dns[0] -}}
+                            ,gw={{ vm.netvm.gateway -}}
+                            ,netmask={{ vm.netmask }}"
+                      {% endif %}
+                    {% else %}
+                      cmdline="{{ qemu_opts_common }}"
+                    {% endif %}
+                    {% if vm.stubdom_mem %}
+                        memory="{{ vm.stubdom_mem * 1024 -}}"
+                    {% endif %}
+                    {% if vm.features.check_with_template('audio-model', False)
+                    or vm.features.check_with_template('stubdom-qrexec', False) %}
+                        kernel="/usr/libexec/xen/boot/qemu-stubdom-linux-full-kernel"
+                        ramdisk="/usr/libexec/xen/boot/qemu-stubdom-linux-full-rootfs"
+                    {% endif %}
+                    />
+                <input type="tablet" bus="usb"/>
+                {% if vm.features.check_with_template('audio-model', False) %}
+                    <sound model="{{ vm.features.check_with_template('audio-model', False) }}"/>
+                {% endif %}
+                {% if vm.features.check_with_template('video-model', 'vga') != 'none' %}
+                    <video>
+                        <model type="{{ vm.features.check_with_template('video-model', 'vga') }}"/>
+                    </video>
+                    {% if vm.features.check_with_template('linux-stubdom', True) %}
+                        {# TODO only add qubes gui if gui-agent is not installed in HVM #}
+                        <graphics type="qubes"
+                        {% if vm.guivm and vm.guivm.is_running()
+                            and vm.guivm.name != "dom0" -%}
+                        domain="{{vm.guivm.name}}"
+                        {% endif -%}
+                        {% if vm.debug -%}
+                        log_level="2"
+                        {% endif -%}
+                        />
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+                <console type="pty">
+                    <target type="xen" port="0"/>
+                </console>
+        {% endblock %}
+    </devices>
+</domain>
+
+<!-- vim: set ft=jinja ts=4 sts=4 sw=4 et tw=80: -->

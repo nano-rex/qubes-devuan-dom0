@@ -1,0 +1,4 @@
+modprobe xen-evtchn 2>/dev/null || modprobe evtchn
+modprobe xen-blkback 2> /dev/null || modprobe blkbk
+modprobe xen-gntalloc 2> /dev/null
+modprobe xen-gntdev 2> /dev/null

@@ -1,0 +1,6 @@
+*.gz
+*.bz2
+*.patch
+*.diff
+*.spec
+*.xml

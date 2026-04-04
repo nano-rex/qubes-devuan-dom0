@@ -1,0 +1,22 @@
+#!/bin/sh
+
+read -r disk_name
+
+set -e
+
+case $disk_name in
+    private)
+        # force some read to refresh device size
+        head /dev/xvdb > /dev/null
+        resize2fs /dev/xvdb
+        ;;
+    root)
+        # force some read to refresh device size
+        head /dev/xvda > /dev/null
+        /usr/lib/qubes/resize-rootfs
+        ;;
+    *)
+        echo "Automatic resize of '$disk_name' not supported" >&2
+        exit 1
+        ;;
+esac

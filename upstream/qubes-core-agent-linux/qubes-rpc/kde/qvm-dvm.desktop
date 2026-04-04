@@ -1,0 +1,15 @@
+[Desktop Entry]
+Actions=QvmDvm;QvmViewDvm
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin,all/allfiles
+
+[Desktop Action QvmDvm]
+Exec=/usr/bin/qvm-open-in-dvm %U
+Icon=kget
+Name=Edit in disposable qube
+
+[Desktop Action QvmViewDvm]
+Exec=/usr/bin/qvm-open-in-dvm --view-only %U
+Icon=kget
+Name=View in disposable qube
+

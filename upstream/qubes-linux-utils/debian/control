@@ -1,0 +1,81 @@
+Source: qubes-utils
+Section: admin
+Priority: extra
+Maintainer: Davíð Steinn Geirsson <david@dsg.is>
+Build-Depends:
+ debhelper,
+ libxen-dev,
+ pkg-config,
+ python3-setuptools,
+ libicu-dev,
+ libz-dev,
+Standards-Version: 4.4.0.1
+Homepage: https://www.qubes-os.org
+Vcs-Git: https://github.com/QubesOS/qubes-linux-utils.git
+Vcs-Browser: https://github.com/QubesOS/qubes-linux-utils
+
+Package: qubes-utils
+Architecture: any
+Depends: lsb-base, ${shlibs:Depends}, ${misc:Depends}
+Conflicts: qubes-linux-utils
+Breaks: qubes-core-agent (<< 3.1.4)
+Recommends: python3
+Description: Qubes Linux utilities
+ This package includes the basic qubes utilities necessary for domU.
+
+Package: qubes-kernel-vm-support
+Architecture: any
+Depends:
+ busybox,
+ initramfs-tools | dracut,
+ grub2-common,
+ ${misc:Depends}
+Description: Qubes VM kernel and initramfs modules
+ This package contains:
+ 1. mkinitramfs module required to setup Qubes VM root filesystem. This package
+ is needed in VM only when the VM uses its own kernel (via pvgrub or so).
+ Otherwise initrd is provided by dom0.
+
+Package: libqubes-rpc-filecopy2
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Breaks: qubes-utils (<< 3.1.4)
+Replaces: qubes-utils (<< 3.1.4)
+Description: Qubes file copy protocol library
+ This library can be used for both sending files using qfile protocol and for
+ receiving them.
+
+Package: libqubes-rpc-filecopy-dev
+Architecture: any
+Section: libdevel
+Depends: libqubes-rpc-filecopy2 (= ${binary:Version}), ${misc:Depends}
+Breaks: qubes-utils (<< 3.1.4)
+Replaces: qubes-utils (<< 3.1.4)
+Description: Development headers for libqrexec-utils
+ This package contains files required to compile Qubes file copy related
+ utilities like qfile-agent.
+
+Package: libqubes-pure0
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Breaks: libqubes-rpc-filecopy2 (<< 4.2.12)
+Replaces: libqubes-rpc-filecopy2 (<< 4.2.12)
+Description: Qubes file copy protocol library
+ Utility library with qubes-specific functions.
+
+Package: libqubes-pure-dev
+Architecture: any
+Section: libdevel
+Depends: libqubes-pure0 (= ${binary:Version}), ${misc:Depends}
+Breaks: libqubes-rpc-filecopy-dev (<< 4.2.12)
+Replaces: libqubes-rpc-filecopy-dev (<< 4.2.12)
+Description: Development headers for libqrexec-utils
+ Utility library with qubes-specific functions - headers
+
+Package: python3-qubesimgconverter
+Architecture: any
+Depends: python3-cairo, python3-pil, python3-numpy, ${misc:Depends}
+Breaks: qubes-utils (<< 4.1.9)
+Replaces: qubes-utils (<< 4.1.9)
+Description: Python package qubesimgconverter
+ Python package qubesimgconverter

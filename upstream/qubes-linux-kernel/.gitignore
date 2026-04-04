@@ -1,0 +1,12 @@
+linux-*.tar
+linux-*.tar.gz.UNTRUSTED
+linux-*.tar.xz.UNTRUSTED
+linux-*.sign
+linux-keyring.gpg
+kernel-*/
+config-base-*
+macbook12-spi-driver-*.tar
+macbook12-spi-driver-*.tar.gz.UNTRUSTED
+pkgs
+spi.sha256
+genfs/genfs

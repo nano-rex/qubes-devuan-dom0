@@ -1,0 +1,145 @@
+#!/bin/sh
+#
+# The Qubes OS Project, http://www.qubes-os.org
+#
+# Copyright (C) 2015  Marek Marczykowski-Górecki
+#                       <marmarekp@invisiblethingslab.com>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+#
+
+set -e
+
+basedir=/var/lib/qubes/vm-kernels
+
+function build_modules_img() {
+    kver=$1
+    initramfs=$2
+    kernel=$3
+    output_file=$4
+
+    local tmpdir
+    tmpdir=$(mktemp -d -p /var/tmp)
+
+    mkdir "$tmpdir/modules"
+    cp -a -t "$tmpdir/modules" /lib/modules/$kver
+    cp "$kernel" "$tmpdir/modules/vmlinuz"
+    cp "$initramfs" "$tmpdir/modules/initramfs"
+
+    rm -f "$tmpdir/modules/$kver/build"
+    if [ "$include_devel" ]; then
+        cp -a "/usr/src/kernels/$kver" "$tmpdir/modules/$kver/build"
+    fi
+
+    flags="-Enum_backup_sb=0,root_owner=0:0,no_copy_xattrs"
+    flags="$flags,hash_seed=dcee2318-92bd-47a5-a15d-e79d1412cdce"
+    PATH=/usr/sbin:/sbin:$PATH mkfs.ext3 -q -F "$flags" \
+        -d "$tmpdir/modules" "$tmpdir/modules.img" 768M
+    /usr/lib/qubes/vm-modules-genfs "$tmpdir/modules.img" "$kver" immutable=yes
+    e2fsck -pDfE optimize_extents -- "$tmpdir/modules.img" >/dev/null
+    resize2fs -fM -- "$tmpdir/modules.img" >/dev/null
+    e2fsck -pDfE optimize_extents -- "$tmpdir/modules.img" >/dev/null
+    /usr/lib/qubes/vm-modules-genfs "$tmpdir/modules.img"
+
+    mv "$tmpdir/modules.img" $output_file
+    rm -rf "$tmpdir"
+}
+
+function build_initramfs() {
+    kver=$1
+    output_file=$2
+
+    dracut --nomdadmconf --nolvmconf --force --no-hostonly \
+        --no-early-microcode \
+        --modules "kernel-modules qubes-vm-simple busybox" \
+        --omit "nss-softokn extra-modules qubes-pciback qubes-udev" \
+        --conf /dev/null --confdir /var/empty \
+        -d "xenblk xen-blkfront cdrom ext4 jbd2 crc16 dm_snapshot" \
+        $output_file $kver
+    chmod 644 "$output_file"
+}
+
+function usage() {
+    echo "Usage: qubes-prepare-vm-kernel [--modules-only] [--include-devel] <kernel-version> [<display-kernel-version>]" >&2
+    echo "  --modules-only - only build modules.img, vmlinuz is expected to be present already" >&2
+    echo "  --include-devel - include kernel headers in modules.img, requires kernel-devel pkg installed" >&2
+    exit 2
+}
+
+modules_only=
+include_devel=
+
+while [ -n "$1" ]; do
+    case "$1" in
+    --modules-only)
+        modules_only=1
+        shift
+        ;;
+    --include-devel)
+        include_devel=1
+        shift
+        ;;
+    --*) usage;;
+    *) break;;
+    esac
+done
+
+if [ "$#" -ne 1 ] && [ "$#" -ne 2 ]; then
+    usage
+fi
+
+kernel_version="$1"
+if [ -n "$2" ]; then
+    output_dir="$basedir/$2"
+else
+    output_dir="$basedir/$kernel_version"
+fi
+
+
+if [ ! -d "/lib/modules/$kernel_version" ]; then
+    echo "ERROR: Modules version $kernel_version not installed" >&2
+    exit 1
+fi
+
+if [ ! "$modules_only" ] && [ ! -r "/boot/vmlinuz-$kernel_version" ]; then
+    echo "ERROR: Kernel version $kernel_version not installed" >&2
+    exit 1
+fi
+
+if [ "$modules_only" ] && [ ! -r "$output_dir/vmlinuz" ]; then
+    echo "ERROR: --modules-only requires '$output_dir/vmlinuz' to already exist" >&2
+    exit 1
+fi
+
+if [ "$include_devel" ] && [ ! -d "/usr/src/kernels/$kernel_version" ]; then
+    echo "ERROR: --include-devel requires kernel-devel package (containing '/usr/src/kernels/$kernel_version')" >&2
+    exit 1
+fi
+
+echo "--> Building files for $kernel_version in $output_dir"
+
+if ! [ "$modules_only" ]; then
+    mkdir -p "$output_dir"
+    cp "/boot/vmlinuz-$kernel_version" "$output_dir/vmlinuz"
+    echo "---> Generating initramfs"
+    build_initramfs "$kernel_version" "$output_dir/initramfs"
+fi
+echo "---> Generating modules.img"
+build_modules_img "$kernel_version" "$output_dir/initramfs" \
+    "$output_dir/vmlinuz" \
+    "$output_dir/modules.img"
+
+echo "--> Done."

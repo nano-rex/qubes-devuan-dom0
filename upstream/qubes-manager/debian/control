@@ -1,0 +1,40 @@
+Source: qubes-manager
+Section: admin
+Priority: optional
+Maintainer: Frédéric Pierret (fepitre) <frederic.pierret@qubes-os.org>
+Build-Depends:
+  debhelper (>= 9),
+  dh-python,
+  python3-all,
+  python3-setuptools,
+  qt6-base-dev,
+  qt6-base-dev-tools,
+  qt6-tools-dev-tools,
+  qt6-l10n-tools,
+  pyqt6-dev,
+  pyqt6-dev-tools,
+Standards-Version: 4.3.0
+Homepage: https://www.qubes-os.org/
+#Vcs-Git: git://github.com/QubesOS/qubes-manager.git
+#Vcs-Browser: https://github.com/QubesOS/qubes-manager
+X-Python3-Version: >= 3.4
+
+Package: qubes-manager
+Architecture: any
+Depends:
+  python3-qubesadmin (>= 4.3.13),
+  python3-qubesimgconverter,
+  python3-pyqt6,
+  python3-pyinotify,
+  python3-qasync,
+  python3-xdg,
+  qubes-desktop-linux-common (>= 4.4.0),
+  qubes-artwork,
+  pmount,
+  cryptsetup,
+  wmctrl,
+  ${python3:Depends},
+  ${misc:Depends}
+Conflicts: qubes-core-agent (<< 4.1.9)
+Description: Qubes administrative tools
+  Tools to manage Qubes system using Admin API

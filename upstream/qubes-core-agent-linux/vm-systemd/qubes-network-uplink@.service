@@ -1,0 +1,12 @@
+[Unit]
+Description=Qubes network uplink (%i) setup
+After=network-pre.target
+Requires=network-pre.target
+Before=network.target
+Wants=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/lib/qubes/setup-ip add "%i"
+ExecStop=/usr/lib/qubes/setup-ip remove "%i"

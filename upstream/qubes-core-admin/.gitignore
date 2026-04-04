@@ -1,0 +1,13 @@
+rpm/
+pkgs/
+qubes.egg-info/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+*.pyc
+*.pyo
+*~
+*.o
+.*.swp
+*.msm

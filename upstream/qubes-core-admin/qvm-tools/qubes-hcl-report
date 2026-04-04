@@ -1,0 +1,466 @@
+#!/bin/bash --
+
+# The Qubes OS Project, https://www.qubes-os.org
+#
+# Copyright (C) 2013  Laszlo Zrubecz <mail@zrubi.hu>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, see <https://www.gnu.org/licenses/>.
+
+set -uo pipefail
+VERSION=2.5
+COPY2VM="dom0"
+SUPPORT_FILES=0
+YAML_ONLY=0
+XL_DMESG_PREFIX_REGEX='^(XEN) \(\[[^]]*\] \)\?'
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+
+    -s |--support)
+      SUPPORT_FILES=1
+      ;;
+
+    -y |--yaml-only)
+      YAML_ONLY=1
+      ;;
+
+    ''|--|[!-]*)
+      if [ "$1" = '--' ]; then shift; fi
+      case $# in
+      (0) :;;
+      (1)
+        /usr/bin/qvm-check -q -- "$1"
+        if [[ $? -eq 0 ]]
+        then
+          COPY2VM="$1"
+        else
+          echo -e "ERROR:\tAppVM with the name '$1' does not exist in the system!"
+          exit 1
+        fi
+        ;;
+      (*)
+        echo -e "ERROR:\\tToo many non-option arguments (expected 0 or 1, got $#)"
+        ;;
+      esac
+      ;;
+
+    *)
+      echo -e "qubes-hcl-report v$VERSION"
+      echo ""
+      echo "This tool is used to gather basic hardware information for the Qubes HCL (Hardware Compatibility List)"
+      echo "and copy the results to the given AppVM for the easy contribution."
+      echo ""
+      echo -e "Usage:\tqubes-hcl-report [OPTIONS] [<AppVM Name>]"
+      echo -e "Options are:"
+      echo -e "\t-h, --help\tDisplay this help text and exit."
+      echo -e "\t-s, --support\tGenerate more detailed HCL Support Files"
+      echo -e "\t\t\tWARNING: The HCL Support Files may contain numerous hardware details, including serial numbers."
+      echo -e "\t\t\tIf, for privacy or security reasons, you do not wish to make this information public, "
+      echo -e "\t\t\tplease do not send the .cpio.gz file to the public mailing list."
+      echo -e "\t-y, --yaml-only\tDo not write any files, only output data to STDOUT in yaml format."
+      echo ""
+      echo -e "\t<AppVM Name>\tCopy the results to the given AppVM. The default is to keep it in dom0"
+      echo ""
+      case $1 in (-h|--help) exit 0;; (*) exit 1;; esac
+      ;;
+
+  esac
+  shift
+done
+
+if [[ "$YAML_ONLY" = 1 ]]
+  then
+    if [[ "$SUPPORT_FILES" = 1 ]]
+      then
+        echo -e "ERROR: --yaml-only is mutually exclusive with --support"
+        exit 1
+    fi
+    if [[ "$#" -gt 0 ]]
+      then
+        echo -e "ERROR: --yaml-only is mutually exclusive with providing a VM name"
+        exit 1
+    fi
+fi
+
+
+DATE=$(date +%Y%m%d-%H%M%S) || exit
+
+
+TEMP_DIR=$(mktemp --tmpdir -d HCL.XXXXXXXXXX) || exit
+case $TEMP_DIR in (/*) :;; (*) TEMP_DIR=./$TEMP_DIR;; esac
+cat /etc/qubes-release > "$TEMP_DIR/qubes-release" || exit
+cat /proc/cpuinfo > "$TEMP_DIR/cpuinfo" || exit
+sudo lspci -nnvk > "$TEMP_DIR/lspci"
+cat /proc/scsi/scsi > "$TEMP_DIR/scsi"
+for drive in /sys/class/nvme-subsystem/nvme-subsys*/; do
+  test -d "$drive" || continue
+  cat "$drive"/{serial,model,firmware_rev} |
+    tr "\n" " " | sed "s/\s$//" > "$TEMP_DIR/nvme"
+done
+sudo dmidecode > "$TEMP_DIR/dmidecode"
+xl info > "$TEMP_DIR/xl-info" || exit
+xl dmesg > "$TEMP_DIR/xl-dmesg" || exit
+unset decoded_dmi
+decoded_dmi=$(awk -- 'BEGIN {
+  FS = ":"
+  in_system_info = 0;
+  in_chassis_info = 0;
+  in_base_board_info = 0;
+  in_bios_info = 0;
+}
+
+function fail(msg) {
+  failure = 1
+  print msg > "/dev/stderr";
+  close("/dev/stderr");
+  exit(failure);
+}
+
+function check_duplicate(k) {
+  if (k in seen_headers)
+    fail("Duplicate header " k);
+  seen_headers[k] = 1;
+}
+
+function shellquote(s) {
+  gsub(/^ */, "", s);
+  gsub(/ *$/, "", s);
+  gsub(/'\''/, "&\\\\&&", s);
+  return ("'\''" s "'\''");
+}
+
+in_system_info == 1 && /^\tManufacturer:/ { brand = $2; }
+in_system_info == 1 && /^\tProduct Name:/ { product = $2; }
+in_system_info == 1 && /^\tVersion:/ { product_version = $2; }
+in_base_board_info == 1 && /^\tManufacturer:/ { alt_brand = $2; }
+in_base_board_info == 1 && /^\tProduct Name:/ { alt_product = $2; }
+in_base_board_info == 1 && /^\tVersion:/ { alt_product_version = $2; }
+in_chassis_info == 1 && /^\tType: / { type = substr($0, 8); }
+in_bios_info == 1 && /^\tVersion: / { bios_version = $2; }
+
+!/^\t/ {
+  in_system_info = 0;
+  in_chassis_info = 0;
+  in_base_board_info = 0;
+  in_bios_info = 0;
+}
+
+/^System Information$/ {
+  check_duplicate($0);
+  in_system_info = 1;
+}
+
+/^Chassis Information$/ {
+  check_duplicate($0);
+  in_chassis_info = 1;
+}
+
+/^Base Board Information$/ {
+  check_duplicate($0);
+  in_base_board_info = 1;
+}
+
+/^BIOS Information$/ {
+  check_duplicate($0);
+  in_bios_info = 1;
+}
+
+END {
+  if (failure)
+    exit(failure);
+  if (brand == "O.E.M") {
+    brand = alt_brand;
+    product = alt_product;
+    protuct_version = alt_product_version;
+  }
+  print("BRAND=" shellquote(brand));
+  print("PRODUCT=" shellquote(product));
+  print("PRODUCT_VERSION=" shellquote(product_version));
+  print("BIOS=" shellquote(bios_version));
+  print("TYPE=" shellquote(type));
+}' "$TEMP_DIR/dmidecode") || exit
+eval "$decoded_dmi"
+if grep "$XL_DMESG_PREFIX_REGEX"'Xen version ' "$TEMP_DIR/xl-dmesg" > /dev/null; then
+    XL_DMESG_INCOMPLETE=no
+else
+    XL_DMESG_INCOMPLETE=yes
+    if ! [[ "$YAML_ONLY" ]]
+      then
+        echo -e 'WARNING: "xl dmesg" is incomplete. Some information are missing. Please reboot and try again.\n'
+    fi
+fi
+
+
+QUBES_VER=$(cut -d ' ' -f3 "$TEMP_DIR/qubes-release")
+KERNEL=$(uname -r |cut -d '.' -f-3)
+CPU=$(grep "model name" "$TEMP_DIR/cpuinfo" |sort -u |cut -d ' ' -f3- |sed -e "s/[[:space:]]*/\  /")
+CHIPSET=$(grep "00:00.0.*Host bridge" "$TEMP_DIR/lspci" |cut -d ':' -f3- |sed -e "s/[[:space:]]*/\  /")
+VGA=$(grep -E 'VGA|Display' "$TEMP_DIR/lspci" |cut -d ':' -f3- |sed -e "s/^[[:space:]]*/\  /")
+NET=$(grep -E 'Network|Ethernet' "$TEMP_DIR/lspci" |cut -d ':' -f3- |sed -e "s/^[[:space:]]*/\  /")
+SCSI=$(grep Model "$TEMP_DIR/scsi"|cut -d ':' -f3-|sed -e "s/^[[:space:]]*/\  /")
+if test -s "$TEMP_DIR/nvme"; then
+  NVME=$(sed -e "s/^[[:space:]]*/  /" "$TEMP_DIR/nvme")
+else
+  NVME=""
+fi
+RAM=$(grep total_memory "$TEMP_DIR/xl-info"|cut -d ':' -f2 |tr -d ' ')
+USB=$(grep -c USB "$TEMP_DIR/lspci")
+XEN_MAJOR=$(grep xen_major "$TEMP_DIR/xl-info"|cut -d: -f2 |tr -d ' ')
+XEN_MINOR=$(grep xen_minor "$TEMP_DIR/xl-info"|cut -d: -f2 |tr -d ' ')
+XEN_EXTRA=$(grep xen_extra "$TEMP_DIR/xl-info"|cut -d: -f2 |tr -d ' ')
+XL_VTX=$(grep xen_caps "$TEMP_DIR/xl-info"| grep hvm)
+XL_VTD=$(grep virt_caps "$TEMP_DIR/xl-info"|grep hvm_directio)
+XL_HAP=$(grep "$XL_DMESG_PREFIX_REGEX"'HVM: Hardware Assisted Paging (HAP) detected\( but disabled\)\?$' "$TEMP_DIR/xl-dmesg")
+XL_REMAP=$(grep "$XL_DMESG_PREFIX_REGEX"'\(Intel VT-d Interrupt Remapping enabled\|Interrupt remapping enabled\)' "$TEMP_DIR/xl-dmesg")
+
+CERTIFIED=no
+if [ "$BRAND" = "Micro-Star International Co., Ltd." ] && [ "$PRODUCT" = "MS-7D25" ] && [[ "$BIOS" = "Dasharo"* ]]; then
+    # only intel GPU configuration is certified
+    if ! grep -qv "Intel\|^ *$" <<<"$VGA"; then
+        CERTIFIED=yes
+    fi
+elif [ "$BRAND" = "Notebook" ] && [ "$PRODUCT" = "NV4xPZ" ] && [[ "$BIOS" = "Dasharo"* ]]; then
+    # NovaCustom NV41PZ
+    CERTIFIED=yes
+elif [ "$BRAND" = "LENOVO" ] && [ "$PRODUCT_VERSION" = "ThinkPad X230" ] && [[ "$BIOS" = "Heads"* ]]; then
+    # PrivacyBeast X230
+    CERTIFIED=yes
+elif [ "$BRAND" = "LENOVO" ] && [ "$PRODUCT_VERSION" = "ThinkPad X230" ] && [[ "$BIOS" = "CBET4000"* ]]; then
+    # NitroPad X230
+    CERTIFIED=yes
+elif [ "$BRAND" = "LENOVO" ] && [ "$PRODUCT_VERSION" = "ThinkPad X230" ] && [[ "$BIOS" = "CBET4000"* ]]; then
+    # NitroPad T430
+    CERTIFIED=yes
+elif [ "$BRAND" = "Notebook" ] && [ "$PRODUCT_VERSION" = "V560TU" ] && [[ "$BIOS" = "Dasharo"* ]]; then
+    # only Intel AX or BE200 models are certified
+    wifi=$(lspci -nn | grep -F '[0280]:')
+    if [ -z "$wifi" ] || [[ "$wifi" = *"8086:7e40"* ]] || [[ "$wifi" = *"8086:272b"* ]]; then
+        CERTIFIED=yes
+    fi
+elif [ "$BRAND" = "Notebook" ] && [ "$PRODUCT_VERSION" = "V540TU" ] && [[ "$BIOS" = "Dasharo"* ]]; then
+    # only Intel AX or BE200 models are certified
+    wifi=$(lspci -nn | grep -F '[0280]:')
+    if [ -z "$wifi" ] || [[ "$wifi" = *"8086:7e40"* ]] || [[ "$wifi" = *"8086:272b"* ]]; then
+        CERTIFIED=yes
+    fi
+fi
+
+FILENAME="Qubes-HCL-${BRAND//[^[:alnum:]]/_}-${PRODUCT//[^[:alnum:]]/_}-$DATE"
+
+if [[ $XL_VTX ]]
+ then
+    VTX="Active"
+    HVM="yes"
+
+ else
+    VTX="Not active"
+    HVM="no"
+
+fi
+
+if [[ $XL_VTD ]]
+ then
+    VTD="Active"
+    IOMMU="yes"
+
+ else
+    VTD="Not active"
+    IOMMU="no"
+
+fi
+
+if [ $XL_DMESG_INCOMPLETE = yes ]; then
+    HAP=""
+    HAP_VERBOSE='Unknown ("xl dmesg" incomplete)'
+elif [ -n "$XL_HAP" ]; then
+    HAP="yes"
+    HAP_VERBOSE="Yes"
+    if [[ "$XL_HAP" =~ "disabled" ]]; then
+        HAP_VERBOSE="Yes (disabled)"
+    fi
+else
+    HAP="no"
+    HAP_VERBOSE="No"
+fi
+
+if [[ -f "/sys/class/tpm/tpm0/tpm_version_major" && $(< "/sys/class/tpm/tpm0/tpm_version_major") == "2" ]]
+  then
+    TPM="Device present (TPM 2.0)"
+    TPM_s="2.0"
+  else
+    if [[ -f "/sys/class/tpm/tpm0/pcrs" ]]
+      then
+        TPM="Device present (TPM 1.2)"
+        TPM_s="1.2"
+      else
+        TPM="Device not found"
+        TPM_s="unknown"
+    fi
+fi
+
+if [[ $XL_REMAP ]]
+ then
+    REMAP="yes"
+ else
+    REMAP="no"
+fi
+
+READABLE_OUTPUT="
+Qubes release $QUBES_VER
+
+Brand:\t\t$BRAND
+Model:\t\t$PRODUCT
+BIOS:\t\t$BIOS
+
+Xen:\t\t$XEN_MAJOR.$XEN_MINOR$XEN_EXTRA
+Kernel:\t\t$KERNEL
+
+RAM:\t\t$RAM Mb
+
+CPU:
+$CPU
+Chipset:
+$CHIPSET
+VGA:
+${VGA}
+
+Net:
+$NET
+
+SCSI:
+$SCSI
+
+HVM:\t\t$VTX
+I/O MMU:\t$VTD
+HAP/SLAT:\t$HAP_VERBOSE
+TPM:\t\t$TPM
+Remapping:\t$REMAP
+Certified:\t$CERTIFIED
+"
+
+YAML_OUTPUT="---
+layout:
+  'hcl'
+type:
+  '$TYPE'
+hvm:
+  '$HVM'
+iommu:
+  '$IOMMU'
+slat:
+  '$HAP'
+tpm:
+  '$TPM_s'
+remap:
+  '$REMAP'
+brand: |
+  $BRAND
+model: |
+  $PRODUCT
+bios: |
+  $BIOS
+cpu: |
+$CPU
+cpu-short: |
+  FIXME
+chipset: |
+$CHIPSET
+chipset-short: |
+  FIXME
+gpu: |
+$VGA
+gpu-short: |
+  FIXME
+network: |
+$NET
+memory: |
+  $RAM
+scsi: |
+$SCSI
+nvme: |
+$NVME
+usb: |
+  $USB
+certified:
+  '$CERTIFIED'
+versions:
+  - works:
+      'FIXME:yes|no|partial'
+    qubes: |
+      R$QUBES_VER
+    xen: |
+      $XEN_MAJOR.$XEN_MINOR$XEN_EXTRA
+    kernel: |
+      $KERNEL
+    remark: |
+      FIXME
+    credit: |
+      FIXAUTHOR
+    link: |
+      FIXLINK"
+
+if [[ "$YAML_ONLY" == 1 ]]
+  then
+    echo -e "$YAML_OUTPUT"
+    exit
+fi
+
+echo -e "$READABLE_OUTPUT"
+
+echo -e "$YAML_OUTPUT" >> "$HOME/$FILENAME.yml"
+
+
+if [[ "$SUPPORT_FILES" == 1 ]]
+  then
+
+    # cpio
+    cd -- "$TEMP_DIR"
+    find -print0 | cpio --quiet -o -H crc --null | gzip  > "$HOME/$FILENAME.cpio.gz"
+    cd
+fi
+
+# Destination VM check
+if [[ "$COPY2VM" != "dom0" ]]
+ then
+    escaped_filename=\'${FILENAME//\'/\'\\\'\'}\'
+    # Copy to VM
+
+    if [[ -f ~/"$FILENAME.cpio.gz" ]]
+      then
+        qvm-run -a -q --pass-io --filter-escape-chars -- "$COPY2VM" "cat > ~/$escaped_filename.cpio.gz" < ~/"$FILENAME.cpio.gz"
+    fi
+
+    if [[ -f ~/"$FILENAME.yml" ]]
+      then
+        qvm-run -a -q --pass-io --filter-escape-chars -- "$COPY2VM" "cat > ~/$escaped_filename.yml" < ~/"$FILENAME.yml"
+    fi
+
+fi
+
+echo -e "Qubes HCL Files are copied to: '$COPY2VM'"
+echo -e "\t$FILENAME.yml\t\t- HCL Info"
+
+if [[ "$SUPPORT_FILES" == 1 ]]
+  then
+    echo -e "\t$FILENAME.cpio.gz\t- HCL Support Files"
+fi
+
+echo
+
+
+# cleanup
+if [[ -d $TEMP_DIR ]]
+ then
+   rm -rf -- "$TEMP_DIR"
+fi

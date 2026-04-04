@@ -1,0 +1,13 @@
+[Unit]
+Description=Qubes memory information reporter
+Before=systemd-user-sessions.service
+After=qubes-core.service qubes-qmemman.service
+ConditionPathExists=/run/qubes/qmemman.sock
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/meminfo-writer 30000 100000
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

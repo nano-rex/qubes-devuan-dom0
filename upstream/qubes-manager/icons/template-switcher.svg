@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" id="svg1" width="24" height="24" version="1.1" viewBox="0 0 4.8 4.8">
+    <g id="layer1" transform="translate(-91.931 -91.853)">
+        <g id="g1" style="fill:none" transform="translate(98.473 142.018)scale(.26458)">
+            <g id="g15" style="fill:none" transform="translate(-27.466 -192.326)scale(.48317)">
+                <path id="path1-7" fill="#bfdbfe" d="M27 24.84v-9.68a2 2 0 0 0-1.008-1.736l-8.5-4.857a2 2 0 0 0-1.984 0l-8.5 4.857A2 2 0 0 0 6 15.161v9.678a2 2 0 0 0 1.008 1.737l8.5 4.857a2 2 0 0 0 1.984 0l8.5-4.857A2 2 0 0 0 27 24.839"/>
+                <path id="path2-0" fill="#93c5fd" d="M6 24.84a2 2 0 0 0 1.008 1.736l8.52 4.868a.65.65 0 0 0 .972-.564v-9.72a2 2 0 0 0-1.008-1.736l-8.52-4.868A.65.65 0 0 0 6 15.12Z"/>
+                <path id="path3-3" fill="#3b82f6" d="M43 33.84v-9.68a2 2 0 0 0-1.008-1.736l-8.5-4.857a2 2 0 0 0-1.984 0l-8.5 4.857A2 2 0 0 0 22 24.161v9.678a2 2 0 0 0 1.008 1.737l8.5 4.857a2 2 0 0 0 1.984 0l8.5-4.857A2 2 0 0 0 43 33.839"/>
+                <path id="path4-1" fill="#1e40af" d="M22 33.84a2 2 0 0 0 1.008 1.736l8.52 4.868a.65.65 0 0 0 .972-.564v-9.72a2 2 0 0 0-1.008-1.736l-8.52-4.868a.65.65 0 0 0-.972.564Z"/>
+            </g>
+            <g id="g17" style="fill:none;stroke:#000;stroke-width:2.64567;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" transform="matrix(.43358 0 0 .48628 -24.754 -186.924)">
+                <path id="path1-08" d="m16 3 4 4-4 4" style="stroke:#000;stroke-width:2.64567;stroke-dasharray:none;stroke-opacity:1"/>
+                <path id="path2-9" d="M20 7H4" style="stroke:#000;stroke-width:2.64567;stroke-dasharray:none;stroke-opacity:1"/>
+            </g>
+            <g id="g18" style="fill:none;stroke:#fff;stroke-width:2.64567;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none" transform="matrix(.43358 0 0 .48628 -16.856 -186.385)">
+                <path id="path3-30" d="m8 21-4-4 4-4" style="stroke-width:2.64567;stroke-dasharray:none"/>
+                <path id="path4-5" d="M4 17h16" style="stroke-width:2.64567;stroke-dasharray:none"/>
+            </g>
+        </g>
+    </g>
+</svg>

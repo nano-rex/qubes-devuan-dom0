@@ -1,0 +1,65 @@
+From 5f8607649d9601eb421a4ee137bce5a4449076d3 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marek=20Marczykowski-G=C3=B3recki?=
+ <marmarek@invisiblethingslab.com>
+Date: Fri, 3 Dec 2021 21:13:23 +0100
+Subject: [PATCH] Always allocate domid sequentially, and do not reuse them
+
+While domid wrapping around is unlikely on Qubes, make sure it wont
+happen, to avoid various corner cases.
+---
+ xen/common/domctl.c | 36 +++++++++++++-----------------------
+ 1 file changed, 13 insertions(+), 23 deletions(-)
+
+diff --git a/xen/common/domctl.c b/xen/common/domctl.c
+index ea16b759109e..3ed121725089 100644
+--- a/xen/common/domctl.c
++++ b/xen/common/domctl.c
+@@ -414,32 +414,22 @@ long do_domctl(XEN_GUEST_HANDLE_PARAM(xen_domctl_t) u_domctl)
+     case XEN_DOMCTL_createdomain:
+     {
+         domid_t        dom;
+-        static domid_t rover = 0;
++        static domid_t rover = 1;
+ 
+-        dom = op->domain;
+-        if ( (dom > 0) && (dom < DOMID_FIRST_RESERVED) )
+-        {
+-            ret = -EEXIST;
+-            if ( !is_free_domid(dom) )
+-                break;
+-        }
+-        else
+-        {
+-            for ( dom = rover + 1; dom != rover; dom++ )
+-            {
+-                if ( dom == DOMID_FIRST_RESERVED )
+-                    dom = 1;
+-                if ( is_free_domid(dom) )
+-                    break;
+-            }
+-
+-            ret = -ENOMEM;
+-            if ( dom == rover )
+-                break;
+-
+-            rover = dom;
++        /* Refuse explicit domid via op->domain */
++        if ( (op->domain > 0) && (op->domain < DOMID_FIRST_RESERVED) )
++            return -EINVAL;
++
++        if ( rover >= DOMID_FIRST_RESERVED ) {
++            printk(XENLOG_ERR
++                   "domctl: out of available domid values, reboot the system\n");
++            return -ENOMEM;
+         }
+ 
++        dom = rover++;
++        if ( ! is_free_domid(dom) )
++            return -EEXIST;
++
+         d = domain_create(dom, &op->u.createdomain, false);
+         if ( IS_ERR(d) )
+         {
+-- 
+2.44.0
+

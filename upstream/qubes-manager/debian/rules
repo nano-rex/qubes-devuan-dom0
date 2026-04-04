@@ -1,0 +1,19 @@
+#!/usr/bin/make -f
+
+include /usr/share/dpkg/default.mk
+export DESTDIR=$(shell pwd)/debian/tmp
+export QT_SELECT=qt6
+
+%:
+	dh $@ --with python3 --buildsystem=pybuild
+
+override_dh_auto_build:
+	QT_HASH_SEED=0 make ui res translations
+	make python
+
+override_dh_auto_install:
+	make python_install
+	make install
+
+override_dh_install:
+	dh_install --fail-missing

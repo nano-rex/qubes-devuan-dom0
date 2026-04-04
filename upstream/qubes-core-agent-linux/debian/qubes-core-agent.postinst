@@ -1,0 +1,249 @@
+#!/bin/bash --
+# postinst script for core-agent-linux
+#
+# see: dh_installdeb(1)
+
+set -e
+
+# The postinst script may be called in the following ways:
+#   * <postinst> 'configure' <most-recently-configured-version>
+#   * <old-postinst> 'abort-upgrade' <new version>
+#   * <conflictor's-postinst> 'abort-remove' 'in-favour' <package>
+#     <new-version>
+#   * <postinst> 'abort-remove'
+#   * <deconfigured's-postinst> 'abort-deconfigure' 'in-favour'
+#     <failed-install-package> <version> 'removing'
+#     <conflicting-package> <version>
+#
+#    For details, see http://www.debian.org/doc/debian-policy/ or
+# https://www.debian.org/doc/debian-policy/ch-maintainerscripts.html or
+# the debian-policy package
+
+
+debug () {
+    if [ "${DEBDEBUG}" == "1" ]; then
+        echo -e "$@"
+    fi
+}
+
+# FIXME: add user units support to is_static()/is_masked()/mask()/unmask() functions
+is_static () {
+    [ -f "/lib/systemd/system/$1" ] && ! grep -q '^[[].nstall]' "/lib/systemd/system/$1"
+}
+
+is_masked () {
+    if [ ! -L /etc/systemd/system/"$1" ]
+    then
+       return 1
+    fi
+    target=$(readlink /etc/systemd/system/"$1" 2>/dev/null || :)
+    if [ "$target" = "/dev/null" ]
+    then
+       return 0
+    fi
+    return 1
+}
+
+preset_units () {
+    local represet=
+    # shellcheck disable=SC2206
+    local extra_opts=( $3 )
+    while read -r action unit_name
+    do
+        if [ "$action" = "#" ] && [ "$unit_name" = "Units below this line will be re-preset on package upgrade" ]
+        then
+            represet=1
+            continue
+        fi
+        echo "$action $unit_name" | grep -q '^[[:space:]]*[^#;]' || continue
+        if [ -z "$action" ] || [ -z "$unit_name" ]; then
+            continue
+        fi
+        if [ "$2" = "initial" ] || [ "$represet" = "1" ]
+        then
+            if [ "$action" = "disable" ] && is_static "$unit_name"
+            then
+                if ! is_masked "$unit_name"
+                then
+                    # We must effectively mask these units, even if they are static.
+                    deb-systemd-helper mask "${unit_name}" > /dev/null 2>&1 || true
+                fi
+            elif [ "$action" = "enable" ] && is_static "$unit_name"
+            then
+                if is_masked "$unit_name"
+                then
+                    # We masked this static unit before, now we unmask it.
+                    deb-systemd-helper unmask "${unit_name}" > /dev/null 2>&1 || true
+                fi
+                systemctl --no-reload "${extra_opts[@]}" preset "$unit_name" >/dev/null 2>&1 || :
+            else
+                systemctl --no-reload "${extra_opts[@]}" preset "$unit_name" >/dev/null 2>&1 || :
+            fi
+        fi
+    done < "$1"
+
+    systemctl daemon-reload >/dev/null 2>&1 || :
+}
+
+installSerialConf () {
+    debug "Installing over-ridden serial.conf init script..."
+    if [ -e /etc/init/serial.conf ]; then
+        cp /usr/share/qubes/serial.conf /etc/init/serial.conf
+    fi
+}
+
+case "${1}" in
+    configure)
+        # Initial installation of package only
+        # ($2 contains version number on update; nothing on initial installation)
+        if [ -z "${2}" ]; then
+
+            debug "FIRST INSTALL..."
+            # Location of files which contains list of protected files
+            # shellcheck source=init/functions
+            . /usr/lib/qubes/init/functions
+
+            # ensure that hostname resolves to 127.0.1.1 resp. ::1 and that /etc/hosts is
+            # in the form expected by qubes-sysinit.sh
+            hostname=$(hostname)
+            if ! is_protected_file /etc/hostname ; then
+                for ip in '127\.0\.1\.1' '::1'; do
+                    if grep -q "^${ip}\(\s\|$\)" /etc/hosts; then
+                        sed -i "/^${ip}\s/,+0s/\(\s$hostname\)\+\(\s\|$\)/\2/g" /etc/hosts || true
+                        sed -i "s/^${ip}\(\s\|$\).*$/\0 $hostname/" /etc/hosts || true
+                    else
+                        echo "${ip//\\/} $hostname" >> /etc/hosts || true
+                    fi
+                done
+            fi
+
+            # remove hostname from 127.0.0.1 line (in debian the hostname is by default
+            # resolved to 127.0.1.1)
+            if ! is_protected_file /etc/hosts ; then
+                sed -i "/^127\.0\.0\.1\s/,+0s/\(\s$hostname\)\+\(\s\|$\)/\2/g" /etc/hosts || true
+            fi
+
+            # Set default "runlevel"
+            rm -f /etc/systemd/system/default.target
+            ln -s /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+
+            # Systemd preload-all
+            preset_units /lib/systemd/system-preset/75-qubes-vm.preset initial
+
+            # Maybe install overridden serial.conf init script
+            installSerialConf
+        else
+            preset_units /lib/systemd/system-preset/75-qubes-vm.preset upgrade
+        fi
+        systemctl reenable haveged || :
+
+        chgrp qubes /var/lib/qubes/dom0-updates
+
+        debug "UPDATE..."
+        # disable some Upstart services
+        for init in plymouth-shutdown \
+                    prefdm \
+                    splash-manager \
+                    start-ttys \
+                    tty ; do
+            dpkg-divert --divert /etc/init/${init}.conf.qubes-disabled --package qubes-core-agent --rename --add /etc/init/${init}.conf
+        done
+        dpkg-divert --divert /etc/init/serial.conf.qubes-orig --package qubes-core-agent --rename --add /etc/init/serial.conf
+
+        if [ ! -L /etc/systemd/system/rpcbind.service ]; then
+            ln -s /dev/null /etc/systemd/system/rpcbind.service
+        fi
+
+        # Remove old firmware updates link
+        if [ -L /lib/firmware/updates ]; then
+            rm -f /lib/firmware/updates
+        fi
+
+        # convert /usr/local symlink to a mount point
+        if [ -L /usr/local ]; then
+            rm -f /usr/local
+            mkdir /usr/local
+            mount /usr/local || :
+        fi
+
+        rootdev=$(grep -o '^[^ ]* / ' /proc/mounts | cut -f 1 -d ' ') || rootdev=
+        # if root volume uses partitions, and is mounted directly (no dm-snapshot),
+        # check if xvda1 needs filesystem to be created
+        if [ -n "$rootdev" ] && [ "$(readlink -f "$rootdev")" = "/dev/xvda3" ]; then
+            if [ -z "$(blkid -o value -s TYPE /dev/xvda1)" ]; then
+                mkfs.vfat -S 4096 -n EFI /dev/xvda1 || \
+                    echo "Creating EFI fs failed: 'mkfs.vfat -S 4096 -n EFI /dev/xvda1': $?" >&2
+            fi
+        fi
+
+        # remove old symlinks
+        if [ -L /etc/systemd/system/sysinit.target.wants/qubes-random-seed.service ]; then
+            rm /etc/systemd/system/sysinit.target.wants/qubes-random-seed.service
+        fi
+        if [ -L /etc/systemd/system/multi-user.target.wants/qubes-mount-home.service ]; then
+            rm /etc/systemd/system/multi-user.target.wants/qubes-mount-home.service
+        fi
+
+        if ! dpkg-statoverride --list /var/lib/qubes/dom0-updates >/dev/null 2>&1 && { user=$(qubesdb-read /default-user) || user=user;} ; then
+            dpkg-statoverride --update --add -- "$user" qubes 775 /var/lib/qubes/dom0-updates
+        fi
+
+        glib-compile-schemas /usr/share/glib-2.0/schemas || true
+
+        if ! [ -r /etc/dconf/profile/user ]; then
+            mkdir -p /etc/dconf/profile
+            echo "user-db:user" >> /etc/dconf/profile/user
+            echo "system-db:local" >> /etc/dconf/profile/user
+        fi
+
+        if [ -x /usr/bin/dconf ]; then
+            dconf update
+        fi
+
+        /usr/lib/qubes/set-default-text-editor
+
+        # tell dom0 about installed updates (applications, features etc)
+        /etc/qubes-rpc/qubes.PostInstall || true
+        ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+        exit 0
+        ;;
+
+    triggered)
+        post_install_done=
+        for trigger in ${2}; do
+            case "${trigger}" in
+
+                /usr/share/applications|/etc/qubes/post-install.d|/etc/qubes-rpc)
+                    debug "Updating Qubes App Menus and advertising features..."
+                    if [ -z "$post_install_done" ]; then
+                        /etc/qubes-rpc/qubes.PostInstall || true
+                        post_install_done=1
+                    fi
+                    ;;
+
+                # Install overridden serial.conf init script
+                /etc/init/serial.conf)
+                    installSerialConf
+                    ;;
+
+            esac
+        done
+        exit 0
+        ;;
+
+    *)
+        echo "postinst called with unknown argument \`${1}'" >&2
+        exit 1
+        ;;
+esac
+
+# dh_installdeb will replace this with shell code automatically
+# generated by other debhelper scripts.
+
+#DEBHELPER#
+
+exit 0
+
+# vim: set ts=4 sw=4 sts=4 et :

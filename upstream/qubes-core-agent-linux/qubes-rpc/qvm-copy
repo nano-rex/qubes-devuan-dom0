@@ -1,0 +1,115 @@
+#!/bin/bash --
+#
+# The Qubes OS Project, https://www.qubes-os.org#
+#
+# Copyright (C) 2017 Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+
+set -e -o pipefail
+
+unset PROGRESS_TYPE OPERATION_TYPE TARGET_TYPE MIN_ARGS FILECOPY_TOTAL_BYTES service scriptdir ignore_symlinks
+
+# Determine the operation to be performed
+case ${0##*/} in
+    (qvm-move) OPERATION_TYPE=move TARGET_TYPE=default MIN_ARGS=1;;
+    (qvm-copy) OPERATION_TYPE=copy TARGET_TYPE=default MIN_ARGS=1;;
+    (qvm-copy-to-vm) OPERATION_TYPE=copy TARGET_TYPE=vm MIN_ARGS=2;;
+    (qvm-move-to-vm) OPERATION_TYPE=move TARGET_TYPE=vm MIN_ARGS=2;;
+    (*) printf 'Invoked with unrecognized name %s, cannot determine operation to perform\n' "$0"; exit 1;;
+esac
+
+# Find the binaries we were shipped with, in case we were installed to
+# somewhere other than /usr.
+case $0 in
+    (*/*) scriptdir=${0%/*}/../lib;;
+    (*) scriptdir=../lib;;
+esac
+
+usage () {
+    if [ "$TARGET_TYPE" = "vm" ]; then
+        echo "usage: $0 [--without-progress] [--ignore-symlinks] destination_qube_name FILE [FILE ...]"
+    else
+        echo "usage: $0 [--without-progress] [--ignore-symlinks] FILE [FILE ...]"
+    fi
+    echo 'Options:
+    --no-ignore-symlinks   Do not ignore symbolic links (default).
+    --ignore-symlinks      Ignore symbolic links.
+    --with-progress        Show a progress indicator (default).
+    --without-progress     Do not show a progress indicator.
+    -h, --help             Show this message and exit.
+    --                     Stop searching for options.
+
+    If there is a conflict, later options override earlier options.
+'
+
+    if [ "$OPERATION_TYPE" = "move" ]; then
+        echo "Move FILE to ~/QubesIncoming/[THIS QUBE'S NAME]/ in the destination qube."
+    else
+        echo "Copy FILE to ~/QubesIncoming/[THIS QUBE'S NAME]/ in the destination qube."
+    fi
+
+    echo
+    echo "You will be prompted to select the destination qube. If FILE is a directory, it will be copied recursively."
+    if [ "$TARGET_TYPE" = "vm" ]; then
+        echo "In order to avoid typing target qube name twice, use qvm-copy/qvm-move instead of qvm-copy-to-vm/qvm-move-to-vm."
+    fi
+    exit "$1"
+}
+
+export PROGRESS_TYPE=console
+while [ "$#" -gt 0 ]; do
+    case $1 in
+        (--without-progress) export PROGRESS_TYPE=none; shift;;
+        (--with-progress) export PROGRESS_TYPE=console; shift;;
+        (--ignore-symlinks) ignore_symlinks="--ignore-symlinks"; shift;;
+        (--no-ignore-symlinks) unset ignore_symlinks; shift;;
+        (-h|--help) usage 0;;
+        (--) shift; break;;
+        (-*) usage 1;;
+        (*) break;;
+    esac
+done
+
+if [ "$#" -lt "$MIN_ARGS" ]; then usage 1; fi
+
+if [ "$TARGET_TYPE" = "vm" ]; then
+  VM="$1"
+  shift
+else
+  VM="@default"
+fi
+
+# strip trailing slash from source directory
+SOURCE=( "${@%/}" )
+
+if FILECOPY_TOTAL_BYTES=$("$scriptdir/qubes/qubes-fs-tree-check" \
+    ${ignore_symlinks} \
+    --allow-symlinks --allow-directories --machine -- "${SOURCE[@]}"); then
+    service=qubes.Filecopy
+else
+    status=$?
+    if [[ "$status" -ne 2 ]]; then exit "$status"; fi
+    service=qubes.Filecopy+allow-all-names
+fi
+if [[ "$PROGRESS_TYPE" = 'console' ]]; then export FILECOPY_TOTAL_BYTES; fi
+
+"$scriptdir/qubes/qrexec-client-vm" --filter-escape-chars-stderr -- "$VM" \
+    "$service" "$scriptdir/qubes/qfile-agent" ${ignore_symlinks} -- "${SOURCE[@]}"
+
+if [ "$OPERATION_TYPE" = "move" ] ; then
+    rm -rf -- "${SOURCE[@]}"
+fi

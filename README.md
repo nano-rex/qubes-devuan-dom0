@@ -1,11 +1,12 @@
 # qubes-devuan-dom0
 
-A research and engineering workspace for a Qubes-derived system with a `Devuan + runit` `dom0`.
+A standalone research and engineering workspace for a Qubes-derived system with a `Devuan + runit` `dom0`.
 
 ## Scope
 
-This is not a post-install conversion script for an existing Linux distribution.
-It is a source-level fork project intended to adapt the Qubes OS architecture to a custom `dom0` base.
+This is a brand new project workspace.
+It is not a contribution branch for the upstream Qubes OS repositories.
+Official Qubes sources are imported locally as vendor snapshots and will be modified here as needed.
 
 Primary target:
 - `dom0`: Devuan with `runit`
@@ -19,8 +20,8 @@ Non-goals for the first milestone:
 ## Project goals
 
 1. Define a custom `dom0` distro target.
-2. Fork the Qubes build workflow needed to build a bootable system.
-3. Package the Qubes core components for a Devuan-based `dom0`.
+2. Adapt the Qubes build workflow needed to build a bootable system.
+3. Rework the Qubes core components for a Devuan-based `dom0`.
 4. Prove a minimal boot path with Xen and core admin services.
 
 ## Why Devuan first
@@ -44,14 +45,11 @@ Compared with Artix/OpenRC, Devuan is closer to Debian-family packaging and a mo
 - `docs/component-map.md`: upstream Qubes components and required adaptations
 - `manifests/dom0-packages.md`: Devuan+runit dom0 package plan
 - `notes/research.md`: current assumptions and unresolved questions
+- `upstream/`: imported upstream Qubes source snapshots tracked directly in this repo
 
-## Current status
+## Imported upstream sources
 
-Planning scaffold only.
-
-## Upstream repositories included
-
-The workspace tracks these official upstream repositories as git submodules under `upstream/`:
+These directories were imported from official Qubes repositories and are now tracked as part of this standalone project:
 - `qubes-builderv2`
 - `qubes-core-admin`
 - `qubes-core-qrexec`
@@ -67,4 +65,6 @@ The workspace tracks these official upstream repositories as git submodules unde
 - `qubes-qubes-release`
 - `qubes-doc`
 
-These are tracked directly from `QubesOS/*`, not forked mirrors.
+## Current status
+
+Planning scaffold plus imported source trees.

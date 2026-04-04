@@ -1,0 +1,110 @@
+#!/bin/sh
+#
+# The Qubes OS Project, http://www.qubes-os.org
+#
+# Copyright (C) 2010  Rafal Wojtczuk  <rafal@invisiblethingslab.com>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License
+# as published by the Free Software Foundation; either version 2
+# of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+#
+#
+
+# Source Qubes library.
+# shellcheck disable=SC1091
+. /usr/lib/qubes/init/functions
+
+## This script is triggered by qubes-gui-agent systemd service.
+
+#expects W, H, MEM and DEPTH env vars to be set by invoker, but use default
+# values if they aren't
+
+[ -n "$W" ] || W=1920
+[ -n "$H" ] || H=1080
+[ -n "$MEM" ] || MEM=$(( W * H * 4 / 1024 ))
+[ -n "$DEPTH" ] || DEPTH=24
+
+DUMMY_MAX_CLOCK=300 #hardcoded in dummy_drv
+PREFERRED_HSYNC=50
+RES="$W"x"$H"
+HTOTAL=$((W+3))
+VTOTAL=$((H+3))
+CLOCK=$((PREFERRED_HSYNC*HTOTAL/1000))
+if [ $CLOCK -gt $DUMMY_MAX_CLOCK ] ; then CLOCK=$DUMMY_MAX_CLOCK ; fi
+MODELINE="$CLOCK $W $((W+1)) $((W+2)) $HTOTAL $H $((H+1)) $((H+2)) $VTOTAL"
+
+HSYNC_START=$((CLOCK*1000/HTOTAL))
+HSYNC_END=$((HSYNC_START+1))
+
+VREFR_START=$((CLOCK*1000000/HTOTAL/VTOTAL))
+VREFR_END=$((VREFR_START+1))
+
+# Add extra memory to allow dynamic connection of extra monitor.
+# By default, have space for one FHD monitor, or multiple smaller.
+MEM_MIN="$(qubesdb-read /qubes-gui-videoram-min 2>/dev/null)"
+MEM_OVERHEAD="$(qubesdb-read /qubes-gui-videoram-overhead 2>/dev/null)"
+: "${MEM_MIN:=0}"
+: "${MEM_OVERHEAD:=$((1920 * 1080 * 4 / 1024))}"
+
+MEM=$((MEM + MEM_OVERHEAD))
+if [ $MEM -lt $MEM_MIN ]; then
+    MEM=$MEM_MIN
+fi
+
+sed -e  s/%MEM%/$MEM/ \
+        -e  s/%DEPTH%/"$DEPTH"/ \
+        -e  s/%MODELINE%/"$MODELINE"/ \
+        -e  s/%HSYNC_START%/"$HSYNC_START"/ \
+        -e  s/%HSYNC_END%/"$HSYNC_END"/ \
+        -e  s/%VREFR_START%/"$VREFR_START"/ \
+        -e  s/%VREFR_END%/"$VREFR_END"/ \
+        -e  s/%RES%/"QB$RES"/ \
+        -e  s/%GUI_DOMID%/"$GUI_DOMID"/ < /etc/X11/xorg-qubes.conf.template \
+        > /etc/X11/xorg-qubes.conf
+
+XSESSION="/etc/X11/xinit/xinitrc"
+if [ -f /etc/X11/Xsession ]; then
+    # Debian-based distro, set Xsession appropriately
+    XSESSION="/etc/X11/Xsession qubes-session"
+fi
+
+# Defaults value in case default-user value is not available
+DEFAULT_USER="$(qubesdb-read /default-user 2>/dev/null)"
+if [ -z "$DEFAULT_USER" ];then
+    DEFAULT_USER="user"
+fi
+# Make qubes input socket readable by user in case Xorg is not running as
+# root (debian for example)
+chown "$DEFAULT_USER" /var/run/xf86-qubes-socket
+chmod 770 /var/run/xf86-qubes-socket
+
+export XDG_SEAT=seat0 XDG_SESSION_CLASS=user DISPLAY=:0
+
+if [ -x /bin/loginctl ]; then
+    # logind needs at least one device with "master-of-seat" tag to
+    # consider this seat as graphical; we use pcspkr, for which we ship udev
+    # rules adding that tag
+    loginctl attach "$XDG_SEAT" /sys/devices/platform/pcspkr/input/*
+fi
+
+if qsvc guivm-gui-agent; then
+    DISPLAY_XORG=:1
+
+    # Create Xorg. Xephyr will be started using qubes-start-xephyr later.
+    exec runuser -u "$DEFAULT_USER" -- /bin/sh -l -c "exec /usr/lib/qubes/qubes-xorg-wrapper $DISPLAY_XORG -nolisten tcp vt07 -wr -config xorg-qubes.conf > ~/.xorg-errors 2>&1"
+else
+    # Use sh -l here to load all session startup scripts (/etc/profile, ~/.profile
+    # etc) to populate environment. This is the environment that will be used for
+    # all user applications and qrexec calls.
+    exec /usr/bin/qubes-gui-runuser "$DEFAULT_USER" /bin/sh -l -c "exec /usr/bin/xinit $XSESSION -- /usr/lib/qubes/qubes-xorg-wrapper :0 -nolisten tcp vt07 -wr -config xorg-qubes.conf > ~/.xsession-errors 2>&1"
+fi

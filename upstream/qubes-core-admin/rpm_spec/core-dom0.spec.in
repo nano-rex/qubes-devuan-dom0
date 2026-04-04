@@ -1,0 +1,617 @@
+#
+# This is the SPEC file for creating binary RPMs for the Dom0.
+#
+#
+# The Qubes OS Project, http://www.qubes-os.org
+#
+# Copyright (C) 2010  Joanna Rutkowska <joanna@invisiblethingslab.com>
+# Copyright (C) 2010  Rafal Wojtczuk  <rafal@invisiblethingslab.com>
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, see <https://www.gnu.org/licenses/>.
+#
+#
+
+%define _dracutmoddir	/usr/lib/dracut/modules.d
+%define backend_vmm @BACKEND_VMM@
+
+Name:		qubes-core-dom0
+Version:	@VERSION@
+Release:	1%{dist}
+Summary:	The Qubes core files (Dom0-side)
+
+Group:		Qubes
+Vendor:		Invisible Things Lab
+License:	GPL
+URL:		http://www.qubes-os.org
+
+# because we have "#!/usr/bin/env python" shebangs, RPM puts
+# "Requires: $(which # python)" dependency, which, depending on $PATH order,
+# may point to /usr/bin/python or /bin/python (because Fedora has this stupid
+# /bin -> usr/bin symlink). python*.rpm provides only /usr/bin/python.
+AutoReq:	no
+
+BuildArch: noarch
+
+BuildRequires:  GraphicsMagick
+BuildRequires:	systemd-units
+BuildRequires:  systemd
+BuildRequires:  python3-devel
+BuildRequires:  python3-setuptools
+BuildRequires:  make
+
+# for building documentation
+BuildRequires:	python3-sphinx
+BuildRequires:	python3-lxml
+BuildRequires:	libvirt-python3
+BuildRequires:	python3-dbus
+BuildRequires:	python3-PyYAML
+BuildRequires:  python3-xen
+
+Requires(post): systemd-units
+Requires(preun): systemd-units
+Requires(postun): systemd-units
+
+Requires:       python3
+#Requires:       python3-aiofiles
+Requires:       python3-docutils
+Requires:       python3-jinja2
+Requires:       python3-lxml
+Requires:       python3-qubesdb
+Requires:       python3-setuptools
+Requires:       python3-PyYAML
+Requires:       python3-xen
+Requires:       libvirt-python3
+
+Requires:       pciutils
+# ionice, for low-disk-impact dd during volume duplication.
+%if 0%{?fedora} == 32
+# FC32 / Q4.1 builds don't have util-linux-core.
+Requires:       util-linux
+%else
+Requires:       util-linux-core
+%endif
+# udev rules for encrypted volatile volumes and zfs
+Requires:       qubes-core-dom0-linux >= 4.2.6
+# qrexec-daemon --uuid support
+Requires:       qubes-core-qrexec-dom0 >= 4.3.0
+Requires:       qubes-db-dom0
+# TODO: R: qubes-gui-dom0 >= 2.1.11
+Conflicts:      qubes-gui-dom0 < 1.1.13
+%if "x%{?backend_vmm}" == "xxen"
+Requires:       xen-runtime
+Requires:       xen-hvm
+Requires:       xen-hvm-stubdom-linux >= 4.2.12
+Requires:       xen-hvm-stubdom-linux-full >= 4.2.13
+Requires:       libvirt-daemon-xen >= 1000:8.9.0-7
+%endif
+Requires:       cronie
+Requires:       scrypt
+# for qubes-hcl-report
+Requires:       dmidecode
+
+# devices API change
+Conflicts:      python3-qubesadmin < 4.3.7
+Conflicts:      qubes-usb-proxy-dom0 < 4.3.0
+Conflicts:      qubes-audio-dom0 < 4.3.5
+# dispvm performance tests require python3-qubesadmin >= 4.3.20
+# but since it's only about tests, don't enforce it at the package level
+
+# Required for qvm-console* tools
+Requires:       socat
+
+# Requires libqubes-pure for qube notes utf8 sanitisation
+Requires:       qubes-utils-libs
+
+%{?systemd_requires}
+
+Obsoletes:	qubes-core-dom0-doc <= 4.0
+Provides:	qubes-core-dom0-doc
+
+# Prevent preupgrade from installation (it pretend to provide distribution upgrade)
+Obsoletes:	preupgrade < 2.0
+Provides:	preupgrade = 2.0
+
+Recommends: qubes-core-admin-addon-kicksecure
+
+Source0: %{name}-%{version}.tar.gz
+
+%description
+The Qubes core files for installation on Dom0.
+
+%prep
+%setup -q
+
+%build
+
+make all
+make -C doc PYTHON=%{__python3} SPHINXBUILD=sphinx-build-%{python3_version} man
+
+%install
+
+make install \
+    DESTDIR=$RPM_BUILD_ROOT \
+    BACKEND_VMM=%{backend_vmm} \
+    UNITDIR=%{_unitdir} \
+    PYTHON_SITEPATH=%{python3_sitelib} \
+    SYSCONFDIR=%{_sysconfdir}
+
+make -C doc DESTDIR=$RPM_BUILD_ROOT \
+    PYTHON=%{__python3} SPHINXBUILD=sphinx-build-%{python3_version} \
+    install
+
+mkdir -p $RPM_BUILD_ROOT/etc/qubes/backup
+
+
+%post
+%systemd_post qubes-core.service
+%systemd_post qubes-qmemman.service
+%systemd_post qubesd.service
+%systemd_post qubes-preload-dispvm.service
+
+sed '/^autoballoon=/d;/^lockfile=/d' -i /etc/xen/xl.conf
+echo 'autoballoon=0' >> /etc/xen/xl.conf
+echo 'lockfile="/var/run/qubes/xl-lock"' >> /etc/xen/xl.conf
+
+if [ -e /etc/sysconfig/prelink ]; then
+sed 's/^PRELINKING\s*=.*/PRELINKING=no/' -i /etc/sysconfig/prelink
+fi
+
+# Conflicts with libxl stack, so disable it
+systemctl --no-reload disable xend.service >/dev/null 2>&1
+systemctl --no-reload disable xendomains.service >/dev/null 2>&1
+systemctl daemon-reload >/dev/null 2>&1 || :
+
+if ! [ -e /var/lib/qubes/qubes.xml ]; then
+#    echo "Initializing Qubes DB..."
+    umask 007; sg qubes -c 'qubes-create --offline-mode'
+fi
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+rm -f %{name}-%{version}
+
+%pre
+if ! grep -q ^qubes: /etc/group ; then
+		groupadd qubes
+fi
+
+%triggerin -- xen-runtime
+/usr/lib/qubes/fix-dir-perms.sh
+
+%preun
+%systemd_preun qubes-core.service
+%systemd_preun qubes-qmemman.service
+%systemd_preun qubesd.service
+%systemd_preun qubes-preload-dispvm.service
+
+if [ "$1" = 0 ] ; then
+	# no more packages left
+    service qubes_netvm stop
+    service qubes_core stop
+fi
+
+%postun
+%systemd_postun qubes-core.service
+%systemd_postun_with_restart qubes-qmemman.service
+%systemd_postun_with_restart qubesd.service
+%systemd_postun qubes-preload-dispvm.service
+
+if [ "$1" = 0 ] ; then
+	# no more packages left
+    chgrp root /etc/xen
+    chmod 700 /etc/xen
+    groupdel qubes
+fi
+
+%posttrans
+
+# Preserve user-modified legacy policy at original location, revert rpm adding
+# .rpmsave suffix. This needs to be done in %%posttrans, to be run after
+# uninstalling the old package.
+
+# List policy files explicitly, to not touch files from other packages.
+SERVICES="
+admin.Events
+admin.backup.Cancel
+admin.backup.Execute
+admin.backup.Info
+admin.deviceclass.List
+admin.label.Create
+admin.label.Get
+admin.label.Index
+admin.label.List
+admin.label.Remove
+admin.pool.Add
+admin.pool.Info
+admin.pool.List
+admin.pool.ListDrivers
+admin.pool.Remove
+admin.pool.Set.revisions_to_keep
+admin.pool.UsageDetails
+admin.pool.volume.List
+admin.property.Get
+admin.property.GetAll
+admin.property.GetDefault
+admin.property.Help
+admin.property.List
+admin.property.Reset
+admin.property.Set
+admin.vm.Console
+admin.vm.Create.AppVM
+admin.vm.Create.DispVM
+admin.vm.Create.StandaloneVM
+admin.vm.Create.TemplateVM
+admin.vm.CreateDisposable
+admin.vm.CreateInPool.AppVM
+admin.vm.CreateInPool.DispVM
+admin.vm.CreateInPool.StandaloneVM
+admin.vm.CreateInPool.TemplateVM
+admin.vm.CurrentState
+admin.vm.Kill
+admin.vm.List
+admin.vm.Pause
+admin.vm.Remove
+admin.vm.Shutdown
+admin.vm.Start
+admin.vm.Stats
+admin.vm.Unpause
+admin.vm.device.block.Assign
+admin.vm.device.block.Assigned
+admin.vm.device.block.Attach
+admin.vm.device.block.Attached
+admin.vm.device.block.Available
+admin.vm.device.block.Detach
+admin.vm.device.block.Set.assignment
+admin.vm.device.block.Unassign
+admin.vm.device.pci.Assign
+admin.vm.device.pci.Assigned
+admin.vm.device.pci.Attach
+admin.vm.device.pci.Attached
+admin.vm.device.pci.Available
+admin.vm.device.pci.Detach
+admin.vm.device.pci.Set.assignment
+admin.vm.device.pci.Unassign
+admin.vm.device.denied.List
+admin.vm.device.denied.Add
+admin.vm.device.denied.Remove
+admin.vm.feature.CheckWithAdminVM
+admin.vm.feature.CheckWithNetvm
+admin.vm.feature.CheckWithTemplate
+admin.vm.feature.CheckWithTemplateAndAdminVM
+admin.vm.feature.Get
+admin.vm.feature.List
+admin.vm.feature.Remove
+admin.vm.feature.Set
+admin.vm.firewall.Get
+admin.vm.firewall.Reload
+admin.vm.firewall.Set
+admin.vm.notes.Get
+admin.vm.notes.Set
+admin.vm.property.Get
+admin.vm.property.GetAll
+admin.vm.property.GetDefault
+admin.vm.property.Help
+admin.vm.property.List
+admin.vm.property.Reset
+admin.vm.property.Set
+admin.vm.tag.Get
+admin.vm.tag.List
+admin.vm.tag.Remove
+admin.vm.tag.Set
+admin.vm.volume.CloneFrom
+admin.vm.volume.CloneTo
+admin.vm.volume.Import
+admin.vm.volume.ImportWithSize
+admin.vm.volume.Info
+admin.vm.volume.List
+admin.vm.volume.ListSnapshots
+admin.vm.volume.Resize
+admin.vm.volume.Revert
+admin.vm.volume.Set.revisions_to_keep
+admin.vm.volume.Set.rw
+admin.vmclass.List
+include/admin-global-ro
+include/admin-global-rwx
+include/admin-local-ro
+include/admin-local-rwx
+policy.RegisterArgument
+qubes.ConnectTCP
+qubes.FeaturesRequest
+qubes.Filecopy
+qubes.GetDate
+qubes.GetImageRGBA
+qubes.GetRandomizedTime
+qubes.NotifyTools
+qubes.NotifyUpdates
+qubes.OpenInVM
+qubes.OpenURL
+qubes.StartApp
+qubes.UpdatesProxy
+qubes.VMExec
+qubes.VMExecGUI
+qubes.VMRootShell
+qubes.VMShell
+"
+
+for service in $SERVICES; do
+    if [ -f "/etc/qubes-rpc/policy/$service.rpmsave" ] && \
+            ! [ -e "/etc/qubes-rpc/policy/$service" ]; then
+        mv -n "/etc/qubes-rpc/policy/$service.rpmsave" \
+            "/etc/qubes-rpc/policy/$service"
+    fi
+done
+
+# Take extra care about policy files in include/ - if any of them is gone
+# (because unmodified) but user still reference them anywhere, the policy
+# loading will be broken. Check for this case, and avoid the issue by creating
+# a symlink to the new policy.
+
+INCLUDES="admin-global-ro admin-global-rwx admin-local-ro admin-local-rwx"
+
+for include in $INCLUDES; do
+    if grep -qr "include/$include" /etc/qubes-rpc && \
+            ! [ -e "/etc/qubes-rpc/policy/include/$include" ]; then
+        ln -s "../../../qubes/policy.d/include/$include" \
+            "/etc/qubes-rpc/policy/include/$include"
+    fi
+done
+
+%files
+%defattr(-,root,root,-)
+%config(noreplace) %attr(0664,root,qubes) %{_sysconfdir}/qubes/qmemman.conf
+%attr(770,root,qubes) %dir /etc/qubes/backup
+/usr/bin/qvm-*
+/usr/bin/qubes-*
+/usr/bin/qmemmand
+/usr/bin/qubesd*
+
+%{_mandir}/man1/qubes*.1*
+
+%dir %{python3_sitelib}/qubes-*.egg-info
+%{python3_sitelib}/qubes-*.egg-info/*
+
+%dir %{python3_sitelib}/qubes
+%dir %{python3_sitelib}/qubes/__pycache__
+%{python3_sitelib}/qubes/__pycache__/*
+%{python3_sitelib}/qubes/__init__.py
+%{python3_sitelib}/qubes/app.py
+%{python3_sitelib}/qubes/backup.py
+%{python3_sitelib}/qubes/config.py
+%{python3_sitelib}/qubes/device_protocol.py
+%{python3_sitelib}/qubes/devices.py
+%{python3_sitelib}/qubes/dochelpers.py
+%{python3_sitelib}/qubes/events.py
+%{python3_sitelib}/qubes/exc.py
+%{python3_sitelib}/qubes/features.py
+%{python3_sitelib}/qubes/firewall.py
+%{python3_sitelib}/qubes/log.py
+%{python3_sitelib}/qubes/rngdoc.py
+%{python3_sitelib}/qubes/tarwriter.py
+%{python3_sitelib}/qubes/utils.py
+
+%dir %{python3_sitelib}/qubes/api
+%dir %{python3_sitelib}/qubes/api/__pycache__
+%{python3_sitelib}/qubes/api/__pycache__/*
+%{python3_sitelib}/qubes/api/__init__.py
+%{python3_sitelib}/qubes/api/admin.py
+%{python3_sitelib}/qubes/api/internal.py
+%{python3_sitelib}/qubes/api/misc.py
+
+%dir %{python3_sitelib}/qubes/vm
+%dir %{python3_sitelib}/qubes/vm/__pycache__
+%{python3_sitelib}/qubes/vm/__pycache__/*
+%{python3_sitelib}/qubes/vm/__init__.py
+%{python3_sitelib}/qubes/vm/adminvm.py
+%{python3_sitelib}/qubes/vm/appvm.py
+%{python3_sitelib}/qubes/vm/dispvm.py
+%{python3_sitelib}/qubes/vm/qubesvm.py
+%{python3_sitelib}/qubes/vm/remotevm.py
+%{python3_sitelib}/qubes/vm/standalonevm.py
+%{python3_sitelib}/qubes/vm/templatevm.py
+
+%dir %{python3_sitelib}/qubes/vm/mix
+%dir %{python3_sitelib}/qubes/vm/mix/__pycache__
+%{python3_sitelib}/qubes/vm/mix/__pycache__/*
+%{python3_sitelib}/qubes/vm/mix/__init__.py
+%{python3_sitelib}/qubes/vm/mix/dvmtemplate.py
+%{python3_sitelib}/qubes/vm/mix/net.py
+
+%dir %{python3_sitelib}/qubes/storage
+%dir %{python3_sitelib}/qubes/storage/__pycache__
+%{python3_sitelib}/qubes/storage/__pycache__/*
+%{python3_sitelib}/qubes/storage/__init__.py
+%{python3_sitelib}/qubes/storage/file.py
+%{python3_sitelib}/qubes/storage/reflink.py
+%{python3_sitelib}/qubes/storage/kernels.py
+%{python3_sitelib}/qubes/storage/lvm.py
+%{python3_sitelib}/qubes/storage/zfs.py
+%{python3_sitelib}/qubes/storage/callback.py
+%doc /usr/share/doc/qubes/qubes_callback.json.example
+
+%dir %{python3_sitelib}/qubes/tools
+%dir %{python3_sitelib}/qubes/tools/__pycache__
+%{python3_sitelib}/qubes/tools/__pycache__/*
+%{python3_sitelib}/qubes/tools/__init__.py
+%{python3_sitelib}/qubes/tools/qmemmand.py
+%{python3_sitelib}/qubes/tools/qubes_create.py
+%{python3_sitelib}/qubes/tools/qubesd.py
+%{python3_sitelib}/qubes/tools/qubesd_query.py
+
+%dir %{python3_sitelib}/qubes/ext
+%dir %{python3_sitelib}/qubes/ext/__pycache__
+%{python3_sitelib}/qubes/ext/__pycache__/*
+%{python3_sitelib}/qubes/ext/__init__.py
+%{python3_sitelib}/qubes/ext/admin.py
+%{python3_sitelib}/qubes/ext/backup_restore.py
+%{python3_sitelib}/qubes/ext/block.py
+%{python3_sitelib}/qubes/ext/core_features.py
+%{python3_sitelib}/qubes/ext/custom_persist.py
+%{python3_sitelib}/qubes/ext/gui.py
+%{python3_sitelib}/qubes/ext/audio.py
+%{python3_sitelib}/qubes/ext/pci.py
+%{python3_sitelib}/qubes/ext/relay.py
+%{python3_sitelib}/qubes/ext/r3compatibility.py
+%{python3_sitelib}/qubes/ext/services.py
+%{python3_sitelib}/qubes/ext/supported_features.py
+%{python3_sitelib}/qubes/ext/utils.py
+%{python3_sitelib}/qubes/ext/windows.py
+%{python3_sitelib}/qubes/ext/vm_config.py
+
+%dir %{python3_sitelib}/qubes/tests
+%dir %{python3_sitelib}/qubes/tests/__pycache__
+%{python3_sitelib}/qubes/tests/__pycache__/*
+%{python3_sitelib}/qubes/tests/__init__.py
+%{python3_sitelib}/qubes/tests/run.py
+%{python3_sitelib}/qubes/tests/extra.py
+
+%{python3_sitelib}/qubes/tests/api.py
+%{python3_sitelib}/qubes/tests/api_admin.py
+%{python3_sitelib}/qubes/tests/api_internal.py
+%{python3_sitelib}/qubes/tests/api_misc.py
+%{python3_sitelib}/qubes/tests/app.py
+%{python3_sitelib}/qubes/tests/devices.py
+%{python3_sitelib}/qubes/tests/devices_block.py
+%{python3_sitelib}/qubes/tests/devices_pci.py
+%{python3_sitelib}/qubes/tests/events.py
+%{python3_sitelib}/qubes/tests/ext.py
+%{python3_sitelib}/qubes/tests/firewall.py
+%{python3_sitelib}/qubes/tests/init.py
+%{python3_sitelib}/qubes/tests/never_awaited.py
+%{python3_sitelib}/qubes/tests/qmemman.py
+%{python3_sitelib}/qubes/tests/rpc_import.py
+%{python3_sitelib}/qubes/tests/selftest.py
+%{python3_sitelib}/qubes/tests/storage.py
+%{python3_sitelib}/qubes/tests/storage_file.py
+%{python3_sitelib}/qubes/tests/storage_reflink.py
+%{python3_sitelib}/qubes/tests/storage_kernels.py
+%{python3_sitelib}/qubes/tests/storage_lvm.py
+%{python3_sitelib}/qubes/tests/storage_zfs.py
+%{python3_sitelib}/qubes/tests/storage_callback.py
+%{python3_sitelib}/qubes/tests/tarwriter.py
+
+%dir %{python3_sitelib}/qubes/tests/vm
+%dir %{python3_sitelib}/qubes/tests/vm/__pycache__
+%{python3_sitelib}/qubes/tests/vm/__pycache__/*
+%{python3_sitelib}/qubes/tests/vm/__init__.py
+%{python3_sitelib}/qubes/tests/vm/init.py
+%{python3_sitelib}/qubes/tests/vm/adminvm.py
+%{python3_sitelib}/qubes/tests/vm/appvm.py
+%{python3_sitelib}/qubes/tests/vm/dispvm.py
+%{python3_sitelib}/qubes/tests/vm/qubesvm.py
+
+%dir %{python3_sitelib}/qubes/tests/vm/mix
+%dir %{python3_sitelib}/qubes/tests/vm/mix/__pycache__
+%{python3_sitelib}/qubes/tests/vm/mix/__pycache__/*
+%{python3_sitelib}/qubes/tests/vm/mix/__init__.py
+%{python3_sitelib}/qubes/tests/vm/mix/dvmtemplate.py
+%{python3_sitelib}/qubes/tests/vm/mix/net.py
+
+%dir %{python3_sitelib}/qubes/tests/tools
+%dir %{python3_sitelib}/qubes/tests/tools/__pycache__
+%{python3_sitelib}/qubes/tests/tools/__pycache__/*
+%{python3_sitelib}/qubes/tests/tools/__init__.py
+
+%dir %{python3_sitelib}/qubes/tests/integ
+%dir %{python3_sitelib}/qubes/tests/integ/__pycache__
+%{python3_sitelib}/qubes/tests/integ/__pycache__/*
+%{python3_sitelib}/qubes/tests/integ/__init__.py
+%{python3_sitelib}/qubes/tests/integ/audio.py
+%{python3_sitelib}/qubes/tests/integ/backup.py
+%{python3_sitelib}/qubes/tests/integ/backupcompatibility.py
+%{python3_sitelib}/qubes/tests/integ/backupdispvm.py
+%{python3_sitelib}/qubes/tests/integ/basic.py
+%{python3_sitelib}/qubes/tests/integ/devices_block.py
+%{python3_sitelib}/qubes/tests/integ/devices_pci.py
+%{python3_sitelib}/qubes/tests/integ/dispvm.py
+%{python3_sitelib}/qubes/tests/integ/dispvm_perf.py
+%{python3_sitelib}/qubes/tests/integ/dom0_update.py
+%{python3_sitelib}/qubes/tests/integ/vm_update.py
+%{python3_sitelib}/qubes/tests/integ/mime.py
+%{python3_sitelib}/qubes/tests/integ/misc.py
+%{python3_sitelib}/qubes/tests/integ/network.py
+%{python3_sitelib}/qubes/tests/integ/network_ipv6.py
+%{python3_sitelib}/qubes/tests/integ/grub.py
+%{python3_sitelib}/qubes/tests/integ/salt.py
+%{python3_sitelib}/qubes/tests/integ/qrexec.py
+%{python3_sitelib}/qubes/tests/integ/qrexec_perf.py
+%{python3_sitelib}/qubes/tests/integ/storage.py
+%{python3_sitelib}/qubes/tests/integ/storage_perf.py
+%{python3_sitelib}/qubes/tests/integ/vm_qrexec_gui.py
+
+%dir %{python3_sitelib}/qubes/tests/integ/tools
+%dir %{python3_sitelib}/qubes/tests/integ/tools/__pycache__
+%{python3_sitelib}/qubes/tests/integ/tools/__pycache__/*
+%{python3_sitelib}/qubes/tests/integ/tools/__init__.py
+%{python3_sitelib}/qubes/tests/integ/tools/qubes_create.py
+
+%dir %{python3_sitelib}/qubes/qmemman
+%dir %{python3_sitelib}/qubes/qmemman/__pycache__
+%{python3_sitelib}/qubes/qmemman/__pycache__/*
+%{python3_sitelib}/qubes/qmemman/__init__.py
+%{python3_sitelib}/qubes/qmemman/algo.py
+%{python3_sitelib}/qubes/qmemman/client.py
+%{python3_sitelib}/qubes/qmemman/domainstate.py
+%{python3_sitelib}/qubes/qmemman/systemstate.py
+
+/usr/lib/qubes/preload-dispvm
+/usr/lib/qubes/cleanup-dispvms
+/usr/lib/qubes/fix-dir-perms.sh
+/usr/lib/qubes/startup-misc.sh
+/usr/lib/qubes/tests/dispvm_perf.py
+/usr/lib/qubes/tests/dispvm_perf_reader.py
+/usr/lib/qubes/tests/qrexec_perf.py
+/usr/lib/qubes/tests/storage_perf.py
+%{_unitdir}/lvm2-pvscan@.service.d/30_qubes.conf
+%{_unitdir}/qubes-core.service
+%{_unitdir}/qubes-qmemman.service
+%{_unitdir}/qubes-vm@.service
+%{_unitdir}/qubesd.service
+%{_unitdir}/qubes-preload-dispvm.service
+%attr(2770,root,qubes) %dir /var/lib/qubes
+%attr(2770,root,qubes) %dir /var/lib/qubes/vm-templates
+%attr(2770,root,qubes) %dir /var/lib/qubes/appvms
+%attr(2770,root,qubes) %dir /var/lib/qubes/backup
+%attr(2770,root,qubes) %dir /var/lib/qubes/vm-kernels
+/usr/share/qubes/templates/libvirt/xen.xml
+/usr/share/qubes/templates/libvirt/devices/block.xml
+/usr/share/qubes/templates/libvirt/devices/pci.xml
+/usr/share/qubes/templates/libvirt/devices/net.xml
+/usr/share/qubes/tests-data/dispvm-open-thunderbird-attachment
+%dir /usr/share/qubes/tests-data/dispvm_perf/
+/usr/share/qubes/tests-data/dispvm_perf/*
+/usr/share/qubes/tests-data/sysfs
+/usr/lib/tmpfiles.d/qubes.conf
+%attr(0755,root,root) /usr/lib/qubes/create-snapshot
+%attr(0755,root,root) /usr/lib/qubes/destroy-snapshot
+%attr(0664,root,qubes) %config /etc/qubes/policy.d/85-admin-backup-restore.policy
+%attr(0664,root,qubes) %config /etc/qubes/policy.d/90-admin-default.policy
+%attr(0664,root,qubes) %config /etc/qubes/policy.d/90-default.policy
+%attr(0664,root,qubes) %config(noreplace) /etc/qubes/policy.d/include/admin-global-ro
+%attr(0664,root,qubes) %config(noreplace) /etc/qubes/policy.d/include/admin-global-rwx
+%attr(0664,root,qubes) %config(noreplace) /etc/qubes/policy.d/include/admin-local-ro
+%attr(0664,root,qubes) %config(noreplace) /etc/qubes/policy.d/include/admin-local-rwx
+/etc/qubes-rpc/admin.*
+/etc/qubes-rpc/qubes.FeaturesRequest
+/etc/qubes-rpc/qubes.GetDate
+/etc/qubes-rpc/qubes.GetRandomizedTime
+/etc/qubes-rpc/qubes.NotifyTools
+/etc/qubes-rpc/qubes.NotifyUpdates
+/etc/qubes-rpc/qubes.ConnectTCP
+%attr(2770,root,qubes) %dir /var/log/qubes
+%attr(0770,root,qubes) %dir /var/run/qubes
+
+/usr/share/doc/qubes/relaxng/*.rng
+
+%changelog
+@CHANGELOG@

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+echo 'This program is deprecated; set qube property keyboard_layout instead.' >&2
+
+exit 1

@@ -1,0 +1,22 @@
+<hostdev type="pci" managed="yes"
+{% if options.get('no-strict-reset', False) %}
+ nostrictreset="yes"
+{% endif %}
+>
+    <source
+{% if options.get('permissive', False) %}
+     writeFiltering="no"
+{% endif %}
+{% if power_mgmt %}
+     powerManagementFiltering="no"
+{% endif %}
+    >
+        <address
+            domain="0x{{ device.segment }}"
+            bus="0x{{ device.bus }}"
+            slot="0x{{ device.device }}"
+            function="0x{{ device.function }}" />
+    </source>
+</hostdev>
+
+{# vim : set ft=jinja ts=4 sts=4 sw=4 et : #}

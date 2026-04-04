@@ -1,0 +1,38 @@
+#!/bin/sh
+
+set -e
+
+dm_major=$(printf %x "$(grep device-mapper /proc/devices | cut -f 1 -d ' ')")
+case "$(stat -Lc %t:%T /dev/mapper/dmroot)" in
+    ca:0)
+        # nothing needed, xvda used directly
+        ;;
+    ca:3)
+        # resize partition table itself and xda3 partition
+        echo ',+' | sfdisk --no-reread --no-tell-kernel -q -N 3 /dev/xvda
+        # and reload partition table; prefer partprobe over blockdev
+        # --rereadpt, as it works on mounted partitions
+        partprobe /dev/xvda
+        udevadm settle
+        ;;
+    ca:*)
+        echo "Unsupported partition layout, resize it manually" >&2
+        exit 1
+        ;;
+    $dm_major:*)
+        new_size=$(cat /sys/block/xvda/size)
+        ro=$(cat /sys/block/xvda/ro)
+        if [ "$ro" -eq 1 ]; then
+            new_table="0 $new_size snapshot /dev/xvda /dev/xvdc2 N 16"
+        else
+            new_table="0 $new_size linear /dev/xvda 0"
+        fi
+        dmsetup load dmroot --table "$new_table"
+        dmsetup resume dmroot
+        ;;
+    *)
+        echo "Unsupported device type for root volume, resize it manually" >&2
+        exit 1
+        ;;
+esac
+resize2fs /dev/mapper/dmroot

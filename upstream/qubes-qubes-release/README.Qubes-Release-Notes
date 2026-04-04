@@ -1,0 +1,35 @@
+Qubes release notes
+===================
+
+The latest Qubes OS release notes are available at:
+
+[On-line release notes](https://www.qubes-os.org/doc/releases/notes/)
+
+Known issues
+------------
+
+* For known issues take a look at our tickets:
+
+[Known issues](https://github.com/QubesOS/qubes-issues/issues)
+
+It is advised to install updates just after system installation to apply bug fixes for (some of) the above problems.
+
+Downloads
+---------
+
+See [Qubes Downloads](https://www.qubes-os.org/downloads/).
+
+Installation instructions
+-------------------------
+
+See [Installation Guide](https://www.qubes-os.org/doc/installation-guide/).
+
+Upgrading
+---------
+
+See [Upgrading Guide](https://www.qubes-os.org/doc/upgrade/)
+
+Support
+-------
+
+Visit [Support Channels](https://www.qubes-os.org/support/)

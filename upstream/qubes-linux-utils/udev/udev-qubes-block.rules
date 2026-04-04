@@ -1,0 +1,34 @@
+# Expose all (except xen-frontend) block devices via Qubes DB
+
+# Only block devices are interesting
+SUBSYSTEM!="block", GOTO="qubes_block_end"
+
+# Skip devices hidden from udisks by other rules
+ENV{UDISKS_IGNORE}=="1", GOTO="qubes_block_end"
+
+# Hide qubes-internal drives from udisks, so file selection dialogs
+ENV{MAJOR}=="7", ENV{UDISKS_IGNORE}="1"
+KERNEL=="xvda|xvdb|xvdc*|xvdd", ENV{UDISKS_IGNORE}="1"
+
+# Skip xen-blkfront devices
+ENV{MAJOR}=="202", GOTO="qubes_block_end"
+
+# skip devices excluded elsewhere
+ENV{DM_UDEV_DISABLE_DISK_RULES_FLAG}=="1", ENV{QUBES_EXPORT_BLOCK_DEVICE}!="1", GOTO="qubes_block_end"
+ENV{QUBES_EXPORT_BLOCK_DEVICE}=="0", GOTO="qubes_block_end"
+
+# Skip device-mapper devices
+KERNEL=="dm-*", ENV{DM_NAME}=="snapshot-*", GOTO="qubes_block_end"
+KERNEL=="dm-*", ENV{DM_NAME}=="origin-*", GOTO="qubes_block_end"
+KERNEL=="dm-*", ENV{DM_NAME}=="", GOTO="qubes_block_end"
+
+# Skip zram devices
+KERNEL=="zram*", GOTO="qubes_block_end"
+
+ACTION=="add", RUN+="/usr/lib/qubes/udev-block-add-change"
+ACTION=="change", RUN+="/usr/lib/qubes/udev-block-add-change"
+ACTION=="remove", RUN+="/usr/lib/qubes/udev-block-remove"
+
+LABEL="qubes_block_end"
+
+# vim: set ft=udevrules ff=unix fenc=UTF-8 eol:
