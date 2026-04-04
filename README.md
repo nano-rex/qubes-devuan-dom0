@@ -48,3 +48,23 @@ Compared with Artix/OpenRC, Devuan is closer to Debian-family packaging and a mo
 ## Current status
 
 Planning scaffold only.
+
+## Upstream repositories included
+
+The workspace tracks these official upstream repositories as git submodules under `upstream/`:
+- `qubes-builderv2`
+- `qubes-core-admin`
+- `qubes-core-qrexec`
+- `qubes-gui-daemon`
+- `qubes-gui-agent-linux`
+- `qubes-core-agent-linux`
+- `qubes-linux-kernel`
+- `qubes-linux-utils`
+- `qubes-vmm-xen`
+- `qubes-linux-template-builder`
+- `qubes-installer-qubes-os`
+- `qubes-manager`
+- `qubes-qubes-release`
+- `qubes-doc`
+
+These are tracked directly from `QubesOS/*`, not forked mirrors.
