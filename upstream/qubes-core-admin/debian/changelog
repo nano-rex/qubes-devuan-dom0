@@ -1,4 +1,4 @@
-qubes-core-admin (4.3.0-0devuan1) unstable; urgency=medium
+qubes-core-admin (4.3.44-1) unstable; urgency=medium
 
   * Initial Devuan dom0 packaging scaffold.
 

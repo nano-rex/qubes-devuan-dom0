@@ -196,7 +196,7 @@ CCACHEDIR=""
 #export PATH="/usr/lib/ccache:${PATH}"
 #EXTRAPACKAGES=ccache
 #BINDMOUNTS="${BINDMOUNTS} ${CCACHE_DIR}"
-BINDMOUNTS="@BUILDER_DIR@/repository:/tmp/qubes-deb"
+BINDMOUNTS="/dev @BUILDER_DIR@/repository:/tmp/qubes-deb"
 
 # qubes-builder is the thing building building the final packages, it doesn't
 # need to send *_source.changes to be actually built; and two .changes files
