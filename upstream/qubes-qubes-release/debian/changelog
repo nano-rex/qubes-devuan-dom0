@@ -1,0 +1,5 @@
+qubes-release (4.3.0-0devuan1) unstable; urgency=medium
+
+  * Initial Devuan dom0 release package scaffold.
+
+ -- nano-rex <opensource@nano-rex.local>  Sat, 04 Apr 2026 13:00:00 -0400

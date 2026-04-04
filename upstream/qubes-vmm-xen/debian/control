@@ -1,0 +1,16 @@
+Source: xen-qubes
+Section: admin
+Priority: optional
+Maintainer: nano-rex <opensource@nano-rex.local>
+Build-Depends:
+ debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Homepage: https://github.com/nano-rex/qubes-devuan-dom0
+
+Package: xen-qubes-dom0
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Devuan dom0 Xen package scaffold for the Qubes-derived port
+ Packaging scaffold for the Xen and Qubes-specific patch stack used by the
+ Devuan+runit dom0 target. This is currently a porting placeholder, not a
+ build-complete Debian package.

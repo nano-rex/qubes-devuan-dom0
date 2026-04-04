@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	@echo "xen-qubes-dom0 packaging scaffold only; build rules not implemented yet"

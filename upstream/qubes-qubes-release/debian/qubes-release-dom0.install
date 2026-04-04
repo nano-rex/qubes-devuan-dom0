@@ -1,0 +1,4 @@
+etc/os-release
+etc/qubes-release
+etc/apt/sources.list.d/qubes-dom0.list
+usr/share/qubes/qubes-comps.xml

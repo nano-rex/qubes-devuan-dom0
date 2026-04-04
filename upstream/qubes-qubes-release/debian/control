@@ -1,0 +1,16 @@
+Source: qubes-release
+Section: admin
+Priority: optional
+Maintainer: nano-rex <opensource@nano-rex.local>
+Build-Depends:
+ debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Homepage: https://github.com/nano-rex/qubes-devuan-dom0
+
+Package: qubes-release-dom0
+Architecture: all
+Depends: ${misc:Depends}
+Description: Devuan dom0 release metadata for the Qubes-derived port
+ Release metadata and repository configuration package for the Devuan+runit
+ dom0 target. This package will replace the imported Fedora/RPM-specific
+ release and repository configuration path with a Devuan-oriented equivalent.
