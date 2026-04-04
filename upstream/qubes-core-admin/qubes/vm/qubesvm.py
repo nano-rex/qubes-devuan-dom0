@@ -30,6 +30,7 @@ import os.path
 import shutil
 import string
 import subprocess
+from contextlib import suppress
 
 from typing import Awaitable
 
@@ -1261,74 +1262,29 @@ class QubesVM(qubes.vm.mix.net.NetVMMixin, qubes.vm.LocalVM):
         self, event, name, newvalue, oldvalue=None
     ):
         # pylint: disable=unused-argument
-        # workaround https://bugzilla.redhat.com/show_bug.cgi?id=1181922
         if newvalue:
-            retcode = subprocess.call(
-                [
-                    "sudo",
-                    "ln",
-                    "-sf",
-                    "/usr/lib/systemd/system/qubes-vm@.service",
-                    "/etc/systemd/system/multi-user.target.wants/qubes-vm@"
-                    "{}.service".format(self.name),
-                ]
-            )
+            qubes.utils.enable_vm_autostart(self.name)
         else:
-            retcode = subprocess.call(
-                [
-                    "sudo",
-                    "systemctl",
-                    "disable",
-                    "qubes-vm@{}.service".format(self.name),
-                ]
-            )
-        if retcode:
-            raise qubes.exc.QubesException(
-                "Failed to set autostart for VM in systemd"
-            )
+            qubes.utils.disable_vm_autostart(self.name)
 
     @qubes.events.handler("property-pre-reset:autostart")
     def on_property_pre_reset_autostart(self, event, name, oldvalue=None):
         # pylint: disable=unused-argument
         if oldvalue:
-            retcode = subprocess.call(
-                [
-                    "sudo",
-                    "systemctl",
-                    "disable",
-                    "qubes-vm@{}.service".format(self.name),
-                ]
-            )
-            if retcode:
-                raise qubes.exc.QubesException(
-                    "Failed to reset autostart for VM in systemd"
-                )
+            qubes.utils.disable_vm_autostart(self.name)
 
     @qubes.events.handler("domain-remove-from-disk")
     def on_remove_from_disk(self, event, **kwargs):
         # pylint: disable=unused-argument
         if self.autostart:
-            subprocess.call(
-                [
-                    "sudo",
-                    "systemctl",
-                    "disable",
-                    "qubes-vm@{}.service".format(self.name),
-                ]
-            )
+            with suppress(qubes.exc.QubesException):
+                qubes.utils.disable_vm_autostart(self.name)
 
     @qubes.events.handler("domain-create-on-disk")
     def on_create_on_disk(self, event, **kwargs):
         # pylint: disable=unused-argument
         if self.autostart:
-            subprocess.call(
-                [
-                    "sudo",
-                    "systemctl",
-                    "enable",
-                    "qubes-vm@{}.service".format(self.name),
-                ]
-            )
+            qubes.utils.enable_vm_autostart(self.name)
 
     #
     # methods for changing domain state

@@ -25,6 +25,7 @@ import hashlib
 import logging
 import random
 import re
+import shlex
 import string
 import os
 import os.path
@@ -218,6 +219,104 @@ def systemd_extend_timeout():
         b"STATUS=Cleaning up storage for stopped qubes\n"
     )
     sock.close()
+
+
+def get_service_manager():
+    """Return the dom0 service manager name.
+
+    Resolution order:
+    1. ``QUBES_SERVICE_MANAGER`` environment variable
+    2. ``/etc/qubes/service-manager`` file
+    3. default to ``systemd``
+    """
+    manager = os.getenv("QUBES_SERVICE_MANAGER", "").strip().lower()
+    if manager:
+        return manager
+    config_path = "/etc/qubes/service-manager"
+    try:
+        with open(config_path, encoding="utf-8") as config_file:
+            manager = config_file.read().strip().lower()
+    except OSError:
+        manager = ""
+    return manager or "systemd"
+
+
+def _sudo_call(command):
+    return subprocess.call(["sudo"] + command)
+
+
+def _service_manager_error(manager, action, name):
+    raise qubes.exc.QubesException(
+        f"Failed to {action} autostart for VM '{name}' using {manager}"
+    )
+
+
+def _enable_systemd_vm_autostart(name):
+    return _sudo_call(
+        [
+            "ln",
+            "-sf",
+            "/usr/lib/systemd/system/qubes-vm@.service",
+            f"/etc/systemd/system/multi-user.target.wants/qubes-vm@{name}.service",
+        ]
+    )
+
+
+def _disable_systemd_vm_autostart(name):
+    return _sudo_call(["systemctl", "disable", f"qubes-vm@{name}.service"])
+
+
+def _enable_runit_vm_autostart(name):
+    service_name = f"qubes-vm@{name}"
+    script = f"""set -eu
+mkdir -p /etc/sv/{shlex.quote(service_name)}
+cat > /etc/sv/{shlex.quote(service_name)}/run <<'EOF'
+#!/bin/sh
+exec 2>&1
+/usr/bin/qvm-start --skip-if-running {shlex.quote(name)}
+exec sleep infinity
+EOF
+chmod 0755 /etc/sv/{shlex.quote(service_name)}/run
+ln -snf /etc/sv/{shlex.quote(service_name)} /etc/service/{shlex.quote(service_name)}
+"""
+    return _sudo_call(["sh", "-c", script])
+
+
+def _disable_runit_vm_autostart(name):
+    service_name = f"qubes-vm@{name}"
+    script = (
+        f"rm -f /etc/service/{shlex.quote(service_name)} && "
+        f"rm -rf /etc/sv/{shlex.quote(service_name)}"
+    )
+    return _sudo_call(["sh", "-c", script])
+
+
+def enable_vm_autostart(name):
+    manager = get_service_manager()
+    if manager == "systemd":
+        retcode = _enable_systemd_vm_autostart(name)
+    elif manager == "runit":
+        retcode = _enable_runit_vm_autostart(name)
+    else:
+        raise qubes.exc.QubesException(
+            f"Unsupported dom0 service manager '{manager}'"
+        )
+    if retcode:
+        _service_manager_error(manager, "enable", name)
+
+
+def disable_vm_autostart(name):
+    manager = get_service_manager()
+    if manager == "systemd":
+        retcode = _disable_systemd_vm_autostart(name)
+    elif manager == "runit":
+        retcode = _disable_runit_vm_autostart(name)
+    else:
+        raise qubes.exc.QubesException(
+            f"Unsupported dom0 service manager '{manager}'"
+        )
+    if retcode:
+        _service_manager_error(manager, "disable", name)
 
 
 def match_vm_name_with_special(vm, name):
