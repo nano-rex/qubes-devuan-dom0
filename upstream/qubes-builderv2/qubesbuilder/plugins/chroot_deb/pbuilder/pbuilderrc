@@ -18,6 +18,10 @@ case ${DISTRIBUTION} in
         DIST_VENDOR=debian
         MIRRORSITE=https://deb.debian.org/debian
         ;;
+    chimaera|daedalus|excalibur|freia)
+        DIST_VENDOR=devuan
+        MIRRORSITE=https://pkgmaster.devuan.org/merged
+        ;;
     bionic|focal)
         DIST_VENDOR=ubuntu
         MIRRORSITE=http://archive.ubuntu.com/ubuntu
@@ -62,6 +66,9 @@ BUILDRESULT="@BUILDER_DIR@/pbuilder/results"
 # restricted universe multiverse"
 case ${DISTRIBUTION} in
     buster|bullseye|bookworm|trixie|sid|experimental)
+        COMPONENTS="main"
+        ;;
+    chimaera|daedalus|excalibur|freia)
         COMPONENTS="main"
         ;;
     bionic|focal|jammy|noble)
