@@ -43,12 +43,14 @@ Compared with Artix/OpenRC, Devuan is closer to Debian-family packaging and a mo
 - `docs/architecture.md`: system design and trust boundaries
 - `docs/roadmap.md`: phased implementation plan
 - `docs/component-map.md`: upstream Qubes components and required adaptations
+- `docs/build-devuan-dom0.md`: current build bootstrap path and host requirements
 - `docs/devuan-port-notes.md`: first-pass builder and init blockers
 - `manifests/dom0-packages.md`: Devuan+runit dom0 package plan
 - `manifests/dom0-service-map.md`: dom0 services that must be ported to runit
 - `notes/research.md`: current assumptions and unresolved questions
 - `upstream/`: imported upstream Qubes source snapshots tracked directly in this repo
 - `configs/`: local build/config scaffolding for this standalone project
+- `scripts/run-devuan-builder.sh`: local wrapper for the vendored builder
 
 ## Imported upstream sources
 
@@ -70,4 +72,16 @@ These directories were imported from official Qubes repositories and are now tra
 
 ## Current status
 
-Planning scaffold plus imported source trees.
+Planning scaffold plus imported source trees, initial Devuan-aware builder patches,
+first packaging scaffolds, and a concrete local builder wrapper.
+
+## Current build entrypoint
+
+```bash
+cd /home/user/github/qubes-devuan-dom0
+./scripts/run-devuan-builder.sh package init-cache
+./scripts/run-devuan-builder.sh package fetch prep build
+```
+
+Details and assumptions:
+- [`docs/build-devuan-dom0.md`](/home/user/github/qubes-devuan-dom0/docs/build-devuan-dom0.md)
