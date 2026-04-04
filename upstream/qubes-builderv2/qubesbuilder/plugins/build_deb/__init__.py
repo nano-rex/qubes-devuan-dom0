@@ -246,10 +246,24 @@ class DEBBuildPlugin(DEBDistributionPlugin, BuildPlugin):
             ]
 
             # If provided, use the first mirror given in builder configuration mirrors list
-            mirrors = self.config.get("mirrors", {}).get(self.dist.fullname, [])
+            mirrors = self.config.get("mirrors", {}).get(
+                self.dist.distribution, []
+            ) or self.config.get("mirrors", {}).get(self.dist.fullname, [])
             if mirrors:
                 cmd += [
                     f"sed -i 's@MIRRORSITE=https://deb.debian.org/debian@MIRRORSITE={mirrors[0]}@' {self.executor.get_builder_dir()}/pbuilder/pbuilderrc"
+                ]
+            archive_keyring = (
+                self.config.get("deb", {})
+                .get("archive-keyring", {})
+                .get(self.dist.distribution, None)
+                or self.config.get("deb", {})
+                .get("archive-keyring", {})
+                .get(self.dist.fullname, None)
+            )
+            if archive_keyring:
+                cmd += [
+                    f"sed -i 's@--keyring=@BUILDER_DIR@/plugins/chroot_deb/keys/${{DISTRIBUTION}}-${{DIST_VENDOR}}-archive-keyring.gpg@--keyring={archive_keyring}@' {self.executor.get_builder_dir()}/pbuilder/pbuilderrc"
                 ]
 
             if self.config.use_qubes_repo.get("version", None):

@@ -123,6 +123,18 @@ class DEBChrootPlugin(DEBDistributionPlugin, ChrootPlugin):
             cmd += [
                 f"sed -i 's@MIRRORSITE=https://deb.debian.org/debian@MIRRORSITE={mirrors[0]}@' {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
             ]
+        archive_keyring = (
+            self.config.get("deb", {})
+            .get("archive-keyring", {})
+            .get(self.dist.distribution, None)
+            or self.config.get("deb", {})
+            .get("archive-keyring", {})
+            .get(self.dist.fullname, None)
+        )
+        if archive_keyring:
+            cmd += [
+                f"sed -i 's@--keyring=@BUILDER_DIR@/plugins/chroot_deb/keys/${{DISTRIBUTION}}-${{DIST_VENDOR}}-archive-keyring.gpg@--keyring={archive_keyring}@' {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
+            ]
         pbuilder_cmd = [
             f"sudo -E pbuilder create --distribution {self.dist.name}",
             f"--configfile {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc",
@@ -160,6 +172,10 @@ class DEBChrootPlugin(DEBDistributionPlugin, ChrootPlugin):
                 f"sed -i '/qubes-deb/d' {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc",
                 f"mkdir -p {self.executor.get_cache_dir()}/aptcache",
             ]
+            if archive_keyring:
+                cmd += [
+                    f"sed -i 's@--keyring=@BUILDER_DIR@/plugins/chroot_deb/keys/${{DISTRIBUTION}}-${{DIST_VENDOR}}-archive-keyring.gpg@--keyring={archive_keyring}@' {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
+                ]
             pbuilder_cmd = [
                 f"sudo -E pbuilder execute --distribution {self.dist.name}",
                 f"--configfile {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc",

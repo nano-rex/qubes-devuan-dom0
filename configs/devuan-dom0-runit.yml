@@ -8,6 +8,14 @@ debug: true
 verbose: true
 qubes-release: r4.3
 
+mirrors:
+  devuan:
+    - https://pkgmaster.devuan.org/merged
+
+deb:
+  archive-keyring:
+    devuan: /usr/share/keyrings/devuan-archive-keyring.gpg
+
 distributions:
   - host-daedalus
   - vm-daedalus
