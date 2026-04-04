@@ -1,0 +1,11 @@
+etc/qubes
+etc/qubes-rpc
+usr/bin
+usr/lib/python3/dist-packages
+usr/lib/qubes
+usr/lib/tmpfiles.d/qubes.conf
+usr/share/qubes
+var/lib/qubes
+var/log/qubes
+var/run/qubes
+etc/sv
