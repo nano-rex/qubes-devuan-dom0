@@ -28,6 +28,10 @@ The current wrapper script assumes a Linux host with:
 Those assumptions are intentionally strict. The repo should fail early instead
 of pretending a bootstrap path exists when the trust root is missing.
 
+Fedora does not normally provide that Devuan keyring path by default. The
+expected source for that file is the official Devuan download area:
+- `https://files.devuan.org/devuan-archive-keyring.gpg`
+
 ## Config used
 
 Default config:
@@ -39,6 +43,9 @@ Important parts of that config:
   - `vm-daedalus`
 - Devuan mirror:
   - `https://pkgmaster.devuan.org/merged`
+- trusted Qubes maintainer fingerprints for source verification:
+  - `0064428F455451B3EBE78A7F063938BA42CFA724`
+  - `274E12AB03F2FE293765FC06DA0434BC706E1FCF`
 - archive keyring override:
   - `/usr/share/keyrings/devuan-archive-keyring.gpg`
 
@@ -55,6 +62,8 @@ cd /home/user/github/qubes-devuan-dom0
 The wrapper:
 - exports `PYTHONPATH` for the vendored builder
 - uses the local Devuan config
+- keeps the local executor scratch directory under:
+  - `/home/user/github/qubes-devuan-dom0/artifacts/executor`
 - refuses to run if the required host tools are missing
 - refuses to run if the Devuan archive keyring is missing
 

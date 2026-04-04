@@ -50,3 +50,13 @@ It does **not** mean:
 
 It only gets the environment to the point where the first real package build
 attempt becomes possible.
+
+## Devuan keyring requirement
+
+Even after the Fedora package set is installed, the Devuan builder path still
+needs a real Devuan archive keyring at:
+- `/usr/share/keyrings/devuan-archive-keyring.gpg`
+
+That file is not normally provided by Fedora packages. For this project, the
+expected source is the official Devuan file:
+- `https://files.devuan.org/devuan-archive-keyring.gpg`

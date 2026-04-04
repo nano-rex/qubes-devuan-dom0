@@ -95,6 +95,7 @@ class DEBBuildPlugin(DEBDistributionPlugin, BuildPlugin):
 
     name = "build_deb"
     stages = ["build"]
+    DEVUAN_DEBOOTSTRAP_SCRIPT_MAP = {"daedalus", "excalibur", "freia"}
 
     def __init__(
         self,
@@ -263,7 +264,14 @@ class DEBBuildPlugin(DEBDistributionPlugin, BuildPlugin):
             )
             if archive_keyring:
                 cmd += [
-                    f"sed -i 's@--keyring=@BUILDER_DIR@/plugins/chroot_deb/keys/${{DISTRIBUTION}}-${{DIST_VENDOR}}-archive-keyring.gpg@--keyring={archive_keyring}@' {self.executor.get_builder_dir()}/pbuilder/pbuilderrc"
+                    f"sed -E -i 's|--keyring=[^[:space:]]*archive-keyring\\.gpg|--keyring={archive_keyring}|' {self.executor.get_builder_dir()}/pbuilder/pbuilderrc"
+                ]
+            if (
+                self.dist.fullname == "devuan"
+                and self.dist.name in self.DEVUAN_DEBOOTSTRAP_SCRIPT_MAP
+            ):
+                cmd += [
+                    f"printf '%s\\n' 'HOOKDIR={self.executor.get_plugins_dir()}/chroot_deb/debootstrap-scripts' >> {self.executor.get_builder_dir()}/pbuilder/pbuilderrc"
                 ]
 
             if self.config.use_qubes_repo.get("version", None):

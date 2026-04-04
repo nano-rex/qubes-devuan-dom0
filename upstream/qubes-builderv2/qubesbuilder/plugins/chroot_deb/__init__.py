@@ -36,6 +36,7 @@ class DEBChrootPlugin(DEBDistributionPlugin, ChrootPlugin):
 
     name = "chroot_deb"
     stages = ["init-cache"]
+    DEVUAN_DEBOOTSTRAP_SCRIPT_MAP = {"daedalus", "excalibur", "freia"}
 
     def __init__(
         self,
@@ -133,7 +134,14 @@ class DEBChrootPlugin(DEBDistributionPlugin, ChrootPlugin):
         )
         if archive_keyring:
             cmd += [
-                f"sed -i 's@--keyring=@BUILDER_DIR@/plugins/chroot_deb/keys/${{DISTRIBUTION}}-${{DIST_VENDOR}}-archive-keyring.gpg@--keyring={archive_keyring}@' {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
+                f"sed -E -i 's|--keyring=[^[:space:]]*archive-keyring\\.gpg|--keyring={archive_keyring}|' {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
+            ]
+        if (
+            self.dist.fullname == "devuan"
+            and self.dist.name in self.DEVUAN_DEBOOTSTRAP_SCRIPT_MAP
+        ):
+            cmd += [
+                f"printf '%s\\n' 'HOOKDIR={self.executor.get_plugins_dir()}/chroot_deb/debootstrap-scripts' >> {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
             ]
         pbuilder_cmd = [
             f"sudo -E pbuilder create --distribution {self.dist.name}",
@@ -174,7 +182,14 @@ class DEBChrootPlugin(DEBDistributionPlugin, ChrootPlugin):
             ]
             if archive_keyring:
                 cmd += [
-                    f"sed -i 's@--keyring=@BUILDER_DIR@/plugins/chroot_deb/keys/${{DISTRIBUTION}}-${{DIST_VENDOR}}-archive-keyring.gpg@--keyring={archive_keyring}@' {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
+                    f"sed -E -i 's|--keyring=[^[:space:]]*archive-keyring\\.gpg|--keyring={archive_keyring}|' {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
+                ]
+            if (
+                self.dist.fullname == "devuan"
+                and self.dist.name in self.DEVUAN_DEBOOTSTRAP_SCRIPT_MAP
+            ):
+                cmd += [
+                    f"printf '%s\\n' 'HOOKDIR={self.executor.get_plugins_dir()}/chroot_deb/debootstrap-scripts' >> {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
                 ]
             pbuilder_cmd = [
                 f"sudo -E pbuilder execute --distribution {self.dist.name}",
