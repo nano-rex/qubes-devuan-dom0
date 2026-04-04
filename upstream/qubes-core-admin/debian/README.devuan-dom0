@@ -1,0 +1,17 @@
+Devuan dom0 packaging scaffold for qubes-core-admin.
+
+Status:
+- placeholder only
+- intended to become the Debian/Devuan dom0 package path replacing the current
+  RPM-only dom0 packaging assumptions in `rpm_spec/core-dom0.spec.in`
+
+Primary goals:
+1. package dom0-facing Python/admin tooling for Devuan
+2. install `runit` service assets instead of `systemd` unit wiring where needed
+3. keep the dom0 package surface minimal and explicit
+
+Immediate follow-up tasks:
+- create `control`
+- create `rules`
+- define install manifests
+- map `systemd` service installs to `runit` service directories
