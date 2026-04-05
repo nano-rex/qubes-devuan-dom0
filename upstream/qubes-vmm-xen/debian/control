@@ -4,7 +4,8 @@ Priority: optional
 Maintainer: nano-rex <opensource@nano-rex.local>
 Build-Depends:
  debhelper-compat (= 13),
- python3
+ python3,
+ python3-dev
 Standards-Version: 4.6.2
 Homepage: https://github.com/nano-rex/qubes-devuan-dom0
 
