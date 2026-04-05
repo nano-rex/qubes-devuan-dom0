@@ -2,6 +2,9 @@ host:
   rpm:
     build:
     - xen.spec
+  deb:
+    build:
+    - debian
 vm:
   archlinux:
     build:

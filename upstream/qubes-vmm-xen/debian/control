@@ -14,3 +14,20 @@ Description: Devuan dom0 Xen package scaffold for the Qubes-derived port
  Packaging scaffold for the Xen and Qubes-specific patch stack used by the
  Devuan+runit dom0 target. This is currently a porting placeholder, not a
  build-complete Debian package.
+
+Package: libvchan-xen1
+Section: libs
+Architecture: any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: Xen libvchan runtime scaffold for the Devuan dom0 port
+ Runtime package placeholder for the Xen libvchan library required by Qubes
+ dom0 components such as qrexec.
+
+Package: libvchan-xen-dev
+Section: libdevel
+Architecture: any
+Depends: ${misc:Depends}, libvchan-xen1 (= ${binary:Version})
+Provides: libvchan-xen-dev
+Description: Xen libvchan development scaffold for the Devuan dom0 port
+ Development package placeholder for the Xen libvchan headers and pkg-config
+ metadata required to build Qubes dom0 components such as qrexec.
