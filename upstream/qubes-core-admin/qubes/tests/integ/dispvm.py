@@ -1189,16 +1189,16 @@ class TC_21_DispVM_Preload(DispVMHelpersMixin, qubes.tests.SystemTestCase):
                         asyncio.wait_for(qube.unpause(), timeout=5)
                     )
                 self._run_cmd_and_log_output(
-                    qube, "systemtl --user is-system-running", user="user"
+                    qube, "systemctl --user is-system-running", user="user"
                 )
                 self._run_cmd_and_log_output(
-                    qube, "systemtl is-system-running", user="root"
+                    qube, "systemctl is-system-running", user="root"
                 )
                 self._run_cmd_and_log_output(
-                    qube, "runit-analyze --no-pager --user blame", user="user"
+                    qube, "sv status /etc/service/*", user="user"
                 )
                 self._run_cmd_and_log_output(
-                    qube, "runit-analyze --no-pager blame", user="root"
+                    qube, "sv status /etc/service/*", user="root"
                 )
                 self._run_cmd_and_log_output(
                     qube, "journalctl --no-pager --user", user="user"

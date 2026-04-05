@@ -1317,9 +1317,8 @@ then
     changed=true
 fi
 
-if [ "x$changed" != "x" ] && [ -e /run/runit/system ]
-then
-    sv daemon-reload
+if [ "x$changed" != "x" ]; then
+    : # no daemon-reload equivalent for runit service links in this fork
 fi
 
 %preun runit
@@ -1347,9 +1346,8 @@ then
     changed=true
 fi
 
-if [ "x$changed" != "x" ] && [ -e /run/runit/system ]
-then
-    sv daemon-reload
+if [ "x$changed" != "x" ]; then
+    : # no daemon-reload equivalent for runit service links in this fork
 fi
 
 %changelog

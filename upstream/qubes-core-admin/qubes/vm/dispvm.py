@@ -513,14 +513,14 @@ class DispVM(qubes.vm.qubesvm.QubesVM):
             )
             self.log.info("Preload startup completed '%s'", service)
         except asyncio.TimeoutError:
-            debug_msg = "runit-analyze blame"
+            debug_msg = "sv status /etc/service/*"
             raise qubes.exc.QubesException(
                 "Timed out call to '%s' after '%d' seconds during preload "
                 "startup. To debug, run the following on a new disposable of "
                 "'%s': %s" % (service, timeout, self.template, debug_msg)
             )
         except (subprocess.CalledProcessError, qubes.exc.QubesException):
-            debug_msg = "sv --failed"
+            debug_msg = "sv status /etc/service/*"
             raise qubes.exc.QubesException(
                 "Error on call to '%s' during preload startup. To debug, "
                 "disable preloading from '%s' and run the following on a new "

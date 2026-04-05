@@ -120,8 +120,8 @@ exit 0
 # %%post of this package. Redo the action in %%posttrans
 %runit_post qubes-qrexec-agent.service
 # and then start it back
-if [ -e /run/runit/system ] && sv is-enabled qubes-qrexec-agent.service >/dev/null 2>&1; then
-    sv start qubes-qrexec-agent.service
+if sv status qubes-qrexec-agent >/dev/null 2>&1; then
+    sv up qubes-qrexec-agent || true
 fi
 
 %files

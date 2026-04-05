@@ -2675,7 +2675,7 @@ class QubesVM(qubes.vm.mix.net.NetVMMixin, qubes.vm.LocalVM):
         if not self.kernel:
             return ""
         if self.features.check_with_template("os", None) == "Linux":
-            base_kernelopts = "runit.machine_id=" + self.uuid.hex + " "
+            base_kernelopts = "systemd.machine_id=" + self.uuid.hex + " "
         else:
             base_kernelopts = ""
         kernels_dir = self.storage.kernels_dir
