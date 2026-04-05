@@ -6,6 +6,8 @@ Build-Depends:
  debhelper-compat (= 13),
  acpica-tools,
  bison,
+ flex,
+ git,
  libglib2.0-dev,
  libncurses-dev,
  libpixman-1-dev,
