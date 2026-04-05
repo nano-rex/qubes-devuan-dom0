@@ -20,10 +20,28 @@ What it does not prove yet:
 
 The current wrapper script assumes a Linux host with:
 - `python3`
-- `sudo`
+- `sudo` (or an alternative with the same interface; the repo ships `tools/sudo` to forward those calls to `doas`)
 - `pbuilder`
 - a real Devuan archive keyring at:
   - `/usr/share/keyrings/devuan-archive-keyring.gpg`
+
+The builder also expects `doas` to be installed and marked `setuid` so that the installer stage
+can run inside the restricted container (the shim will fall back to `sudo` temporarily if `doas` is
+missing or not setuid, but the target dom0 assumes `doas` for user-visible escalation).  
+On many hosts you can install and configure it with:
+
+```bash
+sudo apt install doas
+sudo chown root:root /usr/bin/doas
+sudo chmod 4755 /usr/bin/doas
+```
+
+- If `doas` is not setuid, the build log will print `doas: not installed setuid` and the installer stage
+  will retry with the system `sudo`.
+
+This wrapper also executes `scripts/check-doas.sh` before the `installer` stages to raise the same
+error early, so you see the instructions without waiting for `mock` to fail.
+
 
 Those assumptions are intentionally strict. The repo should fail early instead
 of pretending a bootstrap path exists when the trust root is missing.
@@ -35,7 +53,12 @@ expected source for that file is the official Devuan download area:
 ## Config used
 
 Default config:
-- [`configs/devuan-dom0-runit.yml`](/home/user/github/qubes-devuan-dom0/configs/devuan-dom0-runit.yml)
+- [`configs/devuan-dom0-runit.yml`](/home/user/github/qubesos-runit/configs/devuan-dom0-runit.yml)
+
+This config wires in the Devuan mirror, the runit service manager, and the local components that
+have been ported from the upstream repository. `runit` service definitions for the first dom0 services
+(`qubesd`, `qubes-core`, `qubes-qmemman`, `qubes-qrexec-policy-daemon`, `qubes-preload-dispvm`) already exist
+inside `upstream/qubes-core-admin/debian/runit/dom0/`, and the `qubes-core-admin` packaging installs them under `/etc/sv`.
 
 Important parts of that config:
 - host and VM distribution targets:
@@ -54,7 +77,7 @@ Important parts of that config:
 Use:
 
 ```bash
-cd /home/user/github/qubes-devuan-dom0
+cd /home/user/github/qubesos-runit
 ./scripts/run-devuan-builder.sh package init-cache
 ./scripts/run-devuan-builder.sh package fetch prep build
 ```
@@ -63,7 +86,7 @@ The wrapper:
 - exports `PYTHONPATH` for the vendored builder
 - uses the local Devuan config
 - keeps the local executor scratch directory under:
-  - `/home/user/github/qubes-devuan-dom0/artifacts/executor`
+  - `/home/user/github/qubesos-runit/artifacts/executor`
 - refuses to run if the required host tools are missing
 - refuses to run if the Devuan archive keyring is missing
 

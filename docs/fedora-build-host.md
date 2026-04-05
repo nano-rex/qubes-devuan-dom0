@@ -13,7 +13,7 @@ That means the immediate job is not "install Devuan". It is:
 ## Package manifest
 
 Reference package list:
-- [`manifests/fedora-build-host-packages.txt`](/home/user/github/qubes-devuan-dom0/manifests/fedora-build-host-packages.txt)
+- [`manifests/fedora-build-host-packages.txt`](/home/user/github/qubesos-runit/manifests/fedora-build-host-packages.txt)
 
 This list is derived from the imported upstream builder dependency files, plus
 the Debian-side tools that are specifically required by this repo's current
@@ -24,7 +24,7 @@ Devuan path.
 Use:
 
 ```bash
-cd /home/user/github/qubes-devuan-dom0
+cd /home/user/github/qubesos-runit
 ./scripts/check-fedora-build-host.sh
 ```
 

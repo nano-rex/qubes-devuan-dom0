@@ -29,13 +29,13 @@ components:
   - builder-debian:
       packages: false
   - vmm-xen:
-      url: /home/user/github/qubes-devuan-dom0/upstream/qubes-vmm-xen
+      url: /home/user/github/qubesos-runit/upstream/qubes-vmm-xen
       verification-mode: insecure-skip-checking
   - qubes-release
   - linux-kernel
   - linux-utils
   - core-qrexec:
-      url: /home/user/github/qubes-devuan-dom0/upstream/qubes-core-qrexec
+      url: /home/user/github/qubesos-runit/upstream/qubes-core-qrexec
       verification-mode: insecure-skip-checking
   - core-admin
   - gui-daemon
@@ -45,7 +45,7 @@ components:
 executor:
   type: local
   options:
-    directory: /home/user/github/qubes-devuan-dom0/artifacts/executor
+    directory: /home/user/github/qubesos-runit/artifacts/executor
 
 stages:
   - fetch
