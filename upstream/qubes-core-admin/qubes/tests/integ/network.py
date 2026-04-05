@@ -147,13 +147,13 @@ class VmNetworkingMixin:
                 )
                 self._run_cmd_and_log_output(vm, "nft list ruleset")
                 self._run_cmd_and_log_output(
-                    vm, "systemctl --no-pager status qubes-firewall"
+                    vm, "sv --no-pager status qubes-firewall"
                 )
                 self._run_cmd_and_log_output(
-                    vm, "systemctl --no-pager status qubes-iptables"
+                    vm, "sv --no-pager status qubes-iptables"
                 )
                 self._run_cmd_and_log_output(
-                    vm, "systemctl --no-pager status xendriverdomain"
+                    vm, "sv --no-pager status xendriverdomain"
                 )
                 self._run_cmd_and_log_output(
                     vm, "journalctl --no-pager --since '10 seconds ago'"
@@ -220,7 +220,7 @@ class VmNetworkingMixin:
                 qube,
                 "{} {} > /etc/resolv.conf".format(cmd, self.test_ip),
             )
-            run_netvm_cmd(qube, "systemctl try-restart systemd-resolved || :")
+            run_netvm_cmd(qube, "sv try-restart runit-resolved || :")
             run_netvm_cmd(qube, "/usr/lib/qubes/qubes-setup-dnat-to-ns")
 
     def test_000_simple_networking(self):
@@ -1016,12 +1016,12 @@ class VmNetworkingMixin:
         :type self: qubes.tests.SystemTestCase | VmNetworkingMixin
         """
         # Simulater late xl devd startup
-        cmd = "systemctl stop xendriverdomain"
+        cmd = "sv stop xendriverdomain"
         if self.run_cmd(self.testnetvm, cmd) != 0:
             self.fail("Command failed on '%s': '%s'" % (self.testnetvm, cmd))
         self.loop.run_until_complete(self.start_vm(self.testvm1))
 
-        cmd = "systemctl start xendriverdomain"
+        cmd = "sv start xendriverdomain"
         if self.run_cmd(self.testnetvm, cmd) != 0:
             self.fail("Command failed on '%s': '%s'" % (self.testnetvm, cmd))
 

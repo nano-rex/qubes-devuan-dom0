@@ -33,7 +33,7 @@ preset_units() {
         [ -n "$action" -a -n "$unit_name" ] || continue
         if [ "$2" = "initial" -o "$represet" = "1" ]
         then
-            systemctl --no-reload --global preset "$unit_name" >/dev/null 2>&1 || :
+            sv --no-reload --global preset "$unit_name" >/dev/null 2>&1 || :
         fi
     done
 }
@@ -46,9 +46,9 @@ case "${1}" in
 
         # ($2 contains version number on update; nothing on initial installation)
         if [ -z "${2}" ]; then
-            preset_units /usr/lib/systemd/user-preset/75-pulseaudio-qubes.preset initial
+            preset_units /usr/lib/runit/user-preset/75-pulseaudio-qubes.preset initial
         else
-            preset_units /usr/lib/systemd/user-preset/75-pulseaudio-qubes.preset upgrade
+            preset_units /usr/lib/runit/user-preset/75-pulseaudio-qubes.preset upgrade
         fi
         ;;
 

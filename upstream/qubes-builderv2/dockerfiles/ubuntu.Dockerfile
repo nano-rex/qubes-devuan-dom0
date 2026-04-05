@@ -19,7 +19,7 @@ RUN apt-get update && \
       python3-yaml \
       reprepro \
       rpm \
-      sudo \
+      doas \
       tree \
       udev \
       wget \
@@ -27,7 +27,7 @@ RUN apt-get update && \
 
 # Create build user
 RUN useradd -m user -u 1010
-RUN usermod -aG sudo user && echo '%sudo ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/sudo
+RUN usermod -aG doas user && echo '%doas ALL=(ALL) NOPASSWD: ALL' > /etc/doasers.d/doas
 
 # Create needed folders
 RUN mkdir /builder /builder/plugins /builder/build /builder/distfiles /builder/cache /builder/repository /builder/sources

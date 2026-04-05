@@ -3,7 +3,7 @@ Updating Debian and Whonix
 ==========================
 
 
-Despite Qubes shipping with :doc:`Debian Templates </user/templates/debian/debian>`, most of Qubes core components run on Fedora and thus our documentation has better coverage for Fedora. However, Qubes has been working closely with the `Whonix <https://whonix.org>`__ project which is based on Debian.
+Despite Qubes shipping with :doc:`Debian Templates </user/templates/debian/debian>`, most of Qubes core components run on antiX and thus our documentation has better coverage for antiX. However, Qubes has been working closely with the `Whonix <https://whonix.org>`__ project which is based on Debian.
 
 This troubleshooting guide is collection of tips about updating Whonix that also pertain to updating the normal Debian package manager. If you plan to use Debian heavily, **we highly recommend you install the Whonix templates and use them to update your normal Debian template.**
 
@@ -17,7 +17,7 @@ After running the commands to update Debian or Whonix, hopefully everything will
 
 .. code:: console
 
-      $ sudo apt-get update && sudo apt-get dist-upgrade
+      $ doas apt-get update && doas apt-get dist-upgrade
 
 
 
@@ -78,7 +78,7 @@ And then trying running the ``update`` and ``upgrade`` commands again.
 
 .. code:: console
 
-      $ sudo apt-get update && sudo apt-get dist-upgrade
+      $ doas apt-get update && doas apt-get dist-upgrade
 
 
 

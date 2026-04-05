@@ -15,7 +15,7 @@ post_install() {
 
     /usr/lib/qubes/qubes-fix-nm-conf.sh
 
-    # Yum proxy configuration is fedora specific
+    # Yum proxy configuration is antix specific
     #if ! grep -q '/etc/yum\.conf\.d/qubes-proxy\.conf' /etc/yum.conf; then
     #  echo >> /etc/yum.conf
     #  echo '# Yum does not support inclusion of config dir...' >> /etc/yum.conf
@@ -23,7 +23,7 @@ post_install() {
     #fi
 
     for srv in qubes-firewall.service qubes-iptables.service qubes-network.service qubes-updates-proxy.service ; do
-        systemctl enable $srv
+        sv enable $srv
     done
 }
 
@@ -36,6 +36,6 @@ post_upgrade() {
 ## arg 1:  the old package version
 post_remove() {
     for srv in qubes-firewall.service qubes-iptables.service qubes-network.service qubes-updates-proxy.service ; do
-        systemctl disable $srv
+        sv disable $srv
     done
 }

@@ -285,7 +285,7 @@ Currently, Qubes still calls a few tools in VM directly, not using the service a
 
 - ``gpk-update-viewer`` - called by Qubes Manager to display available updates in a TemplateVM
 
-- ``systemctl start qubes-update-check.timer`` (and similarly stop) - called when enabling/disabling update checking in a given VM (``qubes-update-check`` :doc:`qvm-service </user/advanced-topics/qubes-service>`)
+- ``sv start qubes-update-check.timer`` (and similarly stop) - called when enabling/disabling update checking in a given VM (``qubes-update-check`` :doc:`qvm-service </user/advanced-topics/qubes-service>`)
 
 
 

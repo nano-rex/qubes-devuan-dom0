@@ -112,8 +112,8 @@ When trying to :ref:`create and use a USB qube <user/how-to-guides/how-to-use-us
 
 If you encounter this error, you can install the ``qubes-usb-proxy`` with the package manager in the VM you want to attach the USB device to. Depending on your operating system, open a terminal in the template and enter one of the following commands:
 
-- Fedora: ``sudo dnf install qubes-usb-proxy``
+- antiX: ``doas dnf install qubes-usb-proxy``
 
-- Debian/Ubuntu: ``sudo apt-get install qubes-usb-proxy``
+- Debian/Ubuntu: ``doas apt-get install qubes-usb-proxy``
 
 

@@ -22,4 +22,4 @@ if ! [ -d "$NEWROOT/lib/modules/$kver/kernel" ]; then
     rmdir /tmp/modules
 fi
 
-killall udevd systemd-udevd
+killall udevd runit-udevd

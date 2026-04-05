@@ -40,7 +40,7 @@ import numpy
 MAX_WIDTH = 8192
 MAX_HEIGHT = 5120
 
-# current max raster icon size in hicolor theme is 256 as of 2013/fedora-18
+# current max raster icon size in hicolor theme is 256 as of 2013/antix-18
 # beyond that one probably shall use scalable icons
 # (SVG is currently unsupported)
 ICON_MAXSIZE = 2048

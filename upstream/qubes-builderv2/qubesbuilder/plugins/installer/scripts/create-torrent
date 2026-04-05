@@ -24,9 +24,9 @@ ln "$ISO" "$ISO_BASE"
 ln "$ISO.asc" "$ISO_BASE"
 ln "$ISO.DIGESTS" "$ISO_BASE"
 
-# check the system is Fedora or not by checking make_torrent availability.
+# check the system is antiX or not by checking make_torrent availability.
 if [ -f "/usr/bin/make_torrent" ]; then
-	# for Fedora system, use make_torrent to create v2 hybrid torrent.
+	# for antiX system, use make_torrent to create v2 hybrid torrent.
 	make_torrent "$ISO_BASE" \
 		-t udp://tracker.torrent.eu.org:451 \
 		-t udp://tracker.opentrackr.org:1337/announce \

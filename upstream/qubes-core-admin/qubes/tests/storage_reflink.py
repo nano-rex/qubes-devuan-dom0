@@ -380,14 +380,14 @@ class TC_10_ReflinkPool(qubes.tests.QubesTestCase):
 
 
 def setup_loopdev(img, cleanup_via=None):
-    dev = str.strip(cmd("sudo", "losetup", "-f", "--show", img).decode())
+    dev = str.strip(cmd("doas", "losetup", "-f", "--show", img).decode())
     if cleanup_via is not None:
         cleanup_via(detach_loopdev, dev)
     return dev
 
 
 def detach_loopdev(dev):
-    cmd("sudo", "losetup", "-d", dev)
+    cmd("doas", "losetup", "-d", dev)
 
 
 def get_fs_type(directory):
@@ -411,43 +411,43 @@ def mkdir_fs(
         cmd("mkfs." + fs_type, img)
         dev = setup_loopdev(img)
         os.remove(img)
-        cmd("sudo", "mount", dev, directory)
+        cmd("doas", "mount", dev, directory)
         detach_loopdev(dev)
 
     if accessible:
-        cmd("sudo", "chmod", "777", directory)
+        cmd("doas", "chmod", "777", directory)
     else:
-        cmd("sudo", "chmod", "000", directory)
-        cmd("sudo", "chattr", "+i", directory)  # cause EPERM on write as root
+        cmd("doas", "chmod", "000", directory)
+        cmd("doas", "chattr", "+i", directory)  # cause EPERM on write as root
 
     if cleanup_via is not None:
         cleanup_via(rmtree_fs, directory)
 
 
 def rmtree_fs(directory):
-    cmd("sudo", "chattr", "-i", directory)
-    cmd("sudo", "chmod", "777", directory)
+    cmd("doas", "chattr", "-i", directory)
+    cmd("doas", "chmod", "777", directory)
     if os.path.ismount(directory):
-        cmd("sudo", "umount", "-l", directory)
+        cmd("doas", "umount", "-l", directory)
         # loop device and backing file are garbage collected automatically
     shutil.rmtree(directory)
 
 
 def get_blockdev_size(dev):
-    return int(cmd("sudo", "blockdev", "--getsize64", dev))
+    return int(cmd("doas", "blockdev", "--getsize64", dev))
 
 
 def reflink_update_loopdev_sizes(img):
     env = [
         k + "=" + v
-        for k, v in os.environ.items()  # 'sudo -E' alone would
+        for k, v in os.environ.items()  # 'doas -E' alone would
         if k.startswith("PYTHON")
     ]  # drop some of these
     code = (
         "from qubes.storage import reflink\n"
         "reflink._update_loopdev_sizes(%r)" % img
     )
-    cmd("sudo", "-E", "env", *env, sys.executable, "-c", code)
+    cmd("doas", "-E", "env", *env, sys.executable, "-c", code)
 
 
 def cmd(*argv):

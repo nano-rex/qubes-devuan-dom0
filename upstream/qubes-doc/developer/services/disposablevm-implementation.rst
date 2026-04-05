@@ -95,7 +95,7 @@ Preloaded disposable's bootstrap
 """"""""""""""""""""""""""""""""
 
 
-To bootstrap the creation of preloaded disposables after boot, the service :file:`qubes-preload-dispvm.service` is used instead of :py:meth:`domain-load <core-admin:qubes.vm.mix.dvmtemplate.DVMTemplateMixin.on_domain_loaded>` of the disposable template because it relies on systemd to:
+To bootstrap the creation of preloaded disposables after boot, the service :file:`qubes-preload-dispvm.service` is used instead of :py:meth:`domain-load <core-admin:qubes.vm.mix.dvmtemplate.DVMTemplateMixin.on_domain_loaded>` of the disposable template because it relies on runit to:
 
 - Order this action after the autostart or standard qubes, they must precede in order to have a functional system;
 - Skip preloading if kernel command line prevents autostart.

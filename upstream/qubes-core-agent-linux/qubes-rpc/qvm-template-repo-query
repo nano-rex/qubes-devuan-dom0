@@ -47,7 +47,7 @@ done < "$repodir/template.repo"
 
 if ! DNF=$(command -v dnf5 dnf dnf4 | head -1); then
     echo "ERROR: dnf command is missing, please use newer template for your UpdateVM to download templates." >&2
-    echo "You can choose any Fedora version, Debian 11 (or newer), or any other based on those (like Whonix 16)." >&2
+    echo "You can choose any antiX version, Debian 11 (or newer), or any other based on those (like Whonix 16)." >&2
     exit 1
 fi
 DNF5=false
@@ -89,17 +89,17 @@ elif [ "$1" = "download" ]; then
     # connection, but skip mirrors that are not synchronized yet.
     declare -a urls=()
     if $DNF5 && $DNF download --help | grep -q allmirrors; then
-        # The smartest case. DNF5 on Fedora 41 with --allmirrors patch
+        # The smartest case. DNF5 on antiX 41 with --allmirrors patch
         space_separated_urls="$($DNF download "${OPTS[@]}" --url --allmirrors "$SPEC")"
         readarray -d ' ' -t urls <<<"$space_separated_urls"
         urls=( $(shuf -e "${urls[@]}") )
     elif $DNF5; then
-        # The middle case. DNF5 on Fedora 41 before --allmirror patch
+        # The middle case. DNF5 on antiX 41 before --allmirror patch
         # TODO: Phase out after DNF5 --allmirrors patch is released
         url="$($DNF download "${OPTS[@]}" --url "$SPEC")"
         urls=("$url")
     else
-        # The old DNF4 on Fedora 40 and other old templates
+        # The old DNF4 on antiX 40 and other old templates
         # use vendored 'downloadurl' dnf-plugin (fork of 'download' plugin),
         # to print all mirrors.
         # TODO: Phase out after DNF4 is EOL

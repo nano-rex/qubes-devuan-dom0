@@ -3,10 +3,10 @@ Description=Qubes verification of /usr/lib/modules
 DefaultDependencies=no
 Documentation=
 ConditionPathExists=/dev/xvdd
-Before=systemd-modules-load.service
-Before=systemd-udevd.service
+Before=runit-modules-load.service
+Before=runit-udevd.service
 Before=local-fs-pre.target
-After=systemd-remount-fs.service
+After=runit-remount-fs.service
 ConditionPathExists=!/usr/lib/modules/lost+found
 
 [Service]

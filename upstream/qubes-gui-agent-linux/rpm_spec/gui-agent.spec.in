@@ -74,7 +74,7 @@ BuildRequires:	qubes-libvchan-devel
 BuildRequires:	qubes-gui-common-devel >= 4.3.0
 BuildRequires:	qubes-db-devel
 BuildRequires:	xen-devel
-BuildRequires:	systemd-rpm-macros
+BuildRequires:	runit-rpm-macros
 BuildRequires:	libunistring-devel
 BuildRequires:  dbus-devel
 %if 0%{?is_opensuse}
@@ -93,7 +93,7 @@ Requires:	qubes-db >= 4.1.4
 Requires:	python%{python3_pkgversion}-xcffib
 Requires:   xorg-x11-server-Xorg
 Requires:   xorg-x11-server-Xephyr
-%if 0%{?fedora} >= 41
+%if 0%{?antix} >= 41
 Requires:   cvt
 %endif
 Requires:   setxkbmap
@@ -121,7 +121,7 @@ Summary: Audio support for Qubes VM
 # It is possible that our code will work fine with any later pulseaudio
 # version; but this needs to be verified for each pulseaudio version.
 Requires:	pulseaudio = %{pa_ver_full}
-# Needed so that systemd can manage PulseAudio
+# Needed so that runit can manage PulseAudio
 Conflicts:	qubes-core-agent < 4.2.5
 Conflicts:  qubes-gui-vm < 4.0.0
 %if 0%{?is_opensuse}
@@ -163,7 +163,7 @@ Summary: Remote GuiVM support using VNC
 Requires: x11vnc
 %if 0%{?is_opensuse}
 # for directory ownership
-BuildRequires: (systemd or systemd-mini)
+BuildRequires: (runit or runit-mini)
 %endif
 
 %description -n qubes-gui-vnc
@@ -208,8 +208,8 @@ mv $RPM_BUILD_ROOT/etc/sysconfig/desktop \
 %endif
 
 %post
-if [ -x /bin/systemctl ] && readlink /sbin/init | grep -q systemd; then
-    /bin/systemctl enable qubes-gui-agent.service 2> /dev/null
+if [ -x /bin/sv ] && readlink /sbin/init | grep -q runit; then
+    /bin/sv enable qubes-gui-agent.service 2> /dev/null
 fi
 
 %if 0%{?is_opensuse}
@@ -235,16 +235,16 @@ preset_units() {
         [ -n "$action" -a -n "$unit_name" ] || continue
         if [ "$2" = "initial" -o "$represet" = "1" ]
         then
-            systemctl --no-reload --global preset "$unit_name" >/dev/null 2>&1 || :
+            sv --no-reload --global preset "$unit_name" >/dev/null 2>&1 || :
         fi
     done
 }
 
 if [ $1 -eq 1 ]
 then
-    preset_units /usr/lib/systemd/user-preset/75-pulseaudio-qubes.preset initial
+    preset_units /usr/lib/runit/user-preset/75-pulseaudio-qubes.preset initial
 else
-    preset_units /usr/lib/systemd/user-preset/75-pulseaudio-qubes.preset upgrade
+    preset_units /usr/lib/runit/user-preset/75-pulseaudio-qubes.preset upgrade
 fi
 
 %postun -n pulseaudio-qubes
@@ -252,21 +252,21 @@ fi
 for unit_name in pipewire.socket pipewire.service \
                  pipewire-pulse.socket pipewire-pulse.service \
                  wireplumber.service; do
-    systemctl --no-reload --global preset "$unit_name" >/dev/null 2>&1 || :
+    sv --no-reload --global preset "$unit_name" >/dev/null 2>&1 || :
 done
 
 %if %enable_pipewire
 %post -n pipewire-qubes
-%systemd_user_post pipewire.service pipewire.socket wireplumber.service
+%runit_user_post pipewire.service pipewire.socket wireplumber.service
 
 %preun -n pipewire-qubes
-%systemd_user_preun pipewire.service pipewire.socket wireplumber.service
+%runit_user_preun pipewire.service pipewire.socket wireplumber.service
 %endif
 
 %preun
 if [ "$1" = 0 ] ; then
 	chkconfig qubes-gui-agent off
-    [ -x /bin/systemctl ] && /bin/systemctl disable qubes-gui-agent.service
+    [ -x /bin/sv ] && /bin/sv disable qubes-gui-agent.service
     /usr/bin/glib-compile-schemas %{_datadir}/glib-2.0/schemas &> /dev/null || :
 fi
 
@@ -343,9 +343,9 @@ rm -f %{name}-%{version}
 %_bindir/start-pulseaudio-with-vchan
 %{pa_module_dir}/module-vchan-sink.so
 /etc/xdg/autostart/qubes-pulseaudio.desktop
-/usr/lib/systemd/user-preset/75-pulseaudio-qubes.preset
-%dir /usr/lib/systemd/user/pulseaudio.service.d
-/usr/lib/systemd/user/pulseaudio.service.d/30_qubes.conf
+/usr/lib/runit/user-preset/75-pulseaudio-qubes.preset
+%dir /usr/lib/runit/user/pulseaudio.service.d
+/usr/lib/runit/user/pulseaudio.service.d/30_qubes.conf
 
 %if %enable_pipewire
 %files -n pipewire-qubes
@@ -367,7 +367,7 @@ rm -f %{name}-%{version}
 %{xinitrc_dir}/60xfce-desktop.sh
 
 %files -n qubes-gui-vnc
-#/lib/systemd/system/qubes-gui-vncserver.service
+#/lib/runit/system/qubes-gui-vncserver.service
 %attr(0644,root,root) /etc/X11/xorg-qubes-x11vnc.conf.template
 %dir %{_unitdir}/lightdm.service.d
 %{_unitdir}/lightdm.service.d/qubes-guivm-vnc.conf

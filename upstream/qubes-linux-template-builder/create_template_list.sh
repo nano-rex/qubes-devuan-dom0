@@ -83,13 +83,13 @@ for file_name in ${files[@]}; do
 
     package_name="$(echo "${file_name}" | sed -r "s/(${version}).+$//")"
 
-    if sudo yum $YUM_OPTS list installed "$package_name" >/dev/null 2>&1 ; then
+    if doas yum $YUM_OPTS list installed "$package_name" >/dev/null 2>&1 ; then
         echo "Uninstalling package ${package_name}..."
-        sudo yum $YUM_OPTS erase "$package_name"
+        doas yum $YUM_OPTS erase "$package_name"
     fi
 
     echo "Installing file ${file_name}..."
-    if sudo yum $YUM_OPTS install "${file_name}" ; then
+    if doas yum $YUM_OPTS install "${file_name}" ; then
         echo "Deleting ${PWD}/${file_name}..."
         rm -f "${file_name}"
     fi

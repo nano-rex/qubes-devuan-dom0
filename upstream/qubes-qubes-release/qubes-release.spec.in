@@ -1,7 +1,7 @@
 %define dist_version @VERSION@
 %define full_version @VERSION@.0
 %define release_name R%{dist_version}
-%define fedora_base_version 41
+%define antix_base_version 41
 
 Summary:	Qubes release files
 Name:		qubes-release
@@ -10,15 +10,15 @@ Release:	@REL@%{?dist}
 License:	GPLv2
 Group:		System Environment/Base
 Source0:	%{name}-%{version}.tar.bz2
-Obsoletes:	fedora-release
-Obsoletes:	fedora-release-variant <= %{fedora_base_version}
-Obsoletes:	fedora-release-common <= %{fedora_base_version}
-Obsoletes:  fedora-repos <= %{fedora_base_version}
+Obsoletes:	antix-release
+Obsoletes:	antix-release-variant <= %{antix_base_version}
+Obsoletes:	antix-release-common <= %{antix_base_version}
+Obsoletes:  antix-repos <= %{antix_base_version}
 Obsoletes:	redhat-release
-Provides:	fedora-release = %{fedora_base_version}-%{release}
-Provides:	fedora-release-variant = %{fedora_base_version}-%{release}
-Provides:	redhat-release = %{fedora_base_version}-%{release}
-Provides:	system-release = %{fedora_base_version}-%{release}
+Provides:	antix-release = %{antix_base_version}-%{release}
+Provides:	antix-release-variant = %{antix_base_version}-%{release}
+Provides:	redhat-release = %{antix_base_version}-%{release}
+Provides:	system-release = %{antix_base_version}-%{release}
 Provides:	system-release(releasever) = %{version}
 Conflicts:	rpm < 4.14
 Conflicts:	qubes-core-dom0-linux < 4.0.23
@@ -26,7 +26,7 @@ Obsoletes:	qubes-dom0-dist-upgrade <= 3.2
 Conflicts:	qubes-dom0-meta-packages < 4.2.13
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildArch:	noarch
-BuildRequires: systemd-rpm-macros
+BuildRequires: runit-rpm-macros
 
 %description
 Qubes release files such as yum configs and various /etc/ files that
@@ -37,7 +37,7 @@ Summary:	Release Notes
 License:	Open Publication
 Group:		System Environment/Base
 Provides:	system-release-notes = %{version}-%{release}
-Conflicts:	fedora-release-notes
+Conflicts:	antix-release-notes
 
 %description notes
 Qubes release notes package.
@@ -60,7 +60,7 @@ cp -p $RPM_BUILD_ROOT/etc/qubes-release $RPM_BUILD_ROOT/etc/issue
 echo "Kernel \r on an \m (\l)" >> $RPM_BUILD_ROOT/etc/issue
 cp -p $RPM_BUILD_ROOT/etc/issue $RPM_BUILD_ROOT/etc/issue.net
 echo >> $RPM_BUILD_ROOT/etc/issue
-ln -s qubes-release $RPM_BUILD_ROOT/etc/fedora-release
+ln -s qubes-release $RPM_BUILD_ROOT/etc/antix-release
 ln -s qubes-release $RPM_BUILD_ROOT/etc/redhat-release
 ln -s qubes-release $RPM_BUILD_ROOT/etc/system-release
 
@@ -79,9 +79,9 @@ install -d -m 755 $RPM_BUILD_ROOT/etc/pki/rpm-gpg
 install -m 644 RPM-GPG-KEY* $RPM_BUILD_ROOT/etc/pki/rpm-gpg/
 
 install -d -m 755 $RPM_BUILD_ROOT/etc/yum.repos.d
-sed -e "s/%%DIST%%/fc%{fedora_base_version}/" qubes-dom0.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/qubes-dom0.repo
-sed -e "s/%%FCREL%%/%{fedora_base_version}/" fedora.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/fedora.repo
-sed -e "s/%%FCREL%%/%{fedora_base_version}/" fedora-updates.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/fedora-updates.repo
+sed -e "s/%%DIST%%/fc%{antix_base_version}/" qubes-dom0.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/qubes-dom0.repo
+sed -e "s/%%FCREL%%/%{antix_base_version}/" antix.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/antix.repo
+sed -e "s/%%FCREL%%/%{antix_base_version}/" antix-updates.repo.in > $RPM_BUILD_ROOT/etc/yum.repos.d/antix-updates.repo
 install -m 644 qubes-templates.repo $RPM_BUILD_ROOT/etc/yum.repos.d
 
 install -m 644 -D protected-packages.conf \
@@ -94,9 +94,9 @@ cat >> $RPM_BUILD_ROOT/etc/rpm/macros.dist << EOF
 
 %%qubes		%{dist_version}
 %%dist		.qbs%{dist_version}
-%%fedora	%{fedora_base_version}
+%%antix	%{antix_base_version}
 %%qbs3		1
-%%fc%{fedora_base_version}		1
+%%fc%{antix_base_version}		1
 EOF
 
 install -d $RPM_BUILD_ROOT%{_sysusersdir}
@@ -116,11 +116,11 @@ remove_keys="gpg-pubkey-fdb19c98-56fd6333 \
              gpg-pubkey-5323552a-6112bcdc \
              gpg-pubkey-beb24936-659c9647"
 # Import all keys b/c rpm won't do it automatically (as opposite to yum)
-import_keys="/etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-41-primary \
+import_keys="/etc/pki/rpm-gpg/RPM-GPG-KEY-antix-41-primary \
              /etc/pki/rpm-gpg/RPM-GPG-KEY-qubes-4.3-primary \
              /etc/pki/rpm-gpg/RPM-GPG-KEY-qubes-4.3-unstable"
 
-systemd-run --on-active=5min sh -c "rpm -e $remove_keys; rpm --import $import_keys"
+runit-run --on-active=5min sh -c "rpm -e $remove_keys; rpm --import $import_keys"
 
 
 %clean
@@ -131,13 +131,13 @@ rm -rf $RPM_BUILD_ROOT
 %doc GPL
 %config %attr(0644,root,root) /etc/os-release
 %config %attr(0644,root,root) /etc/qubes-release
-/etc/fedora-release
+/etc/antix-release
 /etc/redhat-release
 /etc/system-release
 %config %attr(0644,root,root) /etc/system-release-cpe
 %dir /etc/yum.repos.d
-%config(noreplace) /etc/yum.repos.d/fedora.repo
-%config(noreplace) /etc/yum.repos.d/fedora-updates.repo
+%config(noreplace) /etc/yum.repos.d/antix.repo
+%config(noreplace) /etc/yum.repos.d/antix-updates.repo
 %config(noreplace) /etc/yum.repos.d/qubes-dom0.repo
 %config /etc/dnf/protected.d/qubes.conf
 %config /etc/yum.repos.d/qubes-templates.repo

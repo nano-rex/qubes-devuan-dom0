@@ -92,7 +92,7 @@ policy files etc.
 %package -n qubes-audio-daemon
 Summary:	The Qubes AUDIO virtualization
 Requires:	pulseaudio-libs
-%if 0%{?fedora} >= 35
+%if 0%{?antix} >= 35
 Requires:	pulseaudio-daemon
 %else
 Requires:	pulseaudio

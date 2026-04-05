@@ -37,8 +37,8 @@ RUN dnf -y update && \
         rpm-build \
         rpmdevtools \
         rsync  \
-        systemd-udev \
-        sudo \
+        runit-udev \
+        doas \
         tree \
         wget \
         which \
@@ -54,7 +54,7 @@ RUN git clone -n https://gitlab.archlinux.org/fepitre/devtools && \
 
 # Create build user
 RUN useradd -m user
-RUN usermod -aG wheel user && echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
+RUN usermod -aG wheel user && echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/doasers.d/wheel
 
 # Create needed folders
 RUN mkdir /builder /builder/plugins /builder/build /builder/distfiles /builder/cache /builder/repository /builder/sources

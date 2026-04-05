@@ -32,7 +32,7 @@ class TestFilecopy(unittest.TestCase):
 
         bash_code = ('trap \'echo PIPESTATUS: ${PIPESTATUS[@]} >&2\' EXIT;'
                      '"$bin"/qfile-agent "$@" <"$fifo" |'
-                     'sudo "$bin"/qfile-unpacker $EUID "$incoming" >"$fifo"')
+                     'doas "$bin"/qfile-unpacker $EUID "$incoming" >"$fifo"')
         subprocess_run_diagnosable(
             ['bash', '-euo', 'pipefail', '-c', bash_code, 'bash', *files],
             env=env)
@@ -54,9 +54,9 @@ class TestFilecopy(unittest.TestCase):
         self.addCleanup(os.chdir, os.getcwd())
         os.chdir(self.source)
         subprocess_run_diagnosable(
-            ['sudo', 'mount', '-t', 'tmpfs', 'tmpfs', self.source])
+            ['doas', 'mount', '-t', 'tmpfs', 'tmpfs', self.source])
         self.addCleanup(subprocess_run_diagnosable,
-            ['sudo', 'umount', self.source])
+            ['doas', 'umount', self.source])
         with open(fn_abs, 'wb') as f: f.write(b'bar')
         with open(fn_abs, 'rb') as f: self.assertEqual(f.read(), b'bar')
         with open(fn_rel, 'rb') as f: self.assertEqual(f.read(), b'foo')

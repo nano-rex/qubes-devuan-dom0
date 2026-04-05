@@ -471,7 +471,7 @@ class BackupVMsWindow(ui_backupdlg.Ui_Backup, QtWidgets.QWizard):
 
             # turn off only when backup was successful
             if self.turn_off_checkbox.isChecked():
-                os.system('systemctl poweroff')
+                os.system('sv poweroff')
 
     def reject(self):
         if (self.currentPage() is self.commit_page) and \

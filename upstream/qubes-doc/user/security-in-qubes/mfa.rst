@@ -27,7 +27,7 @@ As the name implies, this generates authentication code that is time-dependent. 
 
    .. code:: console
 
-         $ sudo qubes-dom0-update google-authenticator
+         $ doas qubes-dom0-update google-authenticator
 
 
 
@@ -61,7 +61,7 @@ As the name implies, this generates authentication code that is time-dependent. 
 
 Now we are going to add the authenticator as a login requirement:
 
-1. ``sudo authselect create-profile mfa --base-on sssd``
+1. ``doas authselect create-profile mfa --base-on sssd``
 
 2. Edit the custom system authentication template in ``/etc/authselect/custom/mfa/system-auth``.
    Add the following line right after ``auth required pam_faildelay.so delay=2000000``:
@@ -86,7 +86,7 @@ Now we are going to add the authenticator as a login requirement:
 
    .. code:: console
 
-         $ sudo authselect select custom/mfa
+         $ doas authselect select custom/mfa
 
 
 
@@ -110,7 +110,7 @@ The following assumes you haven’t restarted your computer since setting up TOT
 
    .. code:: console
 
-         $ sudo authselect select sssd
+         $ doas authselect select sssd
 
 
 
@@ -164,13 +164,13 @@ All these requirements are described below, step by step, for the YubiKey and Ni
 
    - **YubiKey**
 
-     - For Fedora.
+     - For antiX.
 
 
 
      .. code:: console
 
-           $ sudo dnf install ykpers
+           $ doas dnf install ykpers
 
 
 
@@ -180,7 +180,7 @@ All these requirements are described below, step by step, for the YubiKey and Ni
 
      .. code:: console
 
-           $ sudo apt-get install yubikey-personalization
+           $ doas apt-get install yubikey-personalization
 
 
 
@@ -188,7 +188,7 @@ All these requirements are described below, step by step, for the YubiKey and Ni
 
      - Follow the installation instructions on the official `NitroKey website <https://docs.nitrokey.com/software/nitropy/all-platforms/installation>`__.
 
-     - **WARNING**: *as of April 2024 the official instructions involve using pipx to install the pynitrokey package and its dependencies without any GPG verification! This is not a recommended practice, but will soon be fixed by NitroKey when they start providing release artifacts with detached signatures on* `their GitHub <https://github.com/Nitrokey/pynitrokey/releases>`__ *. Proper packaging and distribution for Debian and perhaps Fedora is also planned for the mid-long term.* **Installing packages using pip or pipx is not recommended!**
+     - **WARNING**: *as of April 2024 the official instructions involve using pipx to install the pynitrokey package and its dependencies without any GPG verification! This is not a recommended practice, but will soon be fixed by NitroKey when they start providing release artifacts with detached signatures on* `their GitHub <https://github.com/Nitrokey/pynitrokey/releases>`__ *. Proper packaging and distribution for Debian and perhaps antiX is also planned for the mid-long term.* **Installing packages using pip or pipx is not recommended!**
 
 
 
@@ -204,7 +204,7 @@ All these requirements are described below, step by step, for the YubiKey and Ni
 
    .. code:: console
 
-         $ sudo qubes-dom0-update qubes-yubikey-dom0
+         $ doas qubes-dom0-update qubes-yubikey-dom0
 
 
 
@@ -363,7 +363,7 @@ In dom0:
 
    .. code:: console
 
-         $ sudo chmod +x /etc/qubes-rpc/custom.LockScreen
+         $ doas chmod +x /etc/qubes-rpc/custom.LockScreen
 
 
 
@@ -400,7 +400,7 @@ In your USB VM:
 
    .. code:: console
 
-         $ sudo chmod +x /rw/config/rc.local
+         $ doas chmod +x /rw/config/rc.local
 
 
 
@@ -408,7 +408,7 @@ In your USB VM:
 
    .. code:: console
 
-         $ sudo /rw/config/rc.local
+         $ doas /rw/config/rc.local
 
 
 

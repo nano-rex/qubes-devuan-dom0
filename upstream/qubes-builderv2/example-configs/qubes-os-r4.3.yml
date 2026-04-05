@@ -22,7 +22,7 @@ distributions:
   - vm-fc44
 
 templates:
-  - fedora-42-xfce:
+  - antix-42-xfce:
       dist: fc42
       flavor: xfce
       options:
@@ -197,7 +197,7 @@ components:
 #executor:
 #  type: docker
 #  options:
-#    image: "qubes-builder-fedora:latest"
+#    image: "qubes-builder-antix:latest"
 
 executor:
   type: qubes

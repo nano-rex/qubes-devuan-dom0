@@ -948,7 +948,7 @@ okay:;
     }
 
     check_whole_block_device(&statbuf);
-    // Avoid racing with systemd-udevd
+    // Avoid racing with runit-udevd
     if (flock(fd, LOCK_EX)) {
         err(EXIT_FAILURE, "%s cannot be locked", dev);
     }

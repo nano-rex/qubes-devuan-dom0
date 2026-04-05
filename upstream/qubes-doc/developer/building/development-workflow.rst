@@ -184,14 +184,14 @@ TODO: edit this script to be more generic
       cp $QUBES_PY qubes.py.bak$$
       cp $QUBESUTILS_PY qubesutils.py.bak$$
       cp /etc/xen/scripts/block-snapshot block-snapshot.bak$$
-      sudo cp qvm-core/qubes.py $QUBES_PY
-      sudo cp qvm-core/qubesutils.py $QUBESUTILS_PY
-      sudo cp qvm-core/guihelpers.py $QUBES_PY_DIR/
-      sudo cp qmemman/qmemman*.py $QUBES_PY_DIR/
-      sudo cp misc/vm-template-hvm.conf /usr/share/qubes/
-      sudo cp misc/qubes-start.desktop /usr/share/qubes/
-      sudo cp misc/block-snapshot /etc/xen/scripts/
-      sudo cp aux-tools/qubes-dom0-updates.cron /etc/cron.daily/
+      doas cp qvm-core/qubes.py $QUBES_PY
+      doas cp qvm-core/qubesutils.py $QUBESUTILS_PY
+      doas cp qvm-core/guihelpers.py $QUBES_PY_DIR/
+      doas cp qmemman/qmemman*.py $QUBES_PY_DIR/
+      doas cp misc/vm-template-hvm.conf /usr/share/qubes/
+      doas cp misc/qubes-start.desktop /usr/share/qubes/
+      doas cp misc/block-snapshot /etc/xen/scripts/
+      doas cp aux-tools/qubes-dom0-updates.cron /etc/cron.daily/
       # FIXME(Abel Luck): I hope to
 
 
@@ -209,7 +209,7 @@ TODO: make it more generic
       BAK=qvm-tools.bak$$
       mkdir -p $BAK
       cp -a /usr/bin/qvm-* /usr/bin/qubes-* $BAK/
-      sudo cp qvm-tools/qvm-* qvm-tools/qubes-* /usr/bin/
+      doas cp qvm-tools/qvm-* qvm-tools/qubes-* /usr/bin/
 
 
 

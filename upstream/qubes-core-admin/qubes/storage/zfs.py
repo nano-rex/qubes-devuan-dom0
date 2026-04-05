@@ -67,7 +67,7 @@ DEBUG_IS_WARNING = False
 NO_AUTO_SNAPSHOT = {"com.sun:auto-snapshot": "false"}
 DEF_AUTO_SNAPSHOT: Dict[str, str] = {}
 
-_sudo, _dd, _zfs, _zpool, _ionice = "sudo", "dd", "zfs", "zpool", "ionice"
+_doas, _dd, _zfs, _zpool, _ionice = "doas", "dd", "zfs", "zpool", "ionice"
 
 
 async def fail_unless_exists_async(path: str) -> None:
@@ -196,7 +196,7 @@ async def duplicate_disk(
     ]
 
     if not os.access(outpath, os.W_OK) or not os.access(inpath, os.R_OK):
-        thecmd = [_sudo] + thecmd
+        thecmd = [_doas] + thecmd
     log.debug(
         "Duplicating %s to %s",
         inpath,
@@ -332,7 +332,7 @@ def _generate_zfs_command(
     else:
         thecmd = [_zfs] + list(cmd)
     if os.getuid() != 0:
-        thecmd = [_sudo] + thecmd
+        thecmd = [_doas] + thecmd
     environ = {"LC_ALL": "C.UTF-8", **os.environ}
     return thecmd, environ
 

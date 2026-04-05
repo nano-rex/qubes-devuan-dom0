@@ -180,8 +180,8 @@ class ContainerExecutor(Executor):
 
                 # fix permissions and user group
                 permissions_cmd = [
-                    f"sudo mkdir -p -- {quote(str(self.get_builder_dir()))} {quote(str(self.get_builder_dir()/'build'))} {quote(str(self.get_builder_dir()/'plugins'))} {quote(str(self.get_builder_dir()/'distfiles'))}",
-                    f"sudo chown -R -- {quote(self._user)}:{quote(self._group)} {quote(str(self.get_builder_dir()))}",
+                    f"doas mkdir -p -- {quote(str(self.get_builder_dir()))} {quote(str(self.get_builder_dir()/'build'))} {quote(str(self.get_builder_dir()/'plugins'))} {quote(str(self.get_builder_dir()/'distfiles'))}",
+                    f"doas chown -R -- {quote(self._user)}:{quote(self._group)} {quote(str(self.get_builder_dir()))}",
                 ]
 
                 # replace placeholders

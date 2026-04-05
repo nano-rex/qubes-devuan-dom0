@@ -1,5 +1,5 @@
 etc/qubes/protected-files.d
-etc/systemd/system
+etc/runit/system
 etc/qubes
 etc/qubes/autostart
 etc/qubes/suspend-post.d

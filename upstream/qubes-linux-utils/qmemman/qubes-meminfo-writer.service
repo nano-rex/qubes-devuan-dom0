@@ -1,7 +1,7 @@
 [Unit]
 Description=Qubes memory information reporter
 ConditionPathExists=/run/qubes-service/meminfo-writer
-Before=systemd-user-sessions.service
+Before=runit-user-sessions.service
 
 [Service]
 Type=forking

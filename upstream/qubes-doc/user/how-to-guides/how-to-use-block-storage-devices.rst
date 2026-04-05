@@ -34,7 +34,7 @@ If not specified otherwise, block devices will show up as ``/dev/xvdi*`` in a li
 
       $ cd ~
       $ mkdir mnt
-      $ sudo mount /dev/xvdi2 mnt
+      $ doas mount /dev/xvdi2 mnt
 
 where ``xvdi2`` needs to be replaced with the partition you want to mount. This will make your drive content accessible under ``~/mnt``.
 
@@ -51,7 +51,7 @@ The command-line tool you may use to mount whole USB drives or their partitions 
 
 ``qvm-block`` won’t recognise your device by any given name, but rather the device-node the sourceVM assigns. So make sure you have the drive available in the sourceVM, then list the available block devices (step 1.) to find the corresponding device-node.
 
-In case of a USB-drive, make sure it’s attached to your computer. If you don’t see anything that looks like your drive, run ``sudo udevadm trigger --action=change`` in your USB-qube (typically ``sys-usb``)
+In case of a USB-drive, make sure it’s attached to your computer. If you don’t see anything that looks like your drive, run ``doas udevadm trigger --action=change`` in your USB-qube (typically ``sys-usb``)
 
 1. In a dom0 console (running as a normal user), list all available block devices:
 
@@ -82,7 +82,7 @@ In case of a USB-drive, make sure it’s attached to your computer. If you don�
 
          $ cd ~
          $ mkdir mnt
-         $ sudo mount /dev/xvdi mnt
+         $ doas mount /dev/xvdi mnt
 
 4. When you finish using the block device, click the eject button or right-click and select **Unmount**.
 
@@ -90,7 +90,7 @@ In case of a USB-drive, make sure it’s attached to your computer. If you don�
 
    .. code:: console
 
-         $ sudo umount mnt
+         $ doas umount mnt
 
 5. In a dom0 console, detach the device
 
@@ -128,7 +128,7 @@ Currently (until issue `1082 <https://github.com/QubesOS/qubes-issues/issues/108
 
          [user@dom0 ~]$ qvm-block
          sys-usb:sda DataTraveler_2.0 () 246 MiB (attached to 'testvm' as 'xvdi')
-         [user@dom0 ~]$ sudo xl block-attach testvm phy:/dev/sda backend=sys-usb xvdi
+         [user@dom0 ~]$ doas xl block-attach testvm phy:/dev/sda backend=sys-usb xvdi
 
    In above example, all ``xl block-attach`` parameters can be deduced from the output of ``qvm-block``. In order:
 
@@ -151,7 +151,7 @@ To attach a file as block device to another qube, first turn it into a loopback 
 
    .. code:: console
 
-         $ sudo losetup -f --show /path/to/file
+         $ doas losetup -f --show /path/to/file
 
    `This command <https://linux.die.net/man/8/losetup>`__ will create the device node ``/dev/loop0`` or, if that is already in use, increase the trailing integer until that name is still available. Afterwards it prints the device-node-name it found.
 
@@ -177,7 +177,7 @@ To attach a file as block device to another qube, first turn it into a loopback 
 
    .. code:: console
 
-         $ sudo losetup -d /dev/loop0
+         $ doas losetup -d /dev/loop0
 
 Additional Attach Options
 -------------------------

@@ -148,7 +148,7 @@ In order to allow networking from qube A (client) to qube B (server) follow thes
 
 .. code:: console
 
-      $ sudo nft add rule ip qubes custom-forward ip saddr <IP address of A> ip daddr <IP address of B> ct state new,established,related counter accept
+      $ doas nft add rule ip qubes custom-forward ip saddr <IP address of A> ip daddr <IP address of B> ct state new,established,related counter accept
 
 
 
@@ -158,7 +158,7 @@ In order to allow networking from qube A (client) to qube B (server) follow thes
 
 .. code:: console
 
-      $ sudo nft add rule qubes custom-input ip saddr <IP address of A> ct state new,established,related counter accept
+      $ doas nft add rule qubes custom-input ip saddr <IP address of A> ct state new,established,related counter accept
 
 
 
@@ -170,7 +170,7 @@ In order to allow networking from qube A (client) to qube B (server) follow thes
 
 .. code:: console
 
-      [user@sys-firewall ~]$ sudo -i
+      [user@sys-firewall ~]$ doas -i
       [root@sys-firewall user]# echo "nft add rule ip qubes custom-forward ip saddr 10.137.2.25 ip daddr 10.137.2.6 ct state new,established,related counter accept" >> /rw/config/qubes-firewall-user-script
 
 
@@ -181,7 +181,7 @@ In order to allow networking from qube A (client) to qube B (server) follow thes
 
 .. code:: console
 
-      [user@B ~]$ sudo -i
+      [user@B ~]$ doas -i
       [root@B user]# echo "nft add rule qubes custom-input ip saddr 10.137.2.25 accept" >> /rw/config/rc.local
 
 
@@ -270,9 +270,9 @@ will restrict the binding to only the corresponding TCP port of ``mytcp-service-
 
 **4. Permanent port binding**
 
-For creating a permanent port bind between two qubes, ``systemd`` can be used. We use the case of the first example. In ``/rw/config`` (or any place you find suitable) of qube ``untrusted``, create ``my-tcp-service.socket`` with content:
+For creating a permanent port bind between two qubes, ``runit`` can be used. We use the case of the first example. In ``/rw/config`` (or any place you find suitable) of qube ``untrusted``, create ``my-tcp-service.socket`` with content:
 
-.. code:: systemd
+.. code:: runit
 
       [Unit]
       Description=my-tcp-service
@@ -288,7 +288,7 @@ For creating a permanent port bind between two qubes, ``systemd`` can be used. W
 
 and ``my-tcp-service@.service`` with content:
 
-.. code:: systemd
+.. code:: runit
 
       [Unit]
       Description=my-tcp-service
@@ -304,9 +304,9 @@ In ``/rw/config/rc.local``, append the lines:
 
 .. code:: bash
 
-      cp -r /rw/config/my-tcp-service.socket /rw/config/my-tcp-service@.service /lib/systemd/system/
-      systemctl daemon-reload
-      systemctl start my-tcp-service.socket
+      cp -r /rw/config/my-tcp-service.socket /rw/config/my-tcp-service@.service /lib/runit/system/
+      sv daemon-reload
+      sv start my-tcp-service.socket
 
 
 
@@ -447,7 +447,7 @@ Once you have confirmed that the counters increase, store the commands used in t
 
 .. code:: console
 
-      [user@sys-net user]$ sudo -i
+      [user@sys-net user]$ doas -i
       [root@sys-net user]# nano /rw/config/qubes-firewall-user-script
 
 
@@ -506,7 +506,7 @@ Once you have confirmed that the counters increase, store these commands in the 
 
 .. code:: console
 
-      [user@sys-net user]$ sudo -i
+      [user@sys-net user]$ doas -i
       [root@sys-net user]# nano /rw/config/qubes-firewall-user-script
 
 
@@ -549,7 +549,7 @@ To make it persistent, you need to add this command in the script ``/rw/config/r
 
 .. code:: console
 
-      [user@qubeDEST user]$ sudo -i
+      [user@qubeDEST user]$ doas -i
       [root@qubeDEST user]# echo 'nft add rule qubes custom-input tcp dport 443 ip daddr 10.137.0.xx ct state new,established,related counter accept' >> /rw/config/rc.local
 
 
@@ -568,7 +568,7 @@ Firewall troubleshooting
 ------------------------
 
 
-Firewall logs are stored in the systemd journal of the qube the firewall is running in (probably ``sys-firewall``). You can view them by running ``sudo journalctl -u qubes-firewall.service`` in the relevant qube. Sometimes these logs can contain useful information about errors that are preventing the firewall from behaving as you would expect.
+Firewall logs are stored in the runit journal of the qube the firewall is running in (probably ``sys-firewall``). You can view them by running ``doas journalctl -u qubes-firewall.service`` in the relevant qube. Sometimes these logs can contain useful information about errors that are preventing the firewall from behaving as you would expect.
 
 An effective console utility to troubleshoot network is `tcpdump <https://www.tcpdump.org/>`__, it can be used to display network packets entering or leaving network interfaces.
 

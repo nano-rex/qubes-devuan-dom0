@@ -38,8 +38,8 @@ clean:
 	rm -f .coverage
 
 # Dropin Directory
-SYSTEM_DROPIN_DIR ?= /lib/systemd/system
-USER_DROPIN_DIR ?= /usr/lib/systemd/user
+SYSTEM_DROPIN_DIR ?= /lib/runit/system
+USER_DROPIN_DIR ?= /usr/lib/runit/user
 
 SYSTEM_DROPINS := boot.automount chronyd.service crond.service
 SYSTEM_DROPINS += cups.service cups-browsed.service cups.path cups.socket ModemManager.service
@@ -47,10 +47,10 @@ SYSTEM_DROPINS += getty@tty.service serial-getty@.service
 SYSTEM_DROPINS += tmp.mount
 SYSTEM_DROPINS += org.cups.cupsd.service org.cups.cupsd.path org.cups.cupsd.socket
 SYSTEM_DROPINS += firewalld.service
-SYSTEM_DROPINS += systemd-random-seed.service
+SYSTEM_DROPINS += runit-random-seed.service
 SYSTEM_DROPINS += tor.service tor@default.service
-SYSTEM_DROPINS += systemd-timesyncd.service
-SYSTEM_DROPINS += systemd-logind.service
+SYSTEM_DROPINS += runit-timesyncd.service
+SYSTEM_DROPINS += runit-logind.service
 SYSTEM_DROPINS += sysinit.target
 ifeq ($(ENABLE_SELINUX),1)
 SYSTEM_DROPINS += selinux-autorelabel.target selinux-autorelabel.service
@@ -58,8 +58,8 @@ endif
 SYSTEM_DROPINS += polkit.service
 SYSTEM_DROPINS += abrtd.service
 SYSTEM_DROPINS += bluetooth.service
-SYSTEM_DROPINS += systemd-nsresourced.service
-SYSTEM_DROPINS += systemd-nsresourced.socket
+SYSTEM_DROPINS += runit-nsresourced.service
+SYSTEM_DROPINS += runit-nsresourced.socket
 
 SYSTEM_DROPINS_NETWORKING := NetworkManager.service NetworkManager-wait-online.service
 SYSTEM_DROPINS_NETWORKING += tinyproxy.service
@@ -98,7 +98,7 @@ else ifeq ($(release), Debian)
     SYSTEM_DROPINS := $(strip $(patsubst crond.service, cron.service, $(SYSTEM_DROPINS)))
 
     # Wheezy System Dropins
-    # Disable sysinit 'network-manager.service' since systemd 'NetworkManager.service' is already installed
+    # Disable sysinit 'network-manager.service' since runit 'NetworkManager.service' is already installed
     SYSTEM_DROPINS += $(strip $(if $(filter wheezy, $(shell lsb_release -cs)), network-manager.service,))
 
     # handled by qubes-iptables service now
@@ -110,66 +110,66 @@ else ifeq ($(release), Debian)
     SYSTEM_DROPINS += avahi-daemon.service
 endif
 
-.PHONY: install-systemd-dropins
-install-systemd-dropins:
+.PHONY: install-runit-dropins
+install-runit-dropins:
 	# Install system dropins
 	@for dropin in $(SYSTEM_DROPINS); do \
 	    install -d $(DESTDIR)$(SYSTEM_DROPIN_DIR)/$${dropin}.d ;\
-	    install -m 0644 vm-systemd/$${dropin}.d/*.conf $(DESTDIR)$(SYSTEM_DROPIN_DIR)/$${dropin}.d/ ;\
+	    install -m 0644 vm-runit/$${dropin}.d/*.conf $(DESTDIR)$(SYSTEM_DROPIN_DIR)/$${dropin}.d/ ;\
 	done
 
 	# Install user dropins
 	@for dropin in $(USER_DROPINS); do \
 	    install -d $(DESTDIR)$(USER_DROPIN_DIR)/$${dropin}.d ;\
-	    install -m 0644 vm-systemd/user/$${dropin}.d/*.conf $(DESTDIR)$(USER_DROPIN_DIR)/$${dropin}.d/ ;\
+	    install -m 0644 vm-runit/user/$${dropin}.d/*.conf $(DESTDIR)$(USER_DROPIN_DIR)/$${dropin}.d/ ;\
 	done
 
-.PHONY: install-systemd-networking-dropins
-install-systemd-networking-dropins:
+.PHONY: install-runit-networking-dropins
+install-runit-networking-dropins:
 	# Install system dropins
 	@for dropin in $(SYSTEM_DROPINS_NETWORKING); do \
 	    install -d $(DESTDIR)$(SYSTEM_DROPIN_DIR)/$${dropin}.d ;\
-	    install -m 0644 vm-systemd/$${dropin}.d/*.conf $(DESTDIR)$(SYSTEM_DROPIN_DIR)/$${dropin}.d/ ;\
+	    install -m 0644 vm-runit/$${dropin}.d/*.conf $(DESTDIR)$(SYSTEM_DROPIN_DIR)/$${dropin}.d/ ;\
 	done
 
 .PHONY: install-init
 install-init:
 	install -d $(DESTDIR)$(LIBDIR)/qubes/init
-	# FIXME: do a source code move vm-systemd/*.sh to init/
-	# since those scripts are shared between sysvinit and systemd.
-	install -m 0755 init/*.sh vm-systemd/*.sh $(DESTDIR)$(LIBDIR)/qubes/init/
+	# FIXME: do a source code move vm-runit/*.sh to init/
+	# since those scripts are shared between sysvinit and runit.
+	install -m 0755 init/*.sh vm-runit/*.sh $(DESTDIR)$(LIBDIR)/qubes/init/
 	install -m 0644 init/functions $(DESTDIR)$(LIBDIR)/qubes/init/
 ifneq ($(ENABLE_SELINUX),1)
 	rm -f $(DESTDIR)$(LIBDIR)/qubes/init/relabel-root.sh
 	rm -f $(DESTDIR)$(LIBDIR)/qubes/init/relabel-rw.sh
 endif
 
-# Systemd service files
-SYSTEMD_ALL_SERVICES := $(wildcard vm-systemd/qubes-*.service) vm-systemd/dev-xvdc1-swap.service
-SYSTEMD_NETWORK_SERVICES := vm-systemd/qubes-firewall.service vm-systemd/qubes-iptables.service vm-systemd/qubes-updates-proxy.service vm-systemd/qubes-antispoof.service
-SYSTEMD_SELINUX_SERVICES := vm-systemd/qubes-relabel-root.service vm-systemd/qubes-relabel-rw.service
-SYSTEMD_CORE_SERVICES := $(filter-out $(SYSTEMD_NETWORK_SERVICES) $(SYSTEMD_SELINUX_SERVICES), $(SYSTEMD_ALL_SERVICES))
+# Runit service files
+RUNIT_ALL_SERVICES := $(wildcard vm-runit/qubes-*.service) vm-runit/dev-xvdc1-swap.service
+RUNIT_NETWORK_SERVICES := vm-runit/qubes-firewall.service vm-runit/qubes-iptables.service vm-runit/qubes-updates-proxy.service vm-runit/qubes-antispoof.service
+RUNIT_SELINUX_SERVICES := vm-runit/qubes-relabel-root.service vm-runit/qubes-relabel-rw.service
+RUNIT_CORE_SERVICES := $(filter-out $(RUNIT_NETWORK_SERVICES) $(RUNIT_SELINUX_SERVICES), $(RUNIT_ALL_SERVICES))
 
-.PHONY: install-systemd
-install-systemd: install-init
-	install -d $(DESTDIR)$(SYSLIBDIR)/systemd/system{,-preset} \
+.PHONY: install-runit
+install-runit: install-init
+	install -d $(DESTDIR)$(SYSLIBDIR)/runit/system{,-preset} \
 		$(DESTDIR)$(LIBDIR)/qubes/init \
 		$(DESTDIR)$(SYSLIBDIR)/modules-load.d \
-		$(DESTDIR)/etc/systemd/system \
-		$(DESTDIR)$(SYSLIBDIR)/systemd/network \
-		$(DESTDIR)$(SYSLIBDIR)/systemd/resolved.conf.d/ \
-		$(DESTDIR)$(SYSLIBDIR)/systemd/user-environment-generators
-	install -m 0644 $(SYSTEMD_CORE_SERVICES) $(DESTDIR)$(SYSLIBDIR)/systemd/system/
-	install -m 0644 vm-systemd/qubes-*.timer $(DESTDIR)$(SYSLIBDIR)/systemd/system/
-	install -m 0644 vm-systemd/75-qubes-vm.preset $(DESTDIR)$(SYSLIBDIR)/systemd/system-preset/
-	install -m 0644 vm-systemd/qubes-core.conf $(DESTDIR)$(SYSLIBDIR)/modules-load.d/
-	install -m 0644 vm-systemd/xendriverdomain.service $(DESTDIR)/etc/systemd/system/
-	install -m 0644 vm-systemd/80-qubes-vif.link $(DESTDIR)$(SYSLIBDIR)/systemd/network/
-	install -m 0644 vm-systemd/30_resolved-no-mdns-or-llmnr.conf $(DESTDIR)$(SYSLIBDIR)/systemd/resolved.conf.d/
-	install -m 0644 vm-systemd/home.mount $(DESTDIR)$(SYSLIBDIR)/systemd/system/
-	install -m 0755 vm-systemd/user-environment-generators/30-qubes.sh $(DESTDIR)$(SYSLIBDIR)/systemd/user-environment-generators/30-qubes.sh
-	install -m 0644 vm-systemd/usr-local.mount $(DESTDIR)$(SYSLIBDIR)/systemd/system/
-	install -m 0755 vm-systemd/setup-minimal-vm $(DESTDIR)$(LIBDIR)/qubes/setup-minimal-vm
+		$(DESTDIR)/etc/runit/system \
+		$(DESTDIR)$(SYSLIBDIR)/runit/network \
+		$(DESTDIR)$(SYSLIBDIR)/runit/resolved.conf.d/ \
+		$(DESTDIR)$(SYSLIBDIR)/runit/user-environment-generators
+	install -m 0644 $(RUNIT_CORE_SERVICES) $(DESTDIR)$(SYSLIBDIR)/runit/system/
+	install -m 0644 vm-runit/qubes-*.timer $(DESTDIR)$(SYSLIBDIR)/runit/system/
+	install -m 0644 vm-runit/75-qubes-vm.preset $(DESTDIR)$(SYSLIBDIR)/runit/system-preset/
+	install -m 0644 vm-runit/qubes-core.conf $(DESTDIR)$(SYSLIBDIR)/modules-load.d/
+	install -m 0644 vm-runit/xendriverdomain.service $(DESTDIR)/etc/runit/system/
+	install -m 0644 vm-runit/80-qubes-vif.link $(DESTDIR)$(SYSLIBDIR)/runit/network/
+	install -m 0644 vm-runit/30_resolved-no-mdns-or-llmnr.conf $(DESTDIR)$(SYSLIBDIR)/runit/resolved.conf.d/
+	install -m 0644 vm-runit/home.mount $(DESTDIR)$(SYSLIBDIR)/runit/system/
+	install -m 0755 vm-runit/user-environment-generators/30-qubes.sh $(DESTDIR)$(SYSLIBDIR)/runit/user-environment-generators/30-qubes.sh
+	install -m 0644 vm-runit/usr-local.mount $(DESTDIR)$(SYSLIBDIR)/runit/system/
+	install -m 0755 vm-runit/setup-minimal-vm $(DESTDIR)$(LIBDIR)/qubes/setup-minimal-vm
 
 .PHONY: install-sysvinit
 install-sysvinit: install-init
@@ -186,11 +186,11 @@ install-sysvinit: install-init
 
 install-selinux:
 	install -D -m 0644 -t $(DESTDIR)/usr/share/selinux/packages -- $(patsubst %,selinux/%,$(selinux_policies))
-	install -m 0644 $(SYSTEMD_SELINUX_SERVICES) $(DESTDIR)$(SYSLIBDIR)/systemd/system/
+	install -m 0644 $(RUNIT_SELINUX_SERVICES) $(DESTDIR)$(SYSLIBDIR)/runit/system/
 .PHONY: install-selinux
 
 .PHONY: install-rh
-install-rh: install-systemd install-systemd-dropins install-sysvinit
+install-rh: install-runit install-runit-dropins install-sysvinit
 ifeq ($(ENABLE_SELINUX),1)
 install-rh: install-selinux
 endif
@@ -216,20 +216,20 @@ install-networking:
 	install -d $(DESTDIR)/etc/sysctl.d
 	install -m 644 network/81-qubes.conf.optional $(DESTDIR)/etc/sysctl.d/
 	install -m 644 network/82-qubes-minimal-sys-net.conf.optional $(DESTDIR)/etc/sysctl.d/
-	install -d $(DESTDIR)$(SYSLIBDIR)/systemd/system
-	install -m 0644 vm-systemd/qubes-*.socket $(DESTDIR)$(SYSLIBDIR)/systemd/system/
+	install -d $(DESTDIR)$(SYSLIBDIR)/runit/system
+	install -m 0644 vm-runit/qubes-*.socket $(DESTDIR)$(SYSLIBDIR)/runit/system/
 
 # Netvm install target includes:
 # * qubes-firewall service (FirewallVM)
 # * DNS redirection setup
 # * proxy service used by TemplateVMs to download updates
 .PHONY: install-netvm
-install-netvm: install-systemd-networking-dropins install-networkmanager
-	install -D -m 0644 $(SYSTEMD_NETWORK_SERVICES) $(DESTDIR)$(SYSLIBDIR)/systemd/system/
+install-netvm: install-runit-networking-dropins install-networkmanager
+	install -D -m 0644 $(RUNIT_NETWORK_SERVICES) $(DESTDIR)$(SYSLIBDIR)/runit/system/
 
 	install -D -m 0755 network/qubes-iptables $(DESTDIR)$(LIBDIR)/qubes/init/qubes-iptables
 
-	install -D -m 0644 vm-systemd/qubes-core-agent-linux.tmpfiles \
+	install -D -m 0644 vm-runit/qubes-core-agent-linux.tmpfiles \
 		$(DESTDIR)/usr/lib/tmpfiles.d/qubes-core-agent-linux.conf
 
 	install -D network/qubes-setup-dnat-to-ns $(DESTDIR)$(LIBDIR)/qubes/qubes-setup-dnat-to-ns
@@ -269,14 +269,14 @@ install-networkmanager:
 	install -m 0644 network/show-hide-nm-applet.desktop $(DESTDIR)/etc/xdg/autostart/00-qubes-show-hide-nm-applet.desktop
 
 .PHONY: install-deb
-install-deb: install-common install-systemd install-systemd-dropins install-systemd-networking-dropins install-networking install-networkmanager install-netvm
+install-deb: install-common install-runit install-runit-dropins install-runit-networking-dropins install-networking install-networkmanager install-netvm
 	install -d $(DESTDIR)/etc/sysctl.d
 	install -m 644 network/80-qubes.conf $(DESTDIR)/etc/sysctl.d/
 	install -d $(DESTDIR)/etc/needrestart/conf.d
 	install -D -m 0644 misc/50_qubes.conf $(DESTDIR)/etc/needrestart/conf.d/50_qubes.conf
 
 .PHONY: install-corevm
-install-corevm: install-rh install-common install-systemd install-sysvinit install-systemd-dropins install-networking
+install-corevm: install-rh install-common install-runit install-sysvinit install-runit-dropins install-networking
 
 .PHONY: install-vm
 install-vm: install-corevm install-netvm

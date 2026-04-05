@@ -37,15 +37,15 @@ URL:		http://www.qubes-os.org
 
 # because we have "#!/usr/bin/env python" shebangs, RPM puts
 # "Requires: $(which # python)" dependency, which, depending on $PATH order,
-# may point to /usr/bin/python or /bin/python (because Fedora has this stupid
+# may point to /usr/bin/python or /bin/python (because antiX has this stupid
 # /bin -> usr/bin symlink). python*.rpm provides only /usr/bin/python.
 AutoReq:	no
 
 BuildArch: noarch
 
 BuildRequires:  GraphicsMagick
-BuildRequires:	systemd-units
-BuildRequires:  systemd
+BuildRequires:	runit-units
+BuildRequires:  runit
 BuildRequires:  python3-devel
 BuildRequires:  python3-setuptools
 BuildRequires:  make
@@ -58,9 +58,9 @@ BuildRequires:	python3-dbus
 BuildRequires:	python3-PyYAML
 BuildRequires:  python3-xen
 
-Requires(post): systemd-units
-Requires(preun): systemd-units
-Requires(postun): systemd-units
+Requires(post): runit-units
+Requires(preun): runit-units
+Requires(postun): runit-units
 
 Requires:       python3
 #Requires:       python3-aiofiles
@@ -75,7 +75,7 @@ Requires:       libvirt-python3
 
 Requires:       pciutils
 # ionice, for low-disk-impact dd during volume duplication.
-%if 0%{?fedora} == 32
+%if 0%{?antix} == 32
 # FC32 / Q4.1 builds don't have util-linux-core.
 Requires:       util-linux
 %else
@@ -113,7 +113,7 @@ Requires:       socat
 # Requires libqubes-pure for qube notes utf8 sanitisation
 Requires:       qubes-utils-libs
 
-%{?systemd_requires}
+%{?runit_requires}
 
 Obsoletes:	qubes-core-dom0-doc <= 4.0
 Provides:	qubes-core-dom0-doc
@@ -154,10 +154,10 @@ mkdir -p $RPM_BUILD_ROOT/etc/qubes/backup
 
 
 %post
-%systemd_post qubes-core.service
-%systemd_post qubes-qmemman.service
-%systemd_post qubesd.service
-%systemd_post qubes-preload-dispvm.service
+%runit_post qubes-core.service
+%runit_post qubes-qmemman.service
+%runit_post qubesd.service
+%runit_post qubes-preload-dispvm.service
 
 sed '/^autoballoon=/d;/^lockfile=/d' -i /etc/xen/xl.conf
 echo 'autoballoon=0' >> /etc/xen/xl.conf
@@ -168,9 +168,9 @@ sed 's/^PRELINKING\s*=.*/PRELINKING=no/' -i /etc/sysconfig/prelink
 fi
 
 # Conflicts with libxl stack, so disable it
-systemctl --no-reload disable xend.service >/dev/null 2>&1
-systemctl --no-reload disable xendomains.service >/dev/null 2>&1
-systemctl daemon-reload >/dev/null 2>&1 || :
+sv --no-reload disable xend.service >/dev/null 2>&1
+sv --no-reload disable xendomains.service >/dev/null 2>&1
+sv daemon-reload >/dev/null 2>&1 || :
 
 if ! [ -e /var/lib/qubes/qubes.xml ]; then
 #    echo "Initializing Qubes DB..."
@@ -190,10 +190,10 @@ fi
 /usr/lib/qubes/fix-dir-perms.sh
 
 %preun
-%systemd_preun qubes-core.service
-%systemd_preun qubes-qmemman.service
-%systemd_preun qubesd.service
-%systemd_preun qubes-preload-dispvm.service
+%runit_preun qubes-core.service
+%runit_preun qubes-qmemman.service
+%runit_preun qubesd.service
+%runit_preun qubes-preload-dispvm.service
 
 if [ "$1" = 0 ] ; then
 	# no more packages left
@@ -202,10 +202,10 @@ if [ "$1" = 0 ] ; then
 fi
 
 %postun
-%systemd_postun qubes-core.service
-%systemd_postun_with_restart qubes-qmemman.service
-%systemd_postun_with_restart qubesd.service
-%systemd_postun qubes-preload-dispvm.service
+%runit_postun qubes-core.service
+%runit_postun_with_restart qubes-qmemman.service
+%runit_postun_with_restart qubesd.service
+%runit_postun qubes-preload-dispvm.service
 
 if [ "$1" = 0 ] ; then
 	# no more packages left

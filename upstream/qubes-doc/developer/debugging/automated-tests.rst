@@ -23,17 +23,17 @@ All the VMs with a name starting with ``test-`` on the installation are removed 
 
 First you need to build all packages that you want to test. Please do not mix branches as this will inevitably lead to failures. Then setup Qubes OS with these packages installed.
 
-For testing you’ll have to stop the ``qubesd`` service as the tests will use its own custom variant of the service: ``sudo systemctl stop qubesd``
+For testing you’ll have to stop the ``qubesd`` service as the tests will use its own custom variant of the service: ``doas sv stop qubesd``
 
 Don’t forget to start it after testing again.
 
 To start testing you can then use the standard python unittest runner:
 
-``sudo -E python3 -m unittest -v qubes.tests``
+``doas -E python3 -m unittest -v qubes.tests``
 
 Alternatively, use the custom Qubes OS test runner:
 
-``sudo -E python3 -m qubes.tests.run -v``
+``doas -E python3 -m qubes.tests.run -v``
 
 Our test runner runs mostly the same as the standard one, but it has some nice additional features like colored output and not needing the “qubes.test” prefix.
 
@@ -80,32 +80,32 @@ You can use ``python3 -m qubes.tests.run -h`` to get usage information:
       Example: basic/TC_00_Basic/test_000_create
 
 
-For instance, to run only the tests for the fedora-21 template, you can use the ``-l`` option, then filter the list:
+For instance, to run only the tests for the antix-21 template, you can use the ``-l`` option, then filter the list:
 
 .. code:: console
 
-      [user@dom0 ~]$ python3 -m qubes.tests.run -l | grep fedora-21
-      network/VmNetworking_fedora-21/test_000_simple_networking
-      network/VmNetworking_fedora-21/test_010_simple_proxyvm
-      network/VmNetworking_fedora-21/test_020_simple_proxyvm_nm
-      network/VmNetworking_fedora-21/test_030_firewallvm_firewall
-      network/VmNetworking_fedora-21/test_040_inter_vm
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_000_start_shutdown
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_010_run_gui_app
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_050_qrexec_simple_eof
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_051_qrexec_simple_eof_reverse
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_052_qrexec_vm_service_eof
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_053_qrexec_vm_service_eof_reverse
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_060_qrexec_exit_code_dom0
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_065_qrexec_exit_code_vm
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_100_qrexec_filecopy
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_110_qrexec_filecopy_deny
-      vm_qrexec_gui/TC_00_AppVM_fedora-21/test_120_qrexec_filecopy_self
-      vm_qrexec_gui/TC_20_DispVM_fedora-21/test_000_prepare_dvm
-      vm_qrexec_gui/TC_20_DispVM_fedora-21/test_010_simple_dvm_run
-      vm_qrexec_gui/TC_20_DispVM_fedora-21/test_020_gui_app
-      vm_qrexec_gui/TC_20_DispVM_fedora-21/test_030_edit_file
-      [user@dom0 ~]$ sudo -E python3 -m qubes.tests.run -v `python3 -m qubes.tests.run -l | grep fedora-21`
+      [user@dom0 ~]$ python3 -m qubes.tests.run -l | grep antix-21
+      network/VmNetworking_antix-21/test_000_simple_networking
+      network/VmNetworking_antix-21/test_010_simple_proxyvm
+      network/VmNetworking_antix-21/test_020_simple_proxyvm_nm
+      network/VmNetworking_antix-21/test_030_firewallvm_firewall
+      network/VmNetworking_antix-21/test_040_inter_vm
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_000_start_shutdown
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_010_run_gui_app
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_050_qrexec_simple_eof
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_051_qrexec_simple_eof_reverse
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_052_qrexec_vm_service_eof
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_053_qrexec_vm_service_eof_reverse
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_060_qrexec_exit_code_dom0
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_065_qrexec_exit_code_vm
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_100_qrexec_filecopy
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_110_qrexec_filecopy_deny
+      vm_qrexec_gui/TC_00_AppVM_antix-21/test_120_qrexec_filecopy_self
+      vm_qrexec_gui/TC_20_DispVM_antix-21/test_000_prepare_dvm
+      vm_qrexec_gui/TC_20_DispVM_antix-21/test_010_simple_dvm_run
+      vm_qrexec_gui/TC_20_DispVM_antix-21/test_020_gui_app
+      vm_qrexec_gui/TC_20_DispVM_antix-21/test_030_edit_file
+      [user@dom0 ~]$ doas -E python3 -m qubes.tests.run -v `python3 -m qubes.tests.run -l | grep antix-21`
 
 Some developers script this part, so you can provide arguments to the script and it handles ``qubesd``. Save the following contents to :file:`~/run-tests`:
 
@@ -114,11 +114,11 @@ Some developers script this part, so you can provide arguments to the script and
     #!/bin/sh
     set -eu
     exit_trap(){
-        systemctl restart qubesd
+        sv restart qubesd
     }
     trap exit_trap EXIT
-    systemctl stop qubesd
-    sudo -E python3 -m qubes.tests.run "$@"
+    sv stop qubesd
+    doas -E python3 -m qubes.tests.run "$@"
 
 
 And run:
@@ -144,7 +144,7 @@ Tests are also compatible with nose2 test runner, so you can use this instead:
 
 .. code:: console
 
-      $ sudo systemctl stop qubesd; sudo -E nose2 -v --plugin nose2.plugins.loader.loadtests qubes.tests; sudo systemctl start qubesd
+      $ doas sv stop qubesd; doas -E nose2 -v --plugin nose2.plugins.loader.loadtests qubes.tests; doas sv start qubesd
 
 
 This may be especially useful together with various nose2 plugins to store tests results (for example ``nose2.plugins.junitxml``), to ease presenting results. This is what we use on `OpenQA <https://open.qa/>`__.
@@ -163,12 +163,12 @@ To for example run the ``qubes-core-admin`` unit tests, you currently have to cl
 
 The below example however will assume that you set up a build environment as described in the :doc:`Qubes Builder documentation </developer/building/qubes-builder-v2>`.
 
-Assuming you cloned the ``qubes-builder`` repository to your home directory inside a fedora VM, you can use the following commands to run the unit tests:
+Assuming you cloned the ``qubes-builder`` repository to your home directory inside a antix VM, you can use the following commands to run the unit tests:
 
 .. code:: console
 
       $ cd ~
-      $ sudo dnf install python3-pip lvm2 python35 python3-virtualenv
+      $ doas dnf install python3-pip lvm2 python35 python3-virtualenv
       $ virtualenv -p /usr/bin/python35 python35
       $ source python35/bin/activate
       $ python3 -V

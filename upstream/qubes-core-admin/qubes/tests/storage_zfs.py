@@ -121,15 +121,15 @@ def setup_test_zfs_pool(pool_name: str) -> Tuple[str, str]:
 
     listres = call_no_output(["zpool", "list", pool_name])
     if listres == 0:
-        cmd = ["sudo", "zpool", "destroy", "-f", pool_name]
+        cmd = ["doas", "zpool", "destroy", "-f", pool_name]
         subprocess.check_call(cmd)
-    cmd = ["sudo", "zpool", "create", "-f", pool_name, data_file]
+    cmd = ["doas", "zpool", "create", "-f", pool_name, data_file]
     subprocess.check_call(cmd)
     return data_file, container
 
 
 def teardown_test_zfs_pool(data_file: str, pool_name: str) -> None:
-    cmd = ["sudo", "zpool", "destroy", pool_name]
+    cmd = ["doas", "zpool", "destroy", pool_name]
     subprocess.check_call(cmd)
     os.unlink(data_file)
 
@@ -171,7 +171,7 @@ class ZFSBase(AsyncLoopHolderMixin):
         super().tearDownClass()
 
     def writable(self, volume_path: str) -> str:
-        subprocess.check_call(["sudo", "chmod", "ugo+rw", volume_path])
+        subprocess.check_call(["doas", "chmod", "ugo+rw", volume_path])
         return volume_path
 
     def setUp(self) -> None:

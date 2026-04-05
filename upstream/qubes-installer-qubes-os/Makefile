@@ -56,7 +56,7 @@ LORAX_PACKAGES := $(DNF_ROOT)/tmp/lorax_packages.list
 LORAX_OPTS := --product "Qubes OS" --variant "qubes" --macboot --force --rootfs-size=4
 LORAX_OPTS += --version "$(ISO_VERSION)" --release "Qubes OS $(ISO_VERSION)" --volid $(ISO_VOLID)
 LORAX_OPTS += --workdir $(INSTALLER_DIR)/work/work/x86_64 --logfile $(INSTALLER_DIR)/work/logs/lorax-x86_64.log
-LORAX_OPTS += --repo $(DNF_REPO) --skip-branding --disablerepo=fedora --disablerepo=fedora-updates --disablerepo=updates --disablerepo='qubes-*'
+LORAX_OPTS += --repo $(DNF_REPO) --skip-branding --disablerepo=antix --disablerepo=antix-updates --disablerepo=updates --disablerepo='qubes-*'
 
 ifeq ($(ISO_USE_KERNEL_LATEST),1)
 LORAX_OPTS += --installpkgs kernel-latest --excludepkgs kernel
@@ -119,9 +119,9 @@ iso-prepare:
 	mkdir -p $(DNF_ROOT)/etc/dnf
 	cp $(INSTALLER_DIR)/yum/dnf.conf $(DNF_ROOT)/etc/dnf/
 
-	# Copy Fedora key to DNF installroot
+	# Copy antiX key to DNF installroot
 	mkdir -p $(DNF_ROOT)/etc/pki/rpm-gpg
-	cp $(INSTALLER_DIR)/qubes-release/RPM-GPG-KEY-fedora-$(DIST_VER)-primary $(DNF_ROOT)/etc/pki/rpm-gpg
+	cp $(INSTALLER_DIR)/qubes-release/RPM-GPG-KEY-antix-$(DIST_VER)-primary $(DNF_ROOT)/etc/pki/rpm-gpg
 
 iso-parse-kickstart:
 	# Extract repos conf and packages from kickstart
@@ -187,8 +187,8 @@ clean-repos:
 	@(cd yum && ./clean_repos.sh)
 
 clean:
-	sudo rm -rf $(DNF_ROOT)
-	sudo rm -fr build/*
+	doas rm -rf $(DNF_ROOT)
+	doas rm -fr build/*
 
 get-sources:
 	git submodule update --init --recursive

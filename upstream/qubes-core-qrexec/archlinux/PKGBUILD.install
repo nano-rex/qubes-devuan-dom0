@@ -2,16 +2,16 @@
 ## arg 1:  the new package version
 post_install() {
   ldconfig
-  systemctl enable qubes-qrexec-agent.service > /dev/null
+  sv enable qubes-qrexec-agent.service > /dev/null
 }
 
 post_upgrade() {
   ldconfig
-  systemctl try-restart qubes-qrexec-agent.service > /dev/null
+  sv try-restart qubes-qrexec-agent.service > /dev/null
 }
 
 post_remove() {
   ldconfig
-  systemctl disable qubes-qrexec-agent.service > /dev/null
+  sv disable qubes-qrexec-agent.service > /dev/null
 }
 

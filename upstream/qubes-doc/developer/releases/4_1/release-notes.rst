@@ -13,7 +13,7 @@ New features and improvements since Qubes 4.0
 
 - Xen upgraded to version 4.14
 
-- Dom0 operating system upgraded to Fedora 32
+- Dom0 operating system upgraded to antiX 32
 
 - Default desktop environment upgraded to Xfce 4.14
 
@@ -49,7 +49,7 @@ New features and improvements since Qubes 4.0
 
 - “Paranoid mode” backup restore option now properly supported using disposables
 
-- Users can now choose between Debian and Fedora in the installer
+- Users can now choose between Debian and antiX in the installer
 
 - Certain files and applications are now opened in disposables, e.g., Thunderbird email attachments
 

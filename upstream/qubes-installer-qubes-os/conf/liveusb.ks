@@ -1,6 +1,6 @@
-# fedora-live-base.ks
+# antix-live-base.ks
 #
-# Defines the basics for all kickstarts in the fedora-live branch
+# Defines the basics for all kickstarts in the antix-live branch
 # Does not include package selection (other then mandatory)
 # Does not include localization packages or configuration
 #
@@ -51,7 +51,7 @@ EOF
 rm -f /var/lib/rpm/__db*
 releasever=$(rpm -q --qf '%{version}\n' --whatprovides system-release)
 rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-qubes-$releasever-primary
-rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-fedora-20-primary
+rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-antix-20-primary
 echo "Packages within this LiveCD"
 rpm -qa
 # Note that running rpm recreates the rpm db files which aren't needed or wanted
@@ -66,7 +66,7 @@ rm -f /boot/initramfs*
 rm -f /core*
 
 # convince readahead not to collect
-# FIXME: for systemd
+# FIXME: for runit
 
 # forcibly regenerate fontconfig cache (so long as this live image has
 # fontconfig) - see #1169979
@@ -74,7 +74,7 @@ if [ -x /usr/bin/fc-cache ] ; then
    fc-cache -f
 fi
 
-echo 'File created by kickstart. See systemd-update-done.service(8).' \
+echo 'File created by kickstart. See runit-update-done.service(8).' \
     | tee /etc/.updated >/var/.updated
 
 
@@ -82,13 +82,13 @@ echo 'File created by kickstart. See systemd-update-done.service(8).' \
 # setup Qubes
 #
 
-qubes-prefs -s default-template fedora-21
+qubes-prefs -s default-template antix-21
 
 # TODO: icons?
 for tpl in `ls /var/lib/qubes/vm-templates`; do
     case $tpl in
-        fedora*)
-            cat /usr/share/qubes/live-default-appmenus-fedora | \
+        antix*)
+            cat /usr/share/qubes/live-default-appmenus-antix | \
                 /usr/bin/qvm-sync-appmenus \
                 --force-root --offline-mode $tpl
             ;;

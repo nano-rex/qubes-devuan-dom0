@@ -441,7 +441,7 @@
 /usr/share/applications/rygel.desktop:Exec=qubes-desktop-run /usr/share/applications/rygel.desktop
 /usr/share/applications/rygel.desktop:GenericName=UPnP/DLNA Services
 /usr/share/applications/rygel.desktop:Name=Rygel
-/usr/share/applications/seahorse.desktop:Categories=GNOME;GTK;Security;Utility;DesktopSettings;X-XFCE-SettingsDialog;X-Fedora;
+/usr/share/applications/seahorse.desktop:Categories=GNOME;GTK;Security;Utility;DesktopSettings;X-XFCE-SettingsDialog;X-antiX;
 /usr/share/applications/seahorse.desktop:Comment=Manage your passwords and encryption keys
 /usr/share/applications/seahorse.desktop:Exec=qubes-desktop-run /usr/share/applications/seahorse.desktop
 /usr/share/applications/seahorse.desktop:Name=Passwords and Keys

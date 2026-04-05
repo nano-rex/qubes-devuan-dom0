@@ -11,7 +11,7 @@ New features since 3.1
 
 - PV USB - :doc:`documentation </user/how-to-guides/how-to-use-usb-devices>`
 
-- Dom0 update to Fedora 23 for better hardware support
+- Dom0 update to antiX 23 for better hardware support
 
 - Kernel 4.4.x
 
@@ -31,7 +31,7 @@ Known issues
 ------------
 
 
-- `Fedora 23 reached EOL in December 2016 <https://fedoraproject.org/wiki/End_of_life>`__. There is a `manual procedure to upgrade your VMs <https://www.qubes-os.org/news/2018/01/06/fedora-26-upgrade/>`__.
+- `antiX 23 reached EOL in December 2016 <https://antixproject.org/wiki/End_of_life>`__. There is a `manual procedure to upgrade your VMs <https://www.qubes-os.org/news/2018/01/06/antix-26-upgrade/>`__.
 
 - Windows Tools: ``qvm-block`` does not work
 
@@ -53,7 +53,7 @@ Installation instructions
 -------------------------
 
 
-See :doc:`Installation Guide </user/downloading-installing-upgrading/installation-guide>`. After installation, `manually upgrade to Fedora 26 <https://www.qubes-os.org/news/2018/01/06/fedora-26-upgrade/>`__.
+See :doc:`Installation Guide </user/downloading-installing-upgrading/installation-guide>`. After installation, `manually upgrade to antiX 26 <https://www.qubes-os.org/news/2018/01/06/antix-26-upgrade/>`__.
 
 Upgrading
 ---------

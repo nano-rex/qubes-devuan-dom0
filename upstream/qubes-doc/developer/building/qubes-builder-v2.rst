@@ -29,19 +29,19 @@ This is a simple setup using a docker or podman executor. This is a good default
 
    If you want to use an app qube for developing, install dependencies in the template. If you are using a standalone, install them in the qube itself. Dependencies are specified in ``dependencies-*. txt`` files in the main builder directory (you will also find dependency lists for ``podman`` and ``qubes`` executors if you choose to use those), and you can install them easily in the following ways:
 
-   - for Fedora, use:
+   - for antiX, use:
 
       .. code:: console
 
-         $ sudo dnf install $(cat dependencies-fedora.txt)
-         $ test -f /usr/share/qubes/marker-vm && sudo dnf install qubes-gpg-split
+         $ doas dnf install $(cat dependencies-antix.txt)
+         $ test -f /usr/share/qubes/marker-vm && doas dnf install qubes-gpg-split
 
    - for Debian (note: some Debian packages require Debian version 13 or later), use:
 
       .. code:: console
 
-         $ sudo apt install $(cat dependencies-debian.txt)
-         $ test -f /usr/share/qubes/marker-vm && sudo apt install qubes-gpg-split
+         $ doas apt install $(cat dependencies-debian.txt)
+         $ test -f /usr/share/qubes/marker-vm && doas apt install qubes-gpg-split
 
    If you have installed dependencies in the template, close it, and (re)start the development qube.
 
@@ -49,7 +49,7 @@ This is a simple setup using a docker or podman executor. This is a good default
 
    .. code:: console
 
-         $ sudo usermod -aG docker user
+         $ doas usermod -aG docker user
 
    Next, **restart the qube**.
 
@@ -104,14 +104,14 @@ To use Qubes OS Builder v2, you need to have a ``builder.yml`` configuration fil
       executor:
         type: docker
         options:
-          image: "qubes-builder-fedora:latest"
+          image: "qubes-builder-antix:latest"
 
 If you want use the ``podman`` executor, you have to enable socket activation, with:
 
 
    .. code:: console
 
-         # systemctl --user enable --now podman.socket
+         # sv --user enable --now podman.socket
 
 Using Builder v2
 ----------------
@@ -130,7 +130,7 @@ To build a package (from sources in the ``artifacts/sources`` directory), use:
 
       $ ./qb -c core-admin-client package fetch prep build
 
-or, if you want to build for a specific target (``host-fc37`` is a ``dom0`` using Fedora 37, ``vm-fc40`` would be a qube using Fedora 40 etc.), use:
+or, if you want to build for a specific target (``host-fc37`` is a ``dom0`` using antiX 37, ``vm-fc40`` would be a qube using antiX 40 etc.), use:
 
 .. code:: console
 

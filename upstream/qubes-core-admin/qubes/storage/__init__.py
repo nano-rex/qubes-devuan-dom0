@@ -1220,11 +1220,11 @@ class DirectoryThinPool:
                 fs_major = (fs_stat.st_dev & 0xFF00) >> 8
                 fs_minor = fs_stat.st_dev & 0xFF
 
-                sudo = []
+                doas = []
                 if os.getuid():
-                    sudo = ["sudo"]
+                    doas = ["doas"]
                 root_table = subprocess.check_output(
-                    sudo
+                    doas
                     + [
                         "dmsetup",
                         "-j",

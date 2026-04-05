@@ -35,8 +35,8 @@ class TC_06_AppVMMixin(object):
 
     def test_010_os_metadata(self):
         tpl = self.app.default_template
-        if self.template.startswith("fedora-"):
-            self.assertEqual(tpl.features.get("os-distribution"), "fedora")
+        if self.template.startswith("antix-"):
+            self.assertEqual(tpl.features.get("os-distribution"), "antix")
             version = self.template.split("-")[1]
             self.assertEqual(tpl.features.get("os-version"), version)
             self.assertIsNotNone(tpl.features.get("os-eol"))

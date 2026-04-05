@@ -1,6 +1,6 @@
 #!/usr/bin/python -tt
 #
-# livecd-creator : Creates Live CD based for Fedora.
+# livecd-creator : Creates Live CD based for antiX.
 #
 # Copyright 2007, Red Hat  Inc.
 #
@@ -235,8 +235,8 @@ set timeout=%(timeout)d
         #        - it isn't clear whether xen.efi would even work on Apple
         subprocess.call(["mkefiboot", "-a", isodir + "/EFI/BOOT",
                          isodir + "/isolinux/macboot.img", "-l", self.product,
-                         "-n", "/usr/share/pixmaps/bootloader/fedora-media.vol",
-                         "-i", "/usr/share/pixmaps/bootloader/fedora.icns",
+                         "-n", "/usr/share/pixmaps/bootloader/antix-media.vol",
+                         "-i", "/usr/share/pixmaps/bootloader/antix.icns",
                          "-p", self.product])
 
 

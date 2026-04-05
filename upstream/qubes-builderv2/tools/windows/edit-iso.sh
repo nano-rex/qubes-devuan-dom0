@@ -56,8 +56,8 @@ SCRIPT_DIR=$(dirname "$0")
 SCRIPT_DIR=$(readlink -f "${SCRIPT_DIR}")
 
 echo "[*] Setting up a loop device for the ISO..."
-LODEV=$(sudo losetup -f)
-sudo losetup "${LODEV}" "${INPUT}"
+LODEV=$(doas losetup -f)
+doas losetup "${LODEV}" "${INPUT}"
 LOOP_ID="${LODEV#'/dev/'}"
 
 echo "[*] Preparing a DispVM..."
@@ -74,7 +74,7 @@ shell_call "${DISPVM}" "chmod +x ~/edit-iso-dispvm.sh"
 # shellcheck disable=SC2088  # (~ expansion)
 shell_call "${DISPVM}" "~/edit-iso-dispvm.sh"
 
-sudo losetup -d "${LODEV}"
+doas losetup -d "${LODEV}"
 
 echo "[*] Copying the final iso from '${DISPVM}' to '${OUTPUT}'..."
 

@@ -19,7 +19,7 @@ By default, in Qubes R1, there is only one template, however users are free to c
 
    .. code:: console
 
-         $ sudo yum install qubes-upgrade-vm
+         $ doas yum install qubes-upgrade-vm
 
 
 
@@ -27,7 +27,7 @@ By default, in Qubes R1, there is only one template, however users are free to c
 
    .. code:: console
 
-         $ sudo yum update
+         $ doas yum update
 
 
    The installer (yum) will prompt to accept the new Qubes R2 signing key:
@@ -46,9 +46,9 @@ By default, in Qubes R1, there is only one template, however users are free to c
 
 
 
-- via a legitimate RPM package previously installed (in our case it was the ``qubes-upgrade-vm`` RPM). Such an RPM must have been signed by one of the keys you decided to trust previously, by default this would be either via the Qubes R1 signing key, or Fedora 17 signing key.
+- via a legitimate RPM package previously installed (in our case it was the ``qubes-upgrade-vm`` RPM). Such an RPM must have been signed by one of the keys you decided to trust previously, by default this would be either via the Qubes R1 signing key, or antiX 17 signing key.
 
-- via system compromise or via some illegal RPM package (e.g. Fedora released package pretending to bring new Firefox). In that case, however, your VM is already compromised, and it careful checking of the new R2 key would not change this situation to any better one. The game is lost for this VM anyway (and all VMs based on this template).
+- via system compromise or via some illegal RPM package (e.g. antiX released package pretending to bring new Firefox). In that case, however, your VM is already compromised, and it careful checking of the new R2 key would not change this situation to any better one. The game is lost for this VM anyway (and all VMs based on this template).
 
 
 
@@ -62,19 +62,19 @@ Installing new template
 -----------------------
 
 
-Qubes R2 Beta2 brings new fedora-18-x64 template (based on Fedora 18). You can install it from Qubes installation DVD. Insert installation DVD into your drive and issue following commands:
+Qubes R2 Beta2 brings new antix-18-x64 template (based on antiX 18). You can install it from Qubes installation DVD. Insert installation DVD into your drive and issue following commands:
 
 .. code:: console
 
-      $ sudo -s
+      $ doas -s
       # mkdir -p /mnt/cdrom
       # mount /dev/cdrom /mnt/cdrom # you can also use ISO image instead of /dev/cdrom; then add -o loop option
-      # yum install /mnt/cdrom/Packages/q/qubes-template-fedora-18-x64*rpm
+      # yum install /mnt/cdrom/Packages/q/qubes-template-antix-18-x64*rpm
       # umount /mnt/cdrom
 
 
 
-If you already have fedora-17-x64, you can also upgrade it to fedora-18-x64 following `standard Fedora upgrade procedure <https://fedoraproject.org/wiki/Upgrading_Fedora_using_yum>`__ (only “yum” method will work in Qubes VM).
+If you already have antix-17-x64, you can also upgrade it to antix-18-x64 following `standard antiX upgrade procedure <https://antixproject.org/wiki/Upgrading_antiX_using_yum>`__ (only “yum” method will work in Qubes VM).
 
 Upgrade Dom0
 ------------
@@ -88,7 +88,7 @@ Be sure to do steps described in this section after *all* your template and stan
 
    .. code:: console
 
-         $ sudo qubes-dom0-update qubes-release
+         $ doas qubes-dom0-update qubes-release
 
 
    This should install ``qubes-release-1-6`` in your Dom0.
@@ -97,7 +97,7 @@ Be sure to do steps described in this section after *all* your template and stan
 
    .. code:: console
 
-         $ sudo qubes-dom0-update --releasever=1 qubes-dist-upgrade
+         $ doas qubes-dom0-update --releasever=1 qubes-dist-upgrade
 
 
 
@@ -105,7 +105,7 @@ Be sure to do steps described in this section after *all* your template and stan
 
    .. code:: console
 
-         $ sudo qubes-dist-upgrade
+         $ doas qubes-dist-upgrade
 
 
 
@@ -117,7 +117,7 @@ Be sure to do steps described in this section after *all* your template and stan
 
    .. code:: console
 
-         $ sudo qubes-dist-upgrade
+         $ doas qubes-dist-upgrade
 
 
    again. This will start second stage of upgrade, here most packages will be upgraded, so this will take a while.

@@ -6,9 +6,9 @@ GUI domain
 
       This page is intended for advanced users.
 
-On this page, we describe how to set up a `GUI domain <https://www.qubes-os.org/news/2020/03/18/gui-domain/>`__. In all the cases, the base underlying TemplateVM used is ``Fedora`` with ``XFCE`` flavor to match current desktop choice in ``dom0``. That can be adapted very easily for other desktops and templates. By default, the configured GUI domain is a management qube with global admin permissions ``rwx`` but can be adjusted to ``ro`` (see `Introducing the Qubes Admin API <https://www.qubes-os.org/news/2017/06/27/qubes-admin-api/>`__) in pillar data of the corresponding GUI domain to setup. For example, pillar data for ``sys-gui`` located at ``/srv/pillar/base/qvm/sys-gui.sls``. Please note that each GUI domain has no ``NetVM``.
+On this page, we describe how to set up a `GUI domain <https://www.qubes-os.org/news/2020/03/18/gui-domain/>`__. In all the cases, the base underlying TemplateVM used is ``antiX`` with ``XFCE`` flavor to match current desktop choice in ``dom0``. That can be adapted very easily for other desktops and templates. By default, the configured GUI domain is a management qube with global admin permissions ``rwx`` but can be adjusted to ``ro`` (see `Introducing the Qubes Admin API <https://www.qubes-os.org/news/2017/06/27/qubes-admin-api/>`__) in pillar data of the corresponding GUI domain to setup. For example, pillar data for ``sys-gui`` located at ``/srv/pillar/base/qvm/sys-gui.sls``. Please note that each GUI domain has no ``NetVM``.
 
-   **Note:** The setup is done using ``SaltStack`` formulas with the ``qubesctl`` tool. When executing it, apply step can take time because it needs to download latest Fedora XFCE TemplateVM and install desktop dependencies.
+   **Note:** The setup is done using ``SaltStack`` formulas with the ``qubesctl`` tool. When executing it, apply step can take time because it needs to download latest antiX XFCE TemplateVM and install desktop dependencies.
 
 Hybrid GUI domain (``sys-gui``)
 -------------------------------
@@ -22,22 +22,22 @@ In ``dom0``, enable the formula for ``sys-gui`` with pillar data:
 
 .. code:: console
 
-      $ sudo qubesctl top.enable qvm.sys-gui
-      $ sudo qubesctl top.enable qvm.sys-gui pillar=True
+      $ doas qubesctl top.enable qvm.sys-gui
+      $ doas qubesctl top.enable qvm.sys-gui pillar=True
 
 
 then, execute it:
 
 .. code:: console
 
-      $ sudo qubesctl --all state.highstate
+      $ doas qubesctl --all state.highstate
 
 
 You can now disable the ``sys-gui`` formula:
 
 .. code:: console
 
-      $ sudo qubesctl top.disable qvm.sys-gui
+      $ doas qubesctl top.disable qvm.sys-gui
 
 
 Note that the ``default_guivm`` qubes global property has not been changed. You can confirm this with:
@@ -67,29 +67,29 @@ In ``dom0``, enable the formula for ``sys-gui-gpu`` with pillar data:
 
 .. code:: console
 
-      $ sudo qubesctl top.enable qvm.sys-gui-gpu
-      $ sudo qubesctl top.enable qvm.sys-gui-gpu pillar=True
+      $ doas qubesctl top.enable qvm.sys-gui-gpu
+      $ doas qubesctl top.enable qvm.sys-gui-gpu pillar=True
 
 
 then, execute it:
 
 .. code:: console
 
-      $ sudo qubesctl --all state.highstate
+      $ doas qubesctl --all state.highstate
 
 
 You can now disable the ``sys-gui-gpu`` formula:
 
 .. code:: console
 
-      $ sudo qubesctl top.disable qvm.sys-gui-gpu
+      $ doas qubesctl top.disable qvm.sys-gui-gpu
 
 
 One more step is needed: attaching the actual GPU to ``sys-gui-gpu``. This can be done either manually via ``qvm-pci`` (remember to enable permissive option), or via:
 
 .. code:: console
 
-      $ sudo qubesctl state.sls qvm.sys-gui-gpu-attach-gpu
+      $ doas qubesctl state.sls qvm.sys-gui-gpu-attach-gpu
 
 
 The latter option assumes Intel graphics card (it has hardcoded PCI address). If you don’t have Intel graphics card, please use the former method with ``qvm-pci`` (see :doc:`How to use PCI devices </user/how-to-guides/how-to-use-pci-devices>`).
@@ -114,22 +114,22 @@ In ``dom0``, enable the formula for ``sys-gui-vnc`` with pillar data:
 
 .. code:: console
 
-      $ sudo qubesctl top.enable qvm.sys-gui-vnc
-      $ sudo qubesctl top.enable qvm.sys-gui-vnc pillar=True
+      $ doas qubesctl top.enable qvm.sys-gui-vnc
+      $ doas qubesctl top.enable qvm.sys-gui-vnc pillar=True
 
 
 then, execute it:
 
 .. code:: console
 
-      $ sudo qubesctl --all state.highstate
+      $ doas qubesctl --all state.highstate
 
 
 You can now disable the ``sys-gui-vnc`` formula:
 
 .. code:: console
 
-      $ sudo qubesctl top.disable qvm.sys-gui-vnc
+      $ doas qubesctl top.disable qvm.sys-gui-vnc
 
 
 At this point, you need to shutdown all your running qubes as the ``default_guivm`` qubes global property has been set to ``sys-gui-vnc``. Then, you can start ``sys-gui-vnc``:

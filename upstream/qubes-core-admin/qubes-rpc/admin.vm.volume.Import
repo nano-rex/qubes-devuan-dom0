@@ -69,7 +69,7 @@ qubesd-query --null "${flags[@]}" -c /var/run/qubesd.internal.sock \
 error=""
 
 # now process stdin into this path
-if ! sudo dd bs=128K of="$path" count="$size" iflag=count_bytes,fullblock \
+if ! doas dd bs=128K of="$path" count="$size" iflag=count_bytes,fullblock \
         conv=sparse,notrunc,nocreat,fdatasync 2>"$tmpfile"; then
     error="error copying data"
 fi

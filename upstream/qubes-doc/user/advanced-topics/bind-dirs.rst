@@ -10,7 +10,7 @@ What are bind-dirs?
 -------------------
 
 
-With `bind-dirs <https://github.com/QubesOS/qubes-core-agent-linux/blob/master/vm-systemd/bind-dirs.sh>`__ any arbitrary files or folders can be made persistent in app qubes.
+With `bind-dirs <https://github.com/QubesOS/qubes-core-agent-linux/blob/master/vm-runit/bind-dirs.sh>`__ any arbitrary files or folders can be made persistent in app qubes.
 
 What is it useful for?
 ----------------------
@@ -30,7 +30,7 @@ In this example, we want to make ``/var/lib/tor`` persistent. Enter all of the f
 
    .. code:: console
 
-         $ sudo mkdir -p /rw/config/qubes-bind-dirs.d
+         $ doas mkdir -p /rw/config/qubes-bind-dirs.d
 
 
 
@@ -38,7 +38,7 @@ In this example, we want to make ``/var/lib/tor`` persistent. Enter all of the f
 
    .. code:: console
 
-         $ sudo touch /rw/config/qubes-bind-dirs.d/50_user.conf
+         $ doas touch /rw/config/qubes-bind-dirs.d/50_user.conf
 
 
 
@@ -56,7 +56,7 @@ In this example, we want to make ``/var/lib/tor`` persistent. Enter all of the f
 
    .. code:: console
 
-         $ sudo mkdir -p /rw/bind-dirs/var/lib/tor
+         $ doas mkdir -p /rw/bind-dirs/var/lib/tor
 
 
 
@@ -107,9 +107,9 @@ Limitations
 
 - Files that exist in the template root image cannot be deleted in the app qubes root image using bind-dirs.sh.
 
-- Re-running ``sudo /usr/lib/qubes/init/bind-dirs.sh`` without a previous ``sudo /usr/lib/qubes/init/bind-dirs.sh umount`` does not work.
+- Re-running ``doas /usr/lib/qubes/init/bind-dirs.sh`` without a previous ``doas /usr/lib/qubes/init/bind-dirs.sh umount`` does not work.
 
-- Running ``sudo /usr/lib/qubes/init/bind-dirs.sh umount`` after boot (before shutdown) is probably not sane and nothing can be done about that.
+- Running ``doas /usr/lib/qubes/init/bind-dirs.sh umount`` after boot (before shutdown) is probably not sane and nothing can be done about that.
 
 - Many editors create a temporary file and copy it over the original file. If you have bind mounted an individual file this will break the mount. Any changes you make will not survive a reboot. If you think it likely you will want to edit a file, then either include the parent directory in bind-dirs rather than the file, or perform the file operation on the file in ``/rw/bind-dirs``.
 

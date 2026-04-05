@@ -17,6 +17,6 @@ python3-sh
 reprepro
 rpm-build
 rpmdevtools
-systemd-udev
+runit-udev
 wget
 which

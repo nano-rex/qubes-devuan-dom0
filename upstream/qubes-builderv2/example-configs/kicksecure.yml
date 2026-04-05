@@ -38,7 +38,7 @@ components:
 #executor:
 # type: docker
 # options:
-#   image: "qubes-builder-fedora:latest"
+#   image: "qubes-builder-antix:latest"
 executor:
   type: qubes
   options:

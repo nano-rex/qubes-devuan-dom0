@@ -52,26 +52,26 @@ class TC_00_List(qubes.tests.SystemTestCase):
         super().tearDown()
         if self.template is None:
             if os.path.exists(self.mount_point):
-                subprocess.call(["sudo", "umount", self.mount_point])
-                subprocess.call(["sudo", "rmdir", self.mount_point])
+                subprocess.call(["doas", "umount", self.mount_point])
+                subprocess.call(["doas", "rmdir", self.mount_point])
             if os.path.exists("/dev/mapper/test-dm"):
-                subprocess.call(["sudo", "dmsetup", "remove", "test-dm"])
+                subprocess.call(["doas", "dmsetup", "remove", "test-dm"])
             if os.path.exists(self.img_path):
                 loopdev = subprocess.check_output(
                     ["losetup", "-j", self.img_path]
                 )
                 for dev in loopdev.decode().splitlines():
                     subprocess.call(
-                        ["sudo", "losetup", "-d", dev.split(":")[0]]
+                        ["doas", "losetup", "-d", dev.split(":")[0]]
                     )
-                subprocess.call(["sudo", "rm", "-f", self.img_path])
+                subprocess.call(["doas", "rm", "-f", self.img_path])
 
     def run_script(self, script, user="user"):
         if self.template is None:
             if user == "user":
                 subprocess.check_call(script, shell=True)
             elif user == "root":
-                subprocess.check_call(["sudo", "sh", "-c", script])
+                subprocess.check_call(["doas", "sh", "-c", script])
         else:
             self.loop.run_until_complete(
                 self.vm.run_for_stdio(script, user=user)

@@ -14,7 +14,7 @@ if [ "${VERBOSE:-0}" -ge 2 ] || [ "${DEBUG:-0}" -eq 1 ]; then
 fi
 
 chroot_cmd() {
-    systemd-nspawn --directory="$CHROOT_DIR" \
+    runit-nspawn --directory="$CHROOT_DIR" \
         --keep-unit \
         --register=no \
         --as-pid2 \

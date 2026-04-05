@@ -8,13 +8,13 @@
 
 # Reload scripts in /etc/profile.d/, in case they register additional
 # directories in XDG_DATA_DIRS and we forgot them
-# (e.g. because we are running under sudo).
+# (e.g. because we are running under doas).
 # shellcheck disable=SC1091
 source /etc/profile
 
 if [ -z "$XDG_DATA_HOME" ]; then
     user="$(whoami)"
-    # In case we are running under sudo, use default-user.
+    # In case we are running under doas, use default-user.
     if [ "$user" = "root" ]; then
         user="$(qubesdb-read /default-user || echo user)"
     fi

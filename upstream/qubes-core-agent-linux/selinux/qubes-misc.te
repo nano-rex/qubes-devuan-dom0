@@ -1,7 +1,7 @@
 policy_module(qubes-misc,0.0.1)
 require {
 	attribute domain;
-	type systemd_modules_load_t;
+	type runit_modules_load_t;
 	type iptables_t, xen_device_t;
 	type local_login_t, init_t;
 	type rpmdb_t, unconfined_service_t, user_tmp_t;
@@ -13,7 +13,7 @@ require {
 }
 
 type qubes_var_run_t;
-logging_dgram_send(systemd_modules_load_t)
+logging_dgram_send(runit_modules_load_t)
 allow iptables_t xen_device_t:chr_file { read write };
 allow local_login_t init_t: service { start };
 allow rpmdb_t user_tmp_t:fifo_file { write };

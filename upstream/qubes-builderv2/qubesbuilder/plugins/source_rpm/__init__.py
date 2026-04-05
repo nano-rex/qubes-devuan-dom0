@@ -244,7 +244,7 @@ class RPMSourcePlugin(RPMDistributionPlugin, SourcePlugin):
                     (chroot_cache, self.executor.get_cache_dir() / "mock")
                 ]
                 cmd += [
-                    f"sudo chown -R root:mock {self.executor.get_cache_dir() / 'mock'}"
+                    f"doas chown -R root:mock {self.executor.get_cache_dir() / 'mock'}"
                 ]
 
             if self.component.is_salt():
@@ -294,11 +294,11 @@ class RPMSourcePlugin(RPMDistributionPlugin, SourcePlugin):
             cmd += [
                 f"{self.executor.get_plugins_dir()}/source_rpm/scripts/generate-spec {source_dir} {source_dir / build}.in {source_dir / build}",
                 f"mkdir -p {self.executor.get_build_dir()}",
-                f"sudo chown -R {self.executor.get_user()}:mock {self.executor.get_build_dir()}",
+                f"doas chown -R {self.executor.get_user()}:mock {self.executor.get_build_dir()}",
             ]
 
             mock_cmd = [
-                f"sudo --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION",
+                f"doas --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION",
                 f"/usr/libexec/mock/mock",
                 "--verbose",
                 "--buildsrpm",

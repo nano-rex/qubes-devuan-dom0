@@ -44,7 +44,7 @@ set_rpm_defines() {
     raw_dist="${dist#*.}"
     if [[ "$raw_dist" = "fc"* ]]; then
         dist_ver="${raw_dist#fc}"
-        rpm_defines+=(--define "fedora $dist_ver")
+        rpm_defines+=(--define "antix $dist_ver")
     elif [[ "$raw_dist" = "el"* ]]; then
         dist_ver="${raw_dist#el}"
         rpm_defines+=(--define "centos $dist_ver")

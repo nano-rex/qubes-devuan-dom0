@@ -3,7 +3,7 @@
 # .device which needs udev running already
 Description=Enable swap on /dev/xvdc1 early
 DefaultDependencies=no
-Before=systemd-fsck-root.service
+Before=runit-fsck-root.service
 
 [Service]
 Type=oneshot

@@ -21,7 +21,7 @@ xterm -title update -e su -s /bin/sh -l -c "$update_cmd; echo Done.; test -f /va
 
 # Notify dom0 about installed updates
 if [ -e /etc/arch-release ]; then
-    su -s /bin/sh -c 'systemctl start qubes-update-check'
+    su -s /bin/sh -c 'sv start qubes-update-check'
 else
     su -s /bin/sh -c 'service qubes-update-check start'
 fi

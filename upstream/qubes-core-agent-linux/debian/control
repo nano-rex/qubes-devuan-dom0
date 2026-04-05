@@ -50,7 +50,7 @@ Depends:
     qubes-core-qrexec (>= 4.4.0),
     qubes-utils (>= 3.1.3),
     qubesdb-vm,
-    systemd,
+    runit,
     util-linux,
     xdg-user-dirs,
     xdg-utils,
@@ -189,7 +189,7 @@ Breaks: qubes-core-agent (<< 4.0.0-1)
 Provides: ${diverted-files}
 Conflicts: ${diverted-files}
 Description: Passwordless root access from normal user
- Configure sudo, PolicyKit and similar tool to not ask for any password when
+ Configure doas, PolicyKit and similar tool to not ask for any password when
  switching from user to root. Since all the user data in a VM is accessible
  already from normal user account, there is not much more to guard there. Qubes
  VMs are single user systems.

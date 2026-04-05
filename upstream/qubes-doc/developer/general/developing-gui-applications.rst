@@ -71,7 +71,7 @@ Available mocks
 
 Three mocks are available in the ``mock_app`` file:
 
-- MockQubes, an extremely bare-bones Qubes testing instance, with just dom0, sys-net, and one template (fedora-36).
+- MockQubes, an extremely bare-bones Qubes testing instance, with just dom0, sys-net, and one template (antix-36).
 
 - MockQubesComplete, a more complex setup |Qubes Manager running MockQubesComplete|
 

@@ -65,7 +65,7 @@ Restore from your backup
 
    .. code:: console
 
-         $ sudo qubes-dom0-update
+         $ doas qubes-dom0-update
 
 
 
@@ -93,7 +93,7 @@ Upgrade all Template and Standalone VM(s)
 
 We strongly recommend that you update **all** templates and standalones before use so that you have the latest security patches from upstream distributions. In addition, if the default templates have reached EOL (end-of-life) by the time you install R4.0, we strongly recommend that you upgrade them before use. Please see :doc:`supported releases </user/downloading-installing-upgrading/supported-releases>` for information on supported OS versions and consult the guides below for specific upgrade instructions:
 
-- :ref:`Upgrading Fedora templates <user/templates/fedora/fedora:upgrading>`
+- :ref:`Upgrading antiX templates <user/templates/antix/antix:upgrading>`
 
 - :ref:`Upgrading Debian templates <user/templates/debian/debian:upgrading>`
 

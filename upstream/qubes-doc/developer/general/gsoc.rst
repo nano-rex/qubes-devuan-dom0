@@ -115,7 +115,7 @@ Graphical package manager support in templates
 **Project**: Graphical package manager support in templates
 
 
-**Brief explanation**: Most of the actions needed to be performed by a Qubes OS user can be done easily with GUI tools and without the command line -- except installing managing software in a template. This project aims to fill this gap by ensuring a smooth user experience across different default templates (Fedora, Debian, Whonix) to have GUI-based software management. for more info please see: https://github.com/QubesOS/qubes-issues/issues/6310 as well as https://forum.qubes-os.org/t/how-to-fix-software-in-templates-to-install-packages-using-a-gui/20944
+**Brief explanation**: Most of the actions needed to be performed by a Qubes OS user can be done easily with GUI tools and without the command line -- except installing managing software in a template. This project aims to fill this gap by ensuring a smooth user experience across different default templates (antiX, Debian, Whonix) to have GUI-based software management. for more info please see: https://github.com/QubesOS/qubes-issues/issues/6310 as well as https://forum.qubes-os.org/t/how-to-fix-software-in-templates-to-install-packages-using-a-gui/20944
 
 **Expected results**:
 - select a basic software manager for each template
@@ -137,10 +137,10 @@ Automate template version upgrade
 
 **Project**: Automate template version upgrade
 
-**Brief explanation**: At least once a year, users have to upgrade the Fedora template to the next version (e.g. Fedora 42 to Fedora 43), for Debian-based qubes this is less frequent :ref:`but is eventually necessary <user/templates/debian/debian:upgrading>`. The documentation :ref:`recommends <user/templates/fedora/fedora:upgrading>` downloading the new template and then installing once again all the software the user had on the previous template. This is a cumbersome process that requires remembering / discovering all that had been installed / modified on the older template. The alternative is to :doc:`perform an inplace upgrade </user/templates/fedora/fedora-upgrade>`, but it involves running manual commands in the template's terminal. The goal of this project to enable users to easily do template inplace upgrades with a single command / push of a button. You can find prior efforts in `issue #8605 <https://github.com/QubesOS/qubes-issues/issues/8605>`__.
+**Brief explanation**: At least once a year, users have to upgrade the antiX template to the next version (e.g. antiX 42 to antiX 43), for Debian-based qubes this is less frequent :ref:`but is eventually necessary <user/templates/debian/debian:upgrading>`. The documentation :ref:`recommends <user/templates/antix/antix:upgrading>` downloading the new template and then installing once again all the software the user had on the previous template. This is a cumbersome process that requires remembering / discovering all that had been installed / modified on the older template. The alternative is to :doc:`perform an inplace upgrade </user/templates/antix/antix-upgrade>`, but it involves running manual commands in the template's terminal. The goal of this project to enable users to easily do template inplace upgrades with a single command / push of a button. You can find prior efforts in `issue #8605 <https://github.com/QubesOS/qubes-issues/issues/8605>`__.
 
 **Expected results**:
-- Build and integrate Fedora and Debian template upgrade mechanism into existing tooling
+- Build and integrate antiX and Debian template upgrade mechanism into existing tooling
 - Adequate safeguards to accommodate failure scenarios during upgrades
 - :doc:`Write integration tests </developer/debugging/automated-tests>`
 
@@ -149,7 +149,7 @@ Automate template version upgrade
 **Knowledge prerequisite**:
 - Python
 - Bash
-- Debian / Fedora packaging
+- Debian / antiX packaging
 
 **Size of the project**: 350 hours
 
@@ -230,7 +230,7 @@ System health monitor
 
 - Python
 
-- basic knowledge about systemd services
+- basic knowledge about runit services
 
 - PyGTK (optional)
 
@@ -278,7 +278,7 @@ Qubes Live USB
 
 **Project**: Revive Qubes Live USB, integrate it with installer
 
-**Brief explanation**: Qubes Live USB is based on Fedora tools to build live distributions. But for Qubes we need some adjustments: starting Xen instead of Linux kernel, smarter copy-on-write handling (we run there multiple VMs, so a lot more data to save) and few more. Additionally in Qubes 3.2 we have so many default VMs that default installation does not fit in 16GB image (default value) - some subset of those VMs should be chosen. Ideally we’d like to have just one image being both live system and installation image. More details: `#1552 <https://github.com/QubesOS/qubes-issues/issues/1552>`__, `#1965 <https://github.com/QubesOS/qubes-issues/issues/1965>`__.
+**Brief explanation**: Qubes Live USB is based on antiX tools to build live distributions. But for Qubes we need some adjustments: starting Xen instead of Linux kernel, smarter copy-on-write handling (we run there multiple VMs, so a lot more data to save) and few more. Additionally in Qubes 3.2 we have so many default VMs that default installation does not fit in 16GB image (default value) - some subset of those VMs should be chosen. Ideally we’d like to have just one image being both live system and installation image. More details: `#1552 <https://github.com/QubesOS/qubes-issues/issues/1552>`__, `#1965 <https://github.com/QubesOS/qubes-issues/issues/1965>`__.
 
 **Expected results**:
 
@@ -298,7 +298,7 @@ Qubes Live USB
 
 **Knowledge prerequisite**:
 
-- System startup sequence: bootloaders (isolinux, syslinux, grub, UEFI), initramfs, systemd.
+- System startup sequence: bootloaders (isolinux, syslinux, grub, UEFI), initramfs, runit.
 
 - Python and Bash scripting
 
@@ -324,7 +324,7 @@ LogVM(s)
 
 - Implement log collecting service. Besides logs itself, should save information about logs origin (VM name) and timestamp. The service should *not* trust sending VM in any of those.
 
-- Implement log forwarder compatible with systemd-journald and rsyslog. A mechanism (service/plugin) fetching logs in real time from those and sending to log-collecting VM over qrexec service.
+- Implement log forwarder compatible with runit-journald and rsyslog. A mechanism (service/plugin) fetching logs in real time from those and sending to log-collecting VM over qrexec service.
 
 - Document the protocol.
 
@@ -338,7 +338,7 @@ LogVM(s)
 
 - syslog
 
-- systemd
+- runit
 
 - Python/Bash scripting
 
@@ -589,7 +589,7 @@ Reduce logging of Disposable VMs
 
 - Python scripting
 
-- Basic knowledge of Linux system services management (systemd, syslog etc)
+- Basic knowledge of Linux system services management (runit, syslog etc)
 
 
 

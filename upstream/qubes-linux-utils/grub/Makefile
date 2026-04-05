@@ -1,4 +1,4 @@
-install-fedora:
+install-antix:
 	install -D -m 0644 grub.qubes-kernel-vm-support \
 		$(DESTDIR)/etc/default/grub.qubes-kernel-vm-support
 

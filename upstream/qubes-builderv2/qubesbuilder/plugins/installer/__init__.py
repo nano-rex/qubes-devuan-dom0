@@ -342,7 +342,7 @@ class InstallerPlugin(DistributionPlugin):
                 ]
 
                 mock_cmd = [
-                    f"sudo --preserve-env=DIST,USE_QUBES_REPO_VERSION",
+                    f"doas --preserve-env=DIST,USE_QUBES_REPO_VERSION",
                     f"/usr/libexec/mock/mock",
                     f"--root {self.executor.get_plugins_dir()}/installer/mock/{mock_conf}",
                     "--init",
@@ -382,7 +382,7 @@ class InstallerPlugin(DistributionPlugin):
 
                 cmd = cmd_for_build_repo + [" ".join(mock_cmd)]
                 cmd += [
-                    f"sudo chmod a+rX -R {self.executor.get_cache_dir()}/mock/{mock_chroot_name}/dnf_cache/"
+                    f"doas chmod a+rX -R {self.executor.get_cache_dir()}/mock/{mock_chroot_name}/dnf_cache/"
                 ]
 
                 try:
@@ -423,7 +423,7 @@ class InstallerPlugin(DistributionPlugin):
                 ]
                 cmd = [
                     f"mv {self.executor.get_builder_dir() / self.kickstart_path.name} {self.executor.get_sources_dir()}/qubes-release/conf/_builder_{self.kickstart_path.name}",
-                    f"sudo --preserve-env={','.join(self.environment.keys())} make -C {self.executor.get_plugins_dir()}/installer iso-parse-kickstart iso-templates-cache",
+                    f"doas --preserve-env={','.join(self.environment.keys())} make -C {self.executor.get_plugins_dir()}/installer iso-parse-kickstart iso-templates-cache",
                 ]
                 try:
                     self.executor.run(
@@ -496,7 +496,7 @@ class InstallerPlugin(DistributionPlugin):
                     (chroot_cache.parent, self.executor.get_cache_dir())
                 ]
                 cmd += [
-                    f"sudo chown -R root:mock {self.executor.get_cache_dir() / 'mock'}"
+                    f"doas chown -R root:mock {self.executor.get_cache_dir() / 'mock'}"
                 ]
 
             # Add downloaded templates into builder-local repository
@@ -527,7 +527,7 @@ class InstallerPlugin(DistributionPlugin):
             #
 
             mock_cmd = [
-                f"sudo --preserve-env={','.join(self.environment.keys())}",
+                f"doas --preserve-env={','.join(self.environment.keys())}",
                 f"/usr/libexec/mock/mock",
                 f"--root {self.executor.get_plugins_dir()}/installer/mock/{mock_conf}",
                 f"--chroot 'env {self.get_env()} make -C {self.executor.get_plugins_dir()}/installer iso-prepare iso-parse-kickstart iso-parse-tmpl'",
@@ -569,7 +569,7 @@ class InstallerPlugin(DistributionPlugin):
             #
 
             cmd += [
-                f"sudo --preserve-env={','.join(self.environment.keys())} "
+                f"doas --preserve-env={','.join(self.environment.keys())} "
                 f"make -C {self.executor.get_plugins_dir()}/installer "
                 f"iso-prepare iso-packages-anaconda iso-packages-lorax",
             ]
@@ -633,7 +633,7 @@ class InstallerPlugin(DistributionPlugin):
                     (chroot_cache.parent, self.executor.get_cache_dir())
                 ]
                 cmd += [
-                    f"sudo chown -R root:mock {self.executor.get_cache_dir() / 'mock'}"
+                    f"doas chown -R root:mock {self.executor.get_cache_dir() / 'mock'}"
                 ]
 
             copy_out = [
@@ -656,7 +656,7 @@ class InstallerPlugin(DistributionPlugin):
             #
 
             mock_cmd = [
-                f"sudo --preserve-env={','.join(self.environment.keys())}",
+                f"doas --preserve-env={','.join(self.environment.keys())}",
                 f"/usr/libexec/mock/mock",
                 f"--root {self.executor.get_plugins_dir()}/installer/mock/{mock_conf}",
                 "--disablerepo='*'",

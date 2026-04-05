@@ -101,14 +101,14 @@ TEMP_DIR=$(mktemp --tmpdir -d HCL.XXXXXXXXXX) || exit
 case $TEMP_DIR in (/*) :;; (*) TEMP_DIR=./$TEMP_DIR;; esac
 cat /etc/qubes-release > "$TEMP_DIR/qubes-release" || exit
 cat /proc/cpuinfo > "$TEMP_DIR/cpuinfo" || exit
-sudo lspci -nnvk > "$TEMP_DIR/lspci"
+doas lspci -nnvk > "$TEMP_DIR/lspci"
 cat /proc/scsi/scsi > "$TEMP_DIR/scsi"
 for drive in /sys/class/nvme-subsystem/nvme-subsys*/; do
   test -d "$drive" || continue
   cat "$drive"/{serial,model,firmware_rev} |
     tr "\n" " " | sed "s/\s$//" > "$TEMP_DIR/nvme"
 done
-sudo dmidecode > "$TEMP_DIR/dmidecode"
+doas dmidecode > "$TEMP_DIR/dmidecode"
 xl info > "$TEMP_DIR/xl-info" || exit
 xl dmesg > "$TEMP_DIR/xl-dmesg" || exit
 unset decoded_dmi

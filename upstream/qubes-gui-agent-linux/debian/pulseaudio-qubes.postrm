@@ -40,7 +40,7 @@ if [ "${1}" = "remove" ] || [ "${1}" = "purge" ]; then
     for unit_name in pipewire.socket pipewire.service \
                      pipewire-pulse.socket pipewire-pulse.service \
                      wireplumber.service; do
-        systemctl --no-reload --global preset "$unit_name" >/dev/null 2>&1 || :
+        sv --no-reload --global preset "$unit_name" >/dev/null 2>&1 || :
     done
 fi
 

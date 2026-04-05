@@ -101,7 +101,7 @@ EOF
     fi
     while ! [ -e /dev/xvdc1 ]; do sleep 0.1; done
     mkswap /dev/xvdc1
-    # enable swap right now, because systemd may want to run fsck in initramfs
+    # enable swap right now, because runit may want to run fsck in initramfs
     # already and it require some more memory
     swapon /dev/xvdc1
     while ! [ -e /dev/xvdc2 ]; do sleep 0.1; done
@@ -122,7 +122,7 @@ EOF
     fi
     while ! [ -e /dev/xvdc1 ]; do sleep 0.1; done
     mkswap /dev/xvdc1
-    # enable swap right now, because systemd may want to run fsck in initramfs
+    # enable swap right now, because runit may want to run fsck in initramfs
     # already and it require some more memory
     swapon /dev/xvdc1
     mkdir -p /etc/udev/rules.d

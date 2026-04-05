@@ -594,7 +594,7 @@ class DistributionComponentPlugin(DistributionPlugin, ComponentPlugin):
         self._parameters[stage].update(
             parameters.get(self.dist.package_set, {}).get(self.dist.type, {})
         )
-        # host/vm -> fedora/debian/ubuntu/archlinux
+        # host/vm -> antix/debian/ubuntu/archlinux
         self._parameters[stage].update(
             parameters.get(self.dist.package_set, {}).get(
                 self.dist.fullname, {}

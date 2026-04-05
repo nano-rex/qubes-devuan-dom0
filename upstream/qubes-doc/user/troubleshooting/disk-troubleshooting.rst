@@ -7,7 +7,7 @@ Disk troubleshooting
 -------------------------
 
 
-If the disk is completely full, you will get an ``Out of disk space`` error that may crash your system because Dom0 does not have enough disk space to work. So it’s good practice to regularly check disk space usage. Running the ``df -h`` command in dom0 terminal will show some information, but not include all the relevant details. The Qubes user interface provides a disk space widget. If you are unable to access the interface, the command line version is running ``sudo lvs | head`` and looking at top entry for LVM pool. For example:
+If the disk is completely full, you will get an ``Out of disk space`` error that may crash your system because Dom0 does not have enough disk space to work. So it’s good practice to regularly check disk space usage. Running the ``df -h`` command in dom0 terminal will show some information, but not include all the relevant details. The Qubes user interface provides a disk space widget. If you are unable to access the interface, the command line version is running ``doas lvs | head`` and looking at top entry for LVM pool. For example:
 
 .. code:: output
 
@@ -18,7 +18,7 @@ If the disk is completely full, you will get an ``Out of disk space`` error that
 
 
 
-If you run ``df -h``, it only shows the information in the ``root`` line (which is already included in the ``pool00`` line). As you can see, the ``sudo lvs | head`` command includes additional important columns ``Data%`` and ``Meta%``, shown in the above example to have the values 89% and 69% respectively.
+If you run ``df -h``, it only shows the information in the ``root`` line (which is already included in the ``pool00`` line). As you can see, the ``doas lvs | head`` command includes additional important columns ``Data%`` and ``Meta%``, shown in the above example to have the values 89% and 69% respectively.
 
 If your system is able to boot, but cannot load a desktop environment, it is possible to login to dom0 terminal with Alt + Ctrl + F2.
 
@@ -30,7 +30,7 @@ In any case you’ll need some disk space to start the VM. Check ``df -h`` outpu
 
    .. code:: console
 
-         $ sudo dnf clean all
+         $ doas dnf clean all
 
 
 
@@ -47,7 +47,7 @@ In any case you’ll need some disk space to start the VM. Check ``df -h`` outpu
 
    .. code:: console
 
-         $ sudo tune2fs -m 4 /dev/mapper/vg_dom0-lv_root
+         $ doas tune2fs -m 4 /dev/mapper/vg_dom0-lv_root
 
 
 
@@ -57,9 +57,9 @@ In any case you’ll need some disk space to start the VM. Check ``df -h`` outpu
 
 The above steps applies to old VM disks format. These steps may work on Qubes 4.0, but are not default anymore. By default, Qubes 4.0 now uses LVM. The equivalent steps are:
 
-1. Get a list of VM disks using ``sudo lvs``.
+1. Get a list of VM disks using ``doas lvs``.
 
-2. Use ``sudo lvremove qubes_dom0/<name>`` to remove backup copies of some less important VMs – entries with ``-back`` in their name.
+2. Use ``doas lvremove qubes_dom0/<name>`` to remove backup copies of some less important VMs – entries with ``-back`` in their name.
 
 3. If that isn’t enough, remove actual disks of less important VMs. NOTE: You will lose the data of that VM, but your system will resume working.
 
@@ -69,7 +69,7 @@ For example:
 
 .. code:: console
 
-      $ sudo lvs
+      $ doas lvs
         LV                                            VG         Attr       LSize   Pool   Origin                                        Data%  Meta%  Move Log Cpy%Sync Convert
         pool00                                        qubes_dom0 twi-aotz-- 453.17g                                                      89.95  69.78
         root                                          qubes_dom0 Vwi-aotz-- 453.17g pool00                                               5.87
@@ -88,7 +88,7 @@ For example:
         vm-debian-10-root                             qubes_dom0 Vwi-a-tz--  10.00g pool00 vm-debian-10-root-1601126126-back             93.44
         vm-debian-10-root-1601126126-back             qubes_dom0 Vwi-a-tz--  10.00g pool00                                               88.75
       (...)
-      $ sudo lvremove qubes_dom0/vm-d10test-standalone-root-1580772439-back
+      $ doas lvremove qubes_dom0/vm-d10test-standalone-root-1580772439-back
       Do you really want to remove and DISCARD active logical volume qubes_dom0/vm-d10test-standalone-root-1580772439-back? [y/n]: y
         Logical volume "vm-d10test-standalone-root-1580772439-back" successfully removed
 

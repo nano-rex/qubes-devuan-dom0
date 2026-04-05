@@ -93,8 +93,8 @@ Now, check if reloading the module makes wireless work again:
 
 .. code:: console
 
-      [user@sys-net ~]$ sudo rmmod iwlmvm
-      [user@sys-net ~]$ sudo modprobe iwlmvm
+      [user@sys-net ~]$ doas rmmod iwlmvm
+      [user@sys-net ~]$ doas modprobe iwlmvm
 
 
 
@@ -113,10 +113,10 @@ If that is successful, see below about having Qubes automatically reload the dri
 
 .. code:: console
 
-      [user@sys-net ~]$ sudo rmmod iwlmvm
-      [user@sys-net ~]$ sudo rmmod iwlwifi
-      [user@sys-net ~]$ sudo modprobe iwlwifi # note the reverse order of loading/unloading
-      [user@sys-net ~]$ sudo modprobe iwlmvm
+      [user@sys-net ~]$ doas rmmod iwlmvm
+      [user@sys-net ~]$ doas rmmod iwlwifi
+      [user@sys-net ~]$ doas modprobe iwlwifi # note the reverse order of loading/unloading
+      [user@sys-net ~]$ doas modprobe iwlmvm
 
 
 

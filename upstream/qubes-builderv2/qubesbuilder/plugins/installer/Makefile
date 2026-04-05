@@ -45,7 +45,7 @@ DNF_ROOT := $(BUILDER_DIR)/dnfroot
 DNF_REPO := $(DNF_ROOT)/etc/yum.repos.d/installer.repo
 DNF_PACKAGES := $(DNF_ROOT)/tmp/packages.list
 DNF_OPTS := -y --releasever=$(DIST_VER) --installroot=$(DNF_ROOT) --config=$(DNF_ROOT)/etc/dnf/dnf.conf
-DNF_OPTS_TEMPLATES := $(DNF_OPTS) --disablerepo=fedora --disablerepo=fedora-updates --disablerepo=installer
+DNF_OPTS_TEMPLATES := $(DNF_OPTS) --disablerepo=antix --disablerepo=antix-updates --disablerepo=installer
 DNF_OPTS_TEMPLATES += --disablerepo=qubes-host --repofrompath builder-local,$(BUILDER_DIR)/repository
 
 LORAX := /usr/sbin/lorax
@@ -53,7 +53,7 @@ LORAX_PACKAGES := $(DNF_ROOT)/tmp/lorax_packages.list
 LORAX_OPTS := --product "Qubes OS" --variant "qubes" --macboot --force --rootfs-size=4
 LORAX_OPTS += --version "$(ISO_VERSION)" --release "Qubes OS $(ISO_VERSION)" --volid $(ISO_VOLID)
 LORAX_OPTS += --workdir $(INSTALLER_DIR)/work/work/x86_64 --logfile $(INSTALLER_DIR)/work/logs/lorax-x86_64.log
-LORAX_OPTS += --repo $(INSTALLER_DIR)/yum/lorax.repo --skip-branding --disablerepo=fedora --disablerepo=fedora-updates --disablerepo=updates --disablerepo='qubes-*'
+LORAX_OPTS += --repo $(INSTALLER_DIR)/yum/lorax.repo --skip-branding --disablerepo=antix --disablerepo=antix-updates --disablerepo=updates --disablerepo='qubes-*'
 
 ifeq ($(ISO_USE_KERNEL_LATEST),1)
     LORAX_OPTS += --installpkgs kernel-latest --excludepkgs kernel
@@ -103,9 +103,9 @@ iso-prepare:
 	mkdir -p $(DNF_ROOT)/etc/dnf
 	cp $(INSTALLER_DIR)/yum/dnf.conf $(DNF_ROOT)/etc/dnf/
 
-	# Copy Fedora key to DNF installroot
+	# Copy antiX key to DNF installroot
 	mkdir -p $(DNF_ROOT)/etc/pki/rpm-gpg
-	cp $(SOURCES_DIR)/qubes-release/RPM-GPG-KEY-fedora-$(DIST_VER)-primary $(DNF_ROOT)/etc/pki/rpm-gpg
+	cp $(SOURCES_DIR)/qubes-release/RPM-GPG-KEY-antix-$(DIST_VER)-primary $(DNF_ROOT)/etc/pki/rpm-gpg
 
 #
 # CAGE | CAGE -> MOCK

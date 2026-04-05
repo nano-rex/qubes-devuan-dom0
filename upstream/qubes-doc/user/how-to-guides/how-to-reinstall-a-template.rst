@@ -13,19 +13,19 @@ First, copy any files that you wish to keep from the template’s ``/home`` and 
 
 .. code:: console
 
-      $ sudo qubes-dom0-update --action=reinstall qubes-template-package-name
+      $ doas qubes-dom0-update --action=reinstall qubes-template-package-name
 
 
 
-Replace ``qubes-template-package-name`` with the name of the *package* of the template you wish to reinstall. For example, use ``qubes-template-fedora-25`` if you wish to reinstall the ``fedora-25`` template. Only one template can be reinstalled at a time.
+Replace ``qubes-template-package-name`` with the name of the *package* of the template you wish to reinstall. For example, use ``qubes-template-antix-25`` if you wish to reinstall the ``antix-25`` template. Only one template can be reinstalled at a time.
 
-Note that Qubes may initially refuse to perform the reinstall if the exact revision of the template package on your system is no longer in the Qubes online repository. In this case, you can specify ``upgrade`` as the action instead and the newer version will be used. The other ``dnf`` package actions that are supported in addition to ``reinstall`` and ``upgrade`` are ``upgrade-to`` and ``downgrade``. Note that the ``upgrade``, ``upgrade-to``, and ``downgrade`` commands are only supported under Fedora based UpdateVMs. If you receive a message about them being unsupported, review the manual reinstallation method below.
+Note that Qubes may initially refuse to perform the reinstall if the exact revision of the template package on your system is no longer in the Qubes online repository. In this case, you can specify ``upgrade`` as the action instead and the newer version will be used. The other ``dnf`` package actions that are supported in addition to ``reinstall`` and ``upgrade`` are ``upgrade-to`` and ``downgrade``. Note that the ``upgrade``, ``upgrade-to``, and ``downgrade`` commands are only supported under antiX based UpdateVMs. If you receive a message about them being unsupported, review the manual reinstallation method below.
 
 **Reminder:** If you’re trying to reinstall a template that is not in an enabled repo, you must enable that repo. For example:
 
 .. code:: console
 
-      $ sudo qubes-dom0-update --enablerepo=qubes-templates-community --action=reinstall qubes-template-whonix-ws
+      $ doas qubes-dom0-update --enablerepo=qubes-templates-community --action=reinstall qubes-template-whonix-ws
 
 
 
@@ -53,14 +53,14 @@ In what follows, the term “target template” refers to whichever template you
 
    .. code:: console
 
-         $ sudo dnf remove <template-package-name>
+         $ doas dnf remove <template-package-name>
 
 
    For example, to uninstall the ``whonix-gw`` template:
 
    .. code:: console
 
-         $ sudo dnf remove qubes-template-whonix-gw
+         $ doas dnf remove qubes-template-whonix-gw
 
 
 
@@ -68,14 +68,14 @@ In what follows, the term “target template” refers to whichever template you
 
    .. code:: console
 
-         $ sudo qubes-dom0-update --enablerepo=<optional-additional-repo> \
+         $ doas qubes-dom0-update --enablerepo=<optional-additional-repo> \
             <template-package-name>
 
    For example, to install the ``whonix-gw`` template:
 
    .. code:: console
 
-         $ sudo qubes-dom0-update --enablerepo=qubes-templates-community \
+         $ doas qubes-dom0-update --enablerepo=qubes-templates-community \
             qubes-template-whonix-gw
 
 

@@ -109,6 +109,6 @@ else
             --dest=org.freedesktop.NetworkManager \
             /org/freedesktop/NetworkManager       \
             org.freedesktop.NetworkManager.Sleep boolean:false ||  \
-            { under_systemd && systemctl start NetworkManager.service; } || service qubes-core-netvm start
+            { under_runit && sv start NetworkManager.service; } || service qubes-core-netvm start
     fi
 fi

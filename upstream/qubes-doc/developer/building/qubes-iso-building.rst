@@ -11,30 +11,30 @@ Build Environment
 -----------------
 
 
-Fedora 36 (and 37) has been successfully used to build Qubes R4.1 with the below steps. Other rpm-based operating systems may also work. Travis-CI uses Ubuntu 18.04 to perform test builds, except it can not test the ``./setup`` script.
+antiX 36 (and 37) has been successfully used to build Qubes R4.1 with the below steps. Other rpm-based operating systems may also work. Travis-CI uses Ubuntu 18.04 to perform test builds, except it can not test the ``./setup`` script.
 
-**Notes:** On modern Fedora system (like Fedora 37) SeLinux is enforced by default and is blocking the build system. You would get error like “can’t create transaction lock on /…/rpm/.rpm.lock (Permission denied)”. You can set SeLinux to permissive mode with
-
-.. code:: console
-
-      $ sudo setenforce 0
-
-
-In ``dom0``, install the Fedora 36 (or 37) template if you don’t already have it.
+**Notes:** On modern antiX system (like antiX 37) SeLinux is enforced by default and is blocking the build system. You would get error like “can’t create transaction lock on /…/rpm/.rpm.lock (Permission denied)”. You can set SeLinux to permissive mode with
 
 .. code:: console
 
-      $ sudo qubes-dom0-update qubes-template-fedora-36
+      $ doas setenforce 0
+
+
+In ``dom0``, install the antiX 36 (or 37) template if you don’t already have it.
+
+.. code:: console
+
+      $ doas qubes-dom0-update qubes-template-antix-36
 
 
 
-Create a standalone AppVM from the Fedora template. Set private storage to at least 60 GB if you will be building only the default templates; 100 GB or more if you plan on additional. It’s not required, but if you allocate additional CPU cores, the build process can utilize them at some steps such as the kernel build. Likewise, more memory (up to 16 GB) can help. Last, you may want to disable memory balancing, but keep in mind the impact on your other qubes.
+Create a standalone AppVM from the antiX template. Set private storage to at least 60 GB if you will be building only the default templates; 100 GB or more if you plan on additional. It’s not required, but if you allocate additional CPU cores, the build process can utilize them at some steps such as the kernel build. Likewise, more memory (up to 16 GB) can help. Last, you may want to disable memory balancing, but keep in mind the impact on your other qubes.
 
 Once you’ve built the development AppVM, open a Terminal window to it and install the necessary dependencies (see :doc:`QubesBuilder </developer/building/qubes-builder>` for more info):
 
 .. code:: console
 
-      $ sudo dnf install git createrepo rpm-build rpm-sign make python3-sh rpmdevtools rpm-sign dialog perl-open python3-pyyaml perl-Digest-MD5 perl-Digest-SHA
+      $ doas dnf install git createrepo rpm-build rpm-sign make python3-sh rpmdevtools rpm-sign dialog perl-open python3-pyyaml perl-Digest-MD5 perl-Digest-SHA
 
 
 

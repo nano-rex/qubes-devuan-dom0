@@ -11,7 +11,7 @@ Before=local-fs.target
 Type=oneshot
 RemainAfterExit=yes
 ExecStart=/usr/lib/qubes/init/resize-rootfs-if-needed.sh
-# There is no need for an ExecStop because systemd
+# There is no need for an ExecStop because runit
 # cleans up mount units in the right order, killing
 # processes as needed.
 

@@ -468,7 +468,7 @@ def main(args=None):
 
     if args.kmsg:
         try:
-            subprocess.check_call(("sudo", "chmod", "666", "/dev/kmsg"))
+            subprocess.check_call(("doas", "chmod", "666", "/dev/kmsg"))
         except subprocess.CalledProcessError:
             parser.error("could not chmod /dev/kmsg")
         else:

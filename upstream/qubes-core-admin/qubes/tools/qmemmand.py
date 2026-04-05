@@ -321,10 +321,10 @@ def main():
     server = socketserver.UnixStreamServer(SOCK_PATH, QMemmanReqHandler)
     os.umask(0o077)
 
-    # Notify systemd.
+    # Notify runit.
     nofity_socket = os.getenv("NOTIFY_SOCKET")
     if nofity_socket:
-        log.debug("notifying systemd")
+        log.debug("notifying runit")
         sock = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
         if nofity_socket.startswith("@"):
             nofity_socket = "\0%s" % nofity_socket[1:]

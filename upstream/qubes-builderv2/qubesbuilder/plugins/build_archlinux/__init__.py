@@ -276,8 +276,8 @@ class ArchlinuxBuildPlugin(ArchlinuxDistributionPlugin, BuildPlugin):
             makepkg_conf = f"{self.executor.get_plugins_dir()}/chroot_archlinux/conf/makepkg-x86_64.conf"
 
             cmd = [
-                f"sudo mkdir -p /usr/local/share/devtools/makepkg.conf.d/",
-                f"sudo cp {makepkg_conf} /usr/local/share/devtools/makepkg.conf.d/qubes-x86_64.conf",
+                f"doas mkdir -p /usr/local/share/devtools/makepkg.conf.d/",
+                f"doas cp {makepkg_conf} /usr/local/share/devtools/makepkg.conf.d/qubes-x86_64.conf",
             ]
 
             pacman_base_args = {
@@ -316,18 +316,18 @@ class ArchlinuxBuildPlugin(ArchlinuxDistributionPlugin, BuildPlugin):
                 ]
 
                 cmd += [
-                    f"sudo mkdir -p {self.executor.get_cache_dir()}/qubes-x86_64",
+                    f"doas mkdir -p {self.executor.get_cache_dir()}/qubes-x86_64",
                     f"cd {self.executor.get_cache_dir()}/qubes-x86_64",
-                    f"sudo tar xf {self.executor.get_cache_dir() / chroot_archive}",
+                    f"doas tar xf {self.executor.get_cache_dir() / chroot_archive}",
                 ] + get_pacman_cmd(
                     **pacman_args,
                 )
 
                 # Ensure to regenerate pacman keyring
                 cmd += [
-                    "sudo rm -rf /etc/pacman.d/gnupg/private-keys-v1.d",
-                    "sudo pacman-key --init",
-                    "sudo pacman-key --populate",
+                    "doas rm -rf /etc/pacman.d/gnupg/private-keys-v1.d",
+                    "doas pacman-key --init",
+                    "doas pacman-key --populate",
                 ]
             else:
                 self.log.info(
@@ -352,12 +352,12 @@ class ArchlinuxBuildPlugin(ArchlinuxDistributionPlugin, BuildPlugin):
                     / "chroot_archlinux/scripts/add-qubes-repository-key"
                 ]
                 cmd += [
-                    f"sudo {self.executor.get_plugins_dir()}/chroot_archlinux/scripts/add-qubes-repository-key {qubes_repo_version}"
+                    f"doas {self.executor.get_plugins_dir()}/chroot_archlinux/scripts/add-qubes-repository-key {qubes_repo_version}"
                 ]
 
             # Create local repository inside chroot
             cmd += pacman_cmd + [
-                f"sudo {self.executor.get_plugins_dir()}/build_archlinux/scripts/update-local-repo.sh {self.executor.get_cache_dir()}/qubes-x86_64/root {self.executor.get_repository_dir()}",
+                f"doas {self.executor.get_plugins_dir()}/build_archlinux/scripts/update-local-repo.sh {self.executor.get_cache_dir()}/qubes-x86_64/root {self.executor.get_repository_dir()}",
             ]
 
             for file in parameters.get("files", []):
@@ -371,7 +371,7 @@ class ArchlinuxBuildPlugin(ArchlinuxDistributionPlugin, BuildPlugin):
                     )
 
             build_command = [
-                f"sudo qubes-x86_64-build -r {self.executor.get_cache_dir()} -- ",
+                f"doas qubes-x86_64-build -r {self.executor.get_cache_dir()} -- ",
                 f"-d {self.executor.get_repository_dir()}:/builder/repository -- ",
                 f"--syncdeps --noconfirm --skipinteg",
             ]

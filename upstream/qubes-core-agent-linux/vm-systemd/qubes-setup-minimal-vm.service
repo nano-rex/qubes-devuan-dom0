@@ -2,7 +2,7 @@
 Description=Apply minimal vm runtime configuration
 DefaultDependencies=no
 Conflicts=shutdown.target
-After=systemd-modules-load.service qubes-sysinit.service
+After=runit-modules-load.service qubes-sysinit.service
 Before=sysinit.target shutdown.target
 ConditionPathExists=|/var/run/qubes-service/minimal-netvm
 ConditionPathExists=|/var/run/qubes-service/minimal-usbvm

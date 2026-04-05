@@ -25,7 +25,7 @@ In Dom0 install ``anti-evil-maid``:
 
 .. code:: console
 
-      $ sudo qubes-dom0-update anti-evil-maid
+      $ doas qubes-dom0-update anti-evil-maid
 
 
 

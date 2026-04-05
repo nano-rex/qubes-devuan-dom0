@@ -1,7 +1,7 @@
 BUILDER_DIR := $(shell readlink -m $(dir $(abspath $(lastword $(MAKEFILE_LIST)))))
 
 DIST_CODENAME ?= fc42
-DIST_NAME ?= fedora
+DIST_NAME ?= antix
 DIST_VER ?= 42
 TEMPLATE_ENV_WHITELIST ?=
 
@@ -66,19 +66,19 @@ build: build-rootimg build-rpm
 build-rootimg: build-rootimg-prepare build-rootimg-qubeize
 
 build-rootimg-prepare: check
-	sudo env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))") $(BUILDER_DIR)/scripts/prepare-image $(ARTIFACTS_DIR)/prepared_images/$(TEMPLATE_NAME).img $(INSTALL_DIR)
+	doas env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))") $(BUILDER_DIR)/scripts/prepare-image $(ARTIFACTS_DIR)/prepared_images/$(TEMPLATE_NAME).img $(INSTALL_DIR)
 
 build-rootimg-qubeize: check
-	sudo env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))")	$(BUILDER_DIR)/scripts/qubeize-image $(ARTIFACTS_DIR)/prepared_images/$(TEMPLATE_NAME).img $(INSTALL_DIR)
+	doas env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))")	$(BUILDER_DIR)/scripts/qubeize-image $(ARTIFACTS_DIR)/prepared_images/$(TEMPLATE_NAME).img $(INSTALL_DIR)
 
 build-rpm: check
-	sudo env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))") $(BUILDER_DIR)/scripts/build-template-rpm $(ARTIFACTS_DIR) $(TEMPLATE_NAME) $(TEMPLATE_VERSION) $(TEMPLATE_TIMESTAMP)
+	doas env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))") $(BUILDER_DIR)/scripts/build-template-rpm $(ARTIFACTS_DIR) $(TEMPLATE_NAME) $(TEMPLATE_VERSION) $(TEMPLATE_TIMESTAMP)
 
 clean:
-	sudo rm -fr $(ARTIFACTS_DIR)/qubeized_images/root.img.*
-	sudo rm -fr $(ARTIFACTS_DIR)/qubeized_images/$(TEMPLATE_NAME)*
-	sudo rm -fr $(ARTIFACTS_DIR)/rpmbuild/BUILDROOT/*
-	sudo rm -fr $(ARTIFACTS_DIR)/rpmbuild/tmp/*
+	doas rm -fr $(ARTIFACTS_DIR)/qubeized_images/root.img.*
+	doas rm -fr $(ARTIFACTS_DIR)/qubeized_images/$(TEMPLATE_NAME)*
+	doas rm -fr $(ARTIFACTS_DIR)/rpmbuild/BUILDROOT/*
+	doas rm -fr $(ARTIFACTS_DIR)/rpmbuild/tmp/*
 	# We're not removing any images from prepared_images/ intentionally
 	# because the user might want to keep using the same image for a long time
 	# and they are not dependent on any of the Qubes packages

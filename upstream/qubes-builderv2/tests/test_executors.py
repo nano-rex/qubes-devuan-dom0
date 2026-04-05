@@ -126,7 +126,7 @@ def test_executor_error():
 def executor(request):
     if request.param == "container":
         executor = ContainerExecutor(
-            "docker", "fedora:latest", user="root", group="root"
+            "docker", "antix:latest", user="root", group="root"
         )
         yield executor
     elif request.param == "local":
@@ -257,7 +257,7 @@ def test_copy_out_error_ignored(executor):
 def test_container_not_running():
     with pytest.raises(ExecutorError) as e:
         ContainerExecutor(
-            "docker", "fedora:latest", base_url="tcp://127.0.0.1:1234"
+            "docker", "antix:latest", base_url="tcp://127.0.0.1:1234"
         )
     msg = "Cannot connect to container client."
     assert str(e.value) == msg
@@ -265,14 +265,14 @@ def test_container_not_running():
 
 def test_container_unknown_image():
     with pytest.raises(ExecutorError) as e:
-        ContainerExecutor("docker", "fedora-unknown:latest")
-    msg = "Cannot find fedora-unknown:latest."
+        ContainerExecutor("docker", "antix-unknown:latest")
+    msg = "Cannot find antix-unknown:latest."
     assert str(e.value) == msg
 
 
 def test_container_clean_on_error():
     executor = ContainerExecutor(
-        "docker", "fedora:latest", user="root", group="root"
+        "docker", "antix:latest", user="root", group="root"
     )
     cmd = "this_command_does_not_exist"
     with pytest.raises(ExecutorError) as e:
@@ -290,7 +290,7 @@ def test_container_clean_on_error():
 def test_container_on_error_noclean():
     executor = ContainerExecutor(
         "docker",
-        "fedora:latest",
+        "antix:latest",
         user="root",
         group="root",
         clean_on_error=False,

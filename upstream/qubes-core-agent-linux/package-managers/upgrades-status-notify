@@ -3,9 +3,9 @@
 set -e
 
 if [ "$1" = "started-by-init" ]; then
-    true "INFO: Started by systemd unit (timer.) Continuing..."
+    true "INFO: Started by runit unit (timer.) Continuing..."
 else
-    true "INFO: Not started by systemd unit (timer.) Probably started by package manager hook script."
+    true "INFO: Not started by runit unit (timer.) Probably started by package manager hook script."
     if test -e /run/qubes/persistent-full; then
         true "INFO: Running inside Template and Standalone. Continuing..."
     else

@@ -45,7 +45,7 @@ Depends:
     libxfixes3,
     libxt6,
     libx11-6,
-    libpam-systemd,
+    libpam-runit,
     python3,
     python3-xcffib,
     xcvt,

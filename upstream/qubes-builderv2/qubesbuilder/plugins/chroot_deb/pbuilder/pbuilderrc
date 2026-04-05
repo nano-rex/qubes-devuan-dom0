@@ -88,7 +88,7 @@ export DEBIAN_FRONTEND="noninteractive"
 
 #for pbuilder debuild
 BUILDSOURCEROOTCMD="fakeroot"
-PBUILDERROOTCMD="sudo -E"
+PBUILDERROOTCMD="doas -E"
 # use cowbuilder for pdebuild
 #PDEBUILD_PBUILDER="cowbuilder"
 

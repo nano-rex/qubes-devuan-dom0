@@ -1,7 +1,7 @@
 The Template Builder
 ======================
 
-1) First, create a clean image of Fedora Linux install. You can use the fedoraize_image
+1) First, create a clean image of antiX Linux install. You can use the antixize_image
 script for this:
 
 fedorize_image <image> <file-with-packets-lists>

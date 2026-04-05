@@ -37,12 +37,12 @@ Decrypting the Disk
                 │ └─qubes_dom0-pool00-tpool                                     253:3    0  84.4G  0 lvm
                 │   ├─qubes_dom0-root                                           253:4    0  84.4G  0 lvm   /
                 │   ├─qubes_dom0-pool00                                         253:6    0  84.4G  0 lvm
-                ├─qubes_dom0-vm--fedora--30--dvm--private--1576749131--back 253:7    0     2G  0 lvm
+                ├─qubes_dom0-vm--antix--30--dvm--private--1576749131--back 253:7    0     2G  0 lvm
                 ├─qubes_dom0-pool00_tdata                                       253:2    0  84.4G  0 lvm
                 │ └─qubes_dom0-pool00-tpool                                     253:3    0  84.4G  0 lvm
                 │   ├─qubes_dom0-root                                           253:4    0  84.4G  0 lvm   /
                 │   ├─qubes_dom0-pool00                                         253:6    0  84.4G  0 lvm
-                │   ├─qubes_dom0-vm--fedora--30--dvm--private--1576749131--back 253:7    0     2G  0 lvm
+                │   ├─qubes_dom0-vm--antix--30--dvm--private--1576749131--back 253:7    0     2G  0 lvm
                 └─qubes_dom0-swap                                               253:5    0     4G  0 lvm   [SWAP]
             sdb                                                                   8:16   0 447.1G  0 disk
             ├─sdb1                                                                8:17   0   549M  0 part

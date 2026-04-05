@@ -1,15 +1,15 @@
 ================
-Fedora templates
+antiX templates
 ================
 
 
-The Fedora :doc:`template </user/templates/templates>` is the default template in Qubes OS. The current version is Fedora 42. This page is about the “full” Fedora templates. For the minimal version, please see the :doc:`Minimal templates </user/templates/minimal-templates>` page.
+The antiX :doc:`template </user/templates/templates>` is the default template in Qubes OS. The current version is antiX 42. This page is about the “full” antiX templates. For the minimal version, please see the :doc:`Minimal templates </user/templates/minimal-templates>` page.
 
 Installing
 ----------
 
 
-To :ref:`install <user/templates/templates:installing>` a specific Fedora template that is not currently installed in your system, use the Qubes Template Manager, or use the following command in a dom0 terminal:
+To :ref:`install <user/templates/templates:installing>` a specific antiX template that is not currently installed in your system, use the Qubes Template Manager, or use the following command in a dom0 terminal:
 
 .. code:: console
 
@@ -17,15 +17,15 @@ To :ref:`install <user/templates/templates:installing>` a specific Fedora templa
 
 
 
-(Replace ``XX`` with the name of the Fedora template you wish to install.)
+(Replace ``XX`` with the name of the antiX template you wish to install.)
 
-To reinstall a Fedora template that is already installed in your system, see :doc:`How to Reinstall a template </user/how-to-guides/how-to-reinstall-a-template>`.
+To reinstall a antiX template that is already installed in your system, see :doc:`How to Reinstall a template </user/how-to-guides/how-to-reinstall-a-template>`.
 
 After Installing
 ----------------
 
 
-After installing a fresh Fedora template, we recommend performing the following steps:
+After installing a fresh antiX template, we recommend performing the following steps:
 
 1. :doc:`Update the template </user/how-to-guides/how-to-install-software>`.
 
@@ -51,10 +51,10 @@ Upgrading
 ---------
 
 
-There are two ways to upgrade your template to a new Fedora release:
+There are two ways to upgrade your template to a new antiX release:
 
-- **Recommended:** :ref:`Install a fresh template to replace the existing one. <user/templates/fedora/fedora:installing>` **This option may be simpler for less experienced users.** After you install the new template, redo all desired template modifications and :ref:`switch everything that was set to the old template to the new template <user/templates/templates:switching>`. You may want to write down the modifications you make to your templates so that you remember what to redo on each fresh install. To see a log of package manager actions, open a terminal in the old Fedora template and use the ``dnf history`` command.
+- **Recommended:** :ref:`Install a fresh template to replace the existing one. <user/templates/antix/antix:installing>` **This option may be simpler for less experienced users.** After you install the new template, redo all desired template modifications and :ref:`switch everything that was set to the old template to the new template <user/templates/templates:switching>`. You may want to write down the modifications you make to your templates so that you remember what to redo on each fresh install. To see a log of package manager actions, open a terminal in the old antiX template and use the ``dnf history`` command.
 
-- **Advanced:** :doc:`Perform an in-place upgrade of an existing Fedora template. </user/templates/fedora/fedora-upgrade>` This option will preserve any modifications you’ve made to the template, **but it may be more complicated for less experienced users.**
+- **Advanced:** :doc:`Perform an in-place upgrade of an existing antiX template. </user/templates/antix/antix-upgrade>` This option will preserve any modifications you’ve made to the template, **but it may be more complicated for less experienced users.**
 
 

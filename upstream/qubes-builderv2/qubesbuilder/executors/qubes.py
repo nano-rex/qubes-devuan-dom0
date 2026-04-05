@@ -214,7 +214,7 @@ class LinuxQubesExecutor(QubesExecutor):
                 self.dispvm,
                 [
                     [
-                        "sudo",
+                        "doas",
                         "mkdir",
                         "-p",
                         "--",
@@ -225,7 +225,7 @@ class LinuxQubesExecutor(QubesExecutor):
                         "/usr/local/etc/qubes-rpc",
                     ],
                     [
-                        "sudo",
+                        "doas",
                         "mv",
                         "-f",
                         "--",
@@ -234,7 +234,7 @@ class LinuxQubesExecutor(QubesExecutor):
                         "/usr/local/etc/qubes-rpc/",
                     ],
                     [
-                        "sudo",
+                        "doas",
                         "chmod",
                         "+x",
                         "--",
@@ -242,13 +242,13 @@ class LinuxQubesExecutor(QubesExecutor):
                         "/usr/local/etc/qubes-rpc/qubesbuilder.FileCopyOut",
                     ],
                     [
-                        "sudo",
+                        "doas",
                         "bash",
                         "-c",
                         "if [ -x /usr/sbin/restorecon ]; then restorecon -R /usr/local/etc/qubes-rpc/; fi;",
                     ],
                     [
-                        "sudo",
+                        "doas",
                         "chown",
                         "-R",
                         "--",

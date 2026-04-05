@@ -95,7 +95,7 @@ class BaseWindowsExecutor(Executor, ABC):
             proc = None
             self.log.debug(f"attaching EWDK from '{self.ewdk_path}'")
             rc, stdout, stderr = self.execute(
-                ["sudo", "losetup", "-f", self.ewdk_path],
+                ["doas", "losetup", "-f", self.ewdk_path],
                 collect=True,
                 echo=False,
             )

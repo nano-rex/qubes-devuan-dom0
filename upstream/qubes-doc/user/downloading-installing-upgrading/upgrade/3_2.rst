@@ -19,7 +19,7 @@ Upgrading dom0
 
    .. code:: console
 
-         $ sudo qubes-dom0-update --releasever=3.2 qubes-release
+         $ doas qubes-dom0-update --releasever=3.2 qubes-release
 
 
 
@@ -31,7 +31,7 @@ Upgrading dom0
 
    .. code:: console
 
-         $ sudo qubes-dom0-update systemd-compat-libs perl-libwww-perl perl-Term-ANSIColor perl-Term-Cap gdk-pixbuf2-xlib speexdsp qubes-mgmt-salt-admin-tools lvm2
+         $ doas qubes-dom0-update runit-compat-libs perl-libwww-perl perl-Term-ANSIColor perl-Term-Cap gdk-pixbuf2-xlib speexdsp qubes-mgmt-salt-admin-tools lvm2
          (...)
          Transaction Summary
          ===============================================================
@@ -50,7 +50,7 @@ Upgrading dom0
 
    .. code:: console
 
-         $ sudo qubes-dom0-update
+         $ doas qubes-dom0-update
 
 
 
@@ -106,11 +106,11 @@ Upgrade all Template and Standalone VM(s)
 
 By default, in Qubes R3.1, there are few templates and no standalones. However, users are free to create standalones More information on using multiple templates, as well as standalones, can be found :doc:`here </user/how-to-guides/how-to-install-software>`. The steps described in this section should be repeated in **all** the user’s Template and Standalone VMs.
 
-Upgrade Fedora templates:
+Upgrade antiX templates:
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-**Note:** This will only upgrade your Fedora template from Qubes 3.1 to Qubes 3.2. This will *not* upgrade your Fedora template from Fedora 23 to Fedora 24. In order to do that, please see the :ref:`Fedora 23 template upgrade instructions <user/templates/fedora/fedora:upgrading>`.
+**Note:** This will only upgrade your antiX template from Qubes 3.1 to Qubes 3.2. This will *not* upgrade your antiX template from antiX 23 to antiX 24. In order to do that, please see the :ref:`antiX 23 template upgrade instructions <user/templates/antix/antix:upgrading>`.
 
 1. Open a terminal in the template (or standalone). (E.g., use Qubes VM Manager’s right-click menu, choose “Run Command in VM,” and type ``gnome-terminal`` there.)
 
@@ -118,7 +118,7 @@ Upgrade Fedora templates:
 
    .. code:: console
 
-         $ sudo dnf install --refresh qubes-upgrade-vm
+         $ doas dnf install --refresh qubes-upgrade-vm
 
 
 
@@ -126,7 +126,7 @@ Upgrade Fedora templates:
 
    .. code:: console
 
-         $ sudo dnf upgrade --refresh
+         $ doas dnf upgrade --refresh
 
 
 
@@ -134,7 +134,7 @@ Upgrade Fedora templates:
 
    .. code:: console
 
-         $ sudo dnf install qubes-mgmt-salt-vm-connector
+         $ doas dnf install qubes-mgmt-salt-vm-connector
 
 
 
@@ -152,8 +152,8 @@ Upgrade Debian (and Whonix) templates:
 
    .. code:: console
 
-         $ sudo cp /etc/apt/sources.list.d/qubes-r3.list /etc/apt/sources.list.d/qubes-r3-upgrade.list
-         $ sudo sed -i 's/r3.1/r3.2/' /etc/apt/sources.list.d/qubes-r3-upgrade.list
+         $ doas cp /etc/apt/sources.list.d/qubes-r3.list /etc/apt/sources.list.d/qubes-r3-upgrade.list
+         $ doas sed -i 's/r3.1/r3.2/' /etc/apt/sources.list.d/qubes-r3-upgrade.list
 
 
 
@@ -161,8 +161,8 @@ Upgrade Debian (and Whonix) templates:
 
    .. code:: console
 
-         $ sudo apt-get update
-         $ sudo apt-get dist-upgrade
+         $ doas apt-get update
+         $ doas apt-get dist-upgrade
 
 
 
@@ -170,7 +170,7 @@ Upgrade Debian (and Whonix) templates:
 
    .. code:: console
 
-         $ sudo apt-get install qubes-mgmt-salt-vm-connector
+         $ doas apt-get install qubes-mgmt-salt-vm-connector
 
 
 
@@ -178,7 +178,7 @@ Upgrade Debian (and Whonix) templates:
 
    .. code:: console
 
-         $ sudo rm -f /etc/apt/sources.list.d/qubes-r3-upgrade.list
+         $ doas rm -f /etc/apt/sources.list.d/qubes-r3-upgrade.list
 
 
 

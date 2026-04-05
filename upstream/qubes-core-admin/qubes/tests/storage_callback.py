@@ -107,9 +107,9 @@ class CallbackBase:
             % CB_CONF
         )
 
-        sudo = [] if os.getuid() == 0 else ["sudo"]
+        doas = [] if os.getuid() == 0 else ["doas"]
         subprocess.run(
-            sudo + ["install", "-m", "666", "/dev/null", CB_CONF], check=True
+            doas + ["install", "-m", "666", "/dev/null", CB_CONF], check=True
         )
 
         with open(CB_CONF, "w") as outfile:
@@ -122,8 +122,8 @@ class CallbackBase:
     def tearDownClass(cls):
         super().tearDownClass()
 
-        sudo = [] if os.getuid() == 0 else ["sudo"]
-        subprocess.run(sudo + ["rm", "-f", CB_CONF], check=True)
+        doas = [] if os.getuid() == 0 else ["doas"]
+        subprocess.run(doas + ["rm", "-f", CB_CONF], check=True)
 
     def setUp(self, init_pool=True):
         super().setUp(init_pool=init_pool)

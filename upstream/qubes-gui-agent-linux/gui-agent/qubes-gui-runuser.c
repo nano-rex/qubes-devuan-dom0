@@ -43,21 +43,21 @@
 
 pid_t fork_pid = 0;
 
-/* Note: augment_pam_env_with_systemd_env expects out_env_ref to be pointer to
+/* Note: augment_pam_env_with_runit_env expects out_env_ref to be pointer to
  * a NULL-terminated array of strings consisting of equals-sign-separated
  * key-value pairs. All items in out_env_ref MUST be heap-allocated, as this
  * function is liable to free() any item in the passed-in array in order to
- * replace it with an item obtained from systemd's environment.
+ * replace it with an item obtained from runit's environment.
  *
- * Note also, this function talks with the systemd user instance, not the
+ * Note also, this function talks with the runit user instance, not the
  * system instance (pid 1).
  */
-static void augment_pam_env_with_systemd_env(char ***out_env_ref)
+static void augment_pam_env_with_runit_env(char ***out_env_ref)
 {
     DBusConnection *dbus_conn = NULL;
     DBusError error_data = { 0 };
     DBusMessage *env_request = NULL;
-    const char *systemd_manager_str = "org.freedesktop.systemd1.Manager";
+    const char *runit_manager_str = "org.freedesktop.runit1.Manager";
     const char *environment_str = "Environment";
     dbus_bool_t ret = FALSE;
     DBusMessage *env_reply = NULL;
@@ -81,10 +81,10 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
     int current_type = 0;
 
     if (out_env_ref == NULL)
-        errx(1, "augment_pam_env_with_systemd_env: NULL out_env_ref argument is unsupported!\n");
+        errx(1, "augment_pam_env_with_runit_env: NULL out_env_ref argument is unsupported!\n");
     out_env_arr = *out_env_ref;
     if (out_env_arr == NULL)
-        errx(1, "augment_pam_env_with_systemd_env: NULL array in out_env_ref argument is unsupported!\n");
+        errx(1, "augment_pam_env_with_runit_env: NULL array in out_env_ref argument is unsupported!\n");
     for (out_env_idx = 0; out_env_arr[out_env_idx] != NULL; out_env_idx++) {
         out_env_arr_len++;
     }
@@ -95,7 +95,7 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
     dbus_error_init(&error_data);
     dbus_conn = dbus_bus_get(DBUS_BUS_SESSION, &error_data);
     if (dbus_conn == NULL) {
-        warnx("augment_pam_env_with_systemd_env: Failed to initialize D-Bus, error name: '%s', error contents: '%s'\n",
+        warnx("augment_pam_env_with_runit_env: Failed to initialize D-Bus, error name: '%s', error contents: '%s'\n",
               error_data.name,
               error_data.message);
         goto dbus_cleanup;
@@ -107,27 +107,27 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
     dbus_connection_set_exit_on_disconnect(dbus_conn, FALSE);
 
     /* Create a D-Bus method call message for getting the "Environment"
-     * property of org.freedesktop.systemd1.Manager.
+     * property of org.freedesktop.runit1.Manager.
      */
-    env_request = dbus_message_new_method_call("org.freedesktop.systemd1",
-                                               "/org/freedesktop/systemd1",
+    env_request = dbus_message_new_method_call("org.freedesktop.runit1",
+                                               "/org/freedesktop/runit1",
                                                "org.freedesktop.DBus.Properties",
                                                "Get");
     if (env_request == NULL) {
-        warnx("augment_pam_env_with_systemd_env: Failed to create D-Bus method call object!\n");
+        warnx("augment_pam_env_with_runit_env: Failed to create D-Bus method call object!\n");
         goto dbus_cleanup;
     }
 
     ret = dbus_message_append_args(env_request,
-                                   DBUS_TYPE_STRING, &systemd_manager_str,
+                                   DBUS_TYPE_STRING, &runit_manager_str,
                                    DBUS_TYPE_STRING, &environment_str,
                                    DBUS_TYPE_INVALID);
     if (ret == FALSE) {
-        warnx("augment_pam_env_with_systemd_env: Failed to append arguments to D-Bus method call object!\n");
+        warnx("augment_pam_env_with_runit_env: Failed to append arguments to D-Bus method call object!\n");
         goto dbus_cleanup;
     }
 
-    /* Send the method call to systemd, waiting a maximum of 500 milliseconds
+    /* Send the method call to runit, waiting a maximum of 500 milliseconds
      * for a response.
      */
     env_reply = dbus_connection_send_with_reply_and_block(dbus_conn,
@@ -135,7 +135,7 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
                                                           500,
                                                           &error_data);
     if (env_reply == NULL) {
-        warnx("augment_pam_env_with_systemd_env: Failed to request environment data from systemd, error name: '%s', error contents: '%s'\n",
+        warnx("augment_pam_env_with_runit_env: Failed to request environment data from runit, error name: '%s', error contents: '%s'\n",
               error_data.name,
               error_data.message);
         goto dbus_cleanup;
@@ -144,7 +144,7 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
     /* Ensure the reply is a method call return value. */
     reply_type = dbus_message_get_type(env_reply);
     if (reply_type != DBUS_MESSAGE_TYPE_METHOD_RETURN) {
-        warnx("augment_pam_env_with_systemd_env: Did not get method call return object from systemd!\n");
+        warnx("augment_pam_env_with_runit_env: Did not get method call return object from runit!\n");
         goto dbus_cleanup;
     }
 
@@ -154,7 +154,7 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
      */
     ret = dbus_message_iter_init(env_reply, &reply_iter);
     if (ret == FALSE) {
-        warnx("augment_pam_env_with_systemd_env: systemd returned an empty method call return object!\n");
+        warnx("augment_pam_env_with_runit_env: runit returned an empty method call return object!\n");
         goto dbus_cleanup;
     }
 
@@ -162,7 +162,7 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
      * we can look at its contents.
      */
     if (dbus_message_iter_get_arg_type(&reply_iter) != DBUS_TYPE_VARIANT) {
-        warnx("augment_pam_env_with_systemd_env: systemd did not return a variant object!\n");
+        warnx("augment_pam_env_with_runit_env: runit did not return a variant object!\n");
         goto dbus_cleanup;
     }
     dbus_message_iter_recurse(&reply_iter, &reply_inner_iter);
@@ -173,12 +173,12 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
      */
     inner_iter_typesig = dbus_message_iter_get_signature(&reply_inner_iter);
     if (strcmp(inner_iter_typesig, "as") != 0) {
-        warnx("augment_pam_env_with_systemd_env: Variant object from systemd does not contain a string array!\n");
+        warnx("augment_pam_env_with_runit_env: Variant object from runit does not contain a string array!\n");
         goto dbus_cleanup;
     }
     if (dbus_message_iter_get_arg_type(&reply_inner_iter)
                 != DBUS_TYPE_ARRAY) {
-        warnx("augment_pam_env_with_systemd_env: Variant object from systemd reported itself as a string array, but is not an array!\n");
+        warnx("augment_pam_env_with_runit_env: Variant object from runit reported itself as a string array, but is not an array!\n");
         goto dbus_cleanup;
     }
     dbus_message_iter_recurse(&reply_inner_iter, &reply_arr_iter);
@@ -189,28 +189,28 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
     while ((current_type = dbus_message_iter_get_arg_type(&reply_arr_iter))
                 != DBUS_TYPE_INVALID) {
         if (current_type != DBUS_TYPE_STRING) {
-            warnx("augment_pam_env_with_systemd_env: Non-string item found in string array!\n");
+            warnx("augment_pam_env_with_runit_env: Non-string item found in string array!\n");
             goto dbus_cleanup;
         }
         dbus_message_iter_get_basic(&reply_arr_iter, &env_val);
         env_arr_len++;
         env_arr = reallocarray(env_arr, env_arr_len, sizeof(char *));
         if (env_arr == NULL)
-            err(1, "augment_pam_env_with_systemd_env: Failed to allocate memory for environment array");
+            err(1, "augment_pam_env_with_runit_env: Failed to allocate memory for environment array");
         env_arr[env_arr_len - 1] = strdup(env_val);
         if (env_arr[env_arr_len - 1] == NULL)
-            err(1, "augment_pam_env_with_systemd_env: Failed to allocate memory for environment item");
+            err(1, "augment_pam_env_with_runit_env: Failed to allocate memory for environment item");
 
         dbus_message_iter_next(&reply_arr_iter);
     }
 
-    /* Merge the environment from systemd with the environment from PAM.
-     * Prefer variables from systemd over variables from PAM.
+    /* Merge the environment from runit with the environment from PAM.
+     * Prefer variables from runit over variables from PAM.
      */
     for (env_idx = 0; env_idx < env_arr_len; env_idx++) {
         env_eq_ptr = strstr(env_arr[env_idx], "=");
         if (env_eq_ptr == NULL)
-            errx(1, "augment_pam_env_with_systemd_env: Environment variable without equals sign encountered in systemd environment!\n");
+            errx(1, "augment_pam_env_with_runit_env: Environment variable without equals sign encountered in runit environment!\n");
         env_pre_eq_len = env_eq_ptr - env_arr[env_idx];
         did_override_env_var = false;
 
@@ -218,7 +218,7 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
                     out_env_idx++) {
             out_env_eq_ptr = strstr(out_env_arr[out_env_idx], "=");
             if (out_env_eq_ptr == NULL)
-                errx(1, "augment_pam_env_with_systemd_env: Environment variable without equals sign encountered in PAM environment!\n");
+                errx(1, "augment_pam_env_with_runit_env: Environment variable without equals sign encountered in PAM environment!\n");
             out_env_pre_eq_len = out_env_eq_ptr - out_env_arr[out_env_idx];
 
             if (out_env_pre_eq_len != env_pre_eq_len)
@@ -239,7 +239,7 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
                  * rather than copying strings from env_arr and then freeing
                  * env_arr, we simply merge all of the pointers from env_arr
                  * into out_env_arr, freeing anything in out_env_arr that is
-                 * overridden by something from systemd. This wastes no
+                 * overridden by something from runit. This wastes no
                  * memory, and is quite a bit more efficient.
                  */
                 out_env_arr[out_env_idx] = env_arr[env_idx];
@@ -258,7 +258,7 @@ static void augment_pam_env_with_systemd_env(char ***out_env_ref)
             out_env_arr = reallocarray(out_env_arr, out_env_arr_len,
                                        sizeof(char *));
             if (out_env_arr == NULL)
-                err(1, "augment_pam_env_with_systemd_env: Failed to allocate memory for environment item");
+                err(1, "augment_pam_env_with_runit_env: Failed to allocate memory for environment item");
 
             out_env_arr[out_env_arr_len - 1] = NULL;
             /* See above for rationale behind using assignment rather than
@@ -315,7 +315,7 @@ static struct pam_conv conv = {
 };
 
 /* Start process as given user, register session with PAM (and logind via
- * pam_systemd) first; wait for the process to terminate.
+ * pam_runit) first; wait for the process to terminate.
  */
 static pid_t do_execute(char *user, char *path, char **argv)
 {
@@ -492,7 +492,7 @@ static pid_t do_execute(char *user, char *path, char **argv)
 
             /* Get the DBUS_SESSION_BUS_ADDRESS from the PAM environment and
              * place it into our own environment, so that we can talk to
-             * systemd via D-Bus to get environment variables from it.
+             * runit via D-Bus to get environment variables from it.
              */
             for (env_idx = 0; env[env_idx] != NULL; env_idx++) {
                 if (strncmp(env[env_idx], "DBUS_SESSION_BUS_ADDRESS=",
@@ -503,10 +503,10 @@ static pid_t do_execute(char *user, char *path, char **argv)
             }
 
             /* Try to augment the environment list from PAM with the
-             * environment from the systemd user instance for the current
+             * environment from the runit user instance for the current
              * user.
              */
-            augment_pam_env_with_systemd_env(&env);
+            augment_pam_env_with_runit_env(&env);
 
             /* try to enter home dir, but don't abort if it fails */
             retval = chdir(pw->pw_dir);

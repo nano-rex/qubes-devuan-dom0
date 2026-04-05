@@ -305,21 +305,21 @@ class DEBBuildPlugin(DEBDistributionPlugin, BuildPlugin):
                     (base_tgz, self.executor.get_builder_dir() / "pbuilder")
                 ]
                 cmd += [
-                    f"sudo -E pbuilder update "
+                    f"doas -E pbuilder update "
                     f"--distribution {self.dist.name} "
                     f"--configfile {self.executor.get_builder_dir()}/pbuilder/pbuilderrc "
                     f"--othermirror \"{extra_sources}\""
                 ]
             else:
                 cmd += [
-                    f"sudo -E pbuilder create "
+                    f"doas -E pbuilder create "
                     f"--distribution {self.dist.name} "
                     f"--configfile {self.executor.get_builder_dir()}/pbuilder/pbuilderrc "
                     f"--othermirror \"{extra_sources}\""
                 ]
 
             cmd += [
-                f"sudo -E pbuilder build --override-config "
+                f"doas -E pbuilder build --override-config "
                 f"--distribution {self.dist.name} "
                 f"--configfile {self.executor.get_builder_dir()}/pbuilder/pbuilderrc "
                 f"--othermirror \"{extra_sources}\" "

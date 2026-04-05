@@ -653,7 +653,7 @@ class TC_90_QubesVM(QubesVMTestsMixin, qubes.tests.QubesTestCase):
         self.assertPropertyDefaultValue(
             vm,
             "kernelopts_common",
-            f"systemd.machine_id={uuid_str} "
+            f"runit.machine_id={uuid_str} "
             "some  default root=/dev/sda nomodeset other",
         )
         vm.features["no-nomodeset"] = "1"
@@ -714,7 +714,7 @@ class TC_90_QubesVM(QubesVMTestsMixin, qubes.tests.QubesTestCase):
         self.assertPropertyDefaultValue(
             vm,
             "kernelopts_common",
-            f"systemd.machine_id={uuid_str} "
+            f"runit.machine_id={uuid_str} "
             "some  default root=/dev/sda other",
         )
 
@@ -743,44 +743,44 @@ class TC_90_QubesVM(QubesVMTestsMixin, qubes.tests.QubesTestCase):
 
     def test_280_autostart(self):
         vm = self.get_vm()
-        # FIXME any better idea to not involve systemctl call at this stage?
+        # FIXME any better idea to not involve sv call at this stage?
         vm.events_enabled = False
         self._test_generic_bool_property(vm, "autostart", False)
 
     @qubes.tests.skipUnlessDom0
-    def test_281_autostart_systemd(self):
+    def test_281_autostart_runit(self):
         vm = self.get_vm()
         self.assertFalse(
             os.path.exists(
-                "/etc/systemd/system/multi-user.target.wants/"
+                "/etc/runit/system/multi-user.target.wants/"
                 "qubes-vm@{}.service".format(vm.name)
             ),
-            "systemd service enabled before setting autostart",
+            "runit service enabled before setting autostart",
         )
         vm.autostart = True
         self.assertTrue(
             os.path.exists(
-                "/etc/systemd/system/multi-user.target.wants/"
+                "/etc/runit/system/multi-user.target.wants/"
                 "qubes-vm@{}.service".format(vm.name)
             ),
-            "systemd service not enabled by autostart=True",
+            "runit service not enabled by autostart=True",
         )
         vm.autostart = False
         self.assertFalse(
             os.path.exists(
-                "/etc/systemd/system/multi-user.target.wants/"
+                "/etc/runit/system/multi-user.target.wants/"
                 "qubes-vm@{}.service".format(vm.name)
             ),
-            "systemd service not disabled by autostart=False",
+            "runit service not disabled by autostart=False",
         )
         vm.autostart = True
         del vm.autostart
         self.assertFalse(
             os.path.exists(
-                "/etc/systemd/system/multi-user.target.wants/"
+                "/etc/runit/system/multi-user.target.wants/"
                 "qubes-vm@{}.service".format(vm.name)
             ),
-            "systemd service not disabled by resetting autostart",
+            "runit service not disabled by resetting autostart",
         )
 
     def test_290_management_dispvm(self):
@@ -992,7 +992,7 @@ class TC_90_QubesVM(QubesVMTestsMixin, qubes.tests.QubesTestCase):
             <type arch="x86_64" machine="xenpv">linux</type>
             <kernel>/tmp/qubes-test/vm-kernels/dummy/vmlinuz</kernel>
             <initrd>/tmp/qubes-test/vm-kernels/dummy/initramfs</initrd>
-            <cmdline>systemd.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
+            <cmdline>runit.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
         </os>
         <features>
         </features>
@@ -1258,7 +1258,7 @@ class TC_90_QubesVM(QubesVMTestsMixin, qubes.tests.QubesTestCase):
             <loader type="rom">hvmloader</loader>
             <boot dev="cdrom" />
             <boot dev="hd" />
-            <cmdline>systemd.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
+            <cmdline>runit.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
         </os>
         <features>
             <pae/>
@@ -1395,7 +1395,7 @@ class TC_90_QubesVM(QubesVMTestsMixin, qubes.tests.QubesTestCase):
             <type arch="x86_64" machine="xenpvh">xenpvh</type>
             <kernel>/tmp/qubes-test/vm-kernels/dummy/vmlinuz</kernel>
             <initrd>/tmp/qubes-test/vm-kernels/dummy/initramfs</initrd>
-            <cmdline>systemd.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
+            <cmdline>runit.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
         </os>
         <features>
             <pae/>
@@ -1469,7 +1469,7 @@ class TC_90_QubesVM(QubesVMTestsMixin, qubes.tests.QubesTestCase):
         <os>
             <type arch="x86_64" machine="xenpvh">xenpvh</type>
             <kernel>/tmp/qubes-test/vm-kernels/dummy/vmlinuz</kernel>
-            <cmdline>systemd.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
+            <cmdline>runit.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
         </os>
         <features>
             <pae/>
@@ -1543,7 +1543,7 @@ class TC_90_QubesVM(QubesVMTestsMixin, qubes.tests.QubesTestCase):
             <type arch="x86_64" machine="xenpvh">xenpvh</type>
             <kernel>/tmp/qubes-test/vm-kernels/dummy/vmlinuz</kernel>
             <initrd>/tmp/qubes-test/vm-kernels/dummy/initramfs</initrd>
-            <cmdline>systemd.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
+            <cmdline>runit.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
         </os>
         <features>
             <pae/>
@@ -1948,7 +1948,7 @@ class TC_90_QubesVM(QubesVMTestsMixin, qubes.tests.QubesTestCase):
             <loader type="rom">hvmloader</loader>
             <boot dev="cdrom" />
             <boot dev="hd" />
-            <cmdline>systemd.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
+            <cmdline>runit.machine_id={UUID(my_uuid).hex} root=/dev/mapper/dmroot ro nomodeset console=hvc0 rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0 swiotlb=2048</cmdline>
         </os>
         <features>
             <pae/>

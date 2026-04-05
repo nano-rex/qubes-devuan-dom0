@@ -41,7 +41,7 @@ TEST_VMS = [
 ]
 
 # with a template
-ALL_TEST_VMS = TEST_VMS + ["fedora-35"]
+ALL_TEST_VMS = TEST_VMS + ["antix-35"]
 
 FULL_TEST = []
 
@@ -60,7 +60,7 @@ def mock_subprocess_complex(command):
                 b"test3.desktop|Test3 App||\n"
                 b"myvm.desktop|My VM app||\n"
             )
-        elif vm_name == "fedora-36":
+        elif vm_name == "antix-36":
             return b"tpl.desktop|Template App||\n"
         else:
             return (
@@ -92,7 +92,7 @@ def settings_fixture(
         name="test-vm-set",
         qapp=test_qubes_app,
         label="green",
-        template="fedora-36",
+        template="antix-36",
         include_in_backups=False,
         autostart=True,
         kernel="1.1",
@@ -137,8 +137,8 @@ def settings_fixture(
     )
 
     # add a TemplateVM with some boot modes
-    test_qubes_app._qubes["fedora-36-bootmodes"] = MockQube(
-        name="fedora-36-bootmodes",
+    test_qubes_app._qubes["antix-36-bootmodes"] = MockQube(
+        name="antix-36-bootmodes",
         qapp=test_qubes_app,
         klass="TemplateVM",
         netvm="",
@@ -155,7 +155,7 @@ def settings_fixture(
     test_qubes_app._qubes["test-vm-bootmodes"] = MockQube(
         name="test-vm-bootmodes",
         qapp=test_qubes_app,
-        template="fedora-36-bootmodes",
+        template="antix-36-bootmodes",
         features={
             "boot-mode.kernelopts.mode1": "mode1kern",
             "boot-mode.name.mode1": "Mode One",
@@ -169,7 +169,7 @@ def settings_fixture(
     test_qubes_app._qubes["test-vm-bootmodes-nondefault"] = MockQube(
         name="test-vm-bootmodes-nondefault",
         qapp=test_qubes_app,
-        template="fedora-36-bootmodes",
+        template="antix-36-bootmodes",
         bootmode="mode2",
         features={
             "boot-mode.kernelopts.mode1": "mode1kern",
@@ -376,14 +376,14 @@ def test_101_change_template(settings_fixture):
         assert not settings_window.template_name.isEnabled()
         return
 
-    change_needed = str(vm.template) != "fedora-35"
+    change_needed = str(vm.template) != "antix-35"
 
     assert settings_window.template_name.isEnabled()
 
     # one of the vms (test-old) already has this template
-    _select_item(settings_window.template_name, "fedora-35")
+    _select_item(settings_window.template_name, "antix-35")
 
-    expected_call = (vm_name, "admin.vm.property.Set", "template", b"fedora-35")
+    expected_call = (vm_name, "admin.vm.property.Set", "template", b"antix-35")
     assert expected_call not in settings_window.qubesapp.expected_calls
 
     settings_window.qubesapp.expected_calls[expected_call] = b"0\x00"
@@ -430,7 +430,7 @@ def test_102_change_netvm(settings_fixture):
 
 
 @mock.patch("PyQt6.QtWidgets.QMessageBox.warning")
-@pytest.mark.parametrize("settings_fixture", ["fedora-35"], indirect=True)
+@pytest.mark.parametrize("settings_fixture", ["antix-35"], indirect=True)
 def test_103_change_netvm_tpl(mock_warning, settings_fixture):
     settings_window, page, vm_name = settings_fixture
     vm = settings_window.qubesapp.domains[vm_name]
@@ -609,7 +609,7 @@ def test_108_disk_space(settings_fixture):
 @mock.patch("qubesmanager.settings.RenameVMThread")
 @mock.patch("PyQt6.QtWidgets.QMessageBox.warning")
 @pytest.mark.parametrize(
-    "settings_fixture", ["fedora-36", "test-vm-set", "test-blue"], indirect=True
+    "settings_fixture", ["antix-36", "test-vm-set", "test-blue"], indirect=True
 )
 def test_109_renamevm(mock_warning, mock_thread, mock_input, settings_fixture):
     settings_window, page, vm_name = settings_fixture
@@ -625,7 +625,7 @@ def test_109_renamevm(mock_warning, mock_thread, mock_input, settings_fixture):
     mock_input.return_value = ("renamed-vm", True)
     settings_window.rename_vm_button.click()
 
-    if vm.name == "fedora-36":
+    if vm.name == "antix-36":
         assert mock_warning.call_count == 1
         assert mock_thread.call_count == 0
         return
@@ -641,7 +641,7 @@ def test_109_renamevm(mock_warning, mock_thread, mock_input, settings_fixture):
 @mock.patch("qubesmanager.common_threads.RemoveVMThread")
 @mock.patch("PyQt6.QtWidgets.QMessageBox.warning")
 @pytest.mark.parametrize(
-    "settings_fixture", ["fedora-36", "test-vm-set", "test-blue"], indirect=True
+    "settings_fixture", ["antix-36", "test-vm-set", "test-blue"], indirect=True
 )
 def test_110_deletevm(mock_warning, mock_thread, mock_input, settings_fixture):
     settings_window, page, vm_name = settings_fixture
@@ -657,7 +657,7 @@ def test_110_deletevm(mock_warning, mock_thread, mock_input, settings_fixture):
     mock_input.return_value = (vm.name, True)
     settings_window.delete_vm_button.click()
 
-    if vm.name == "fedora-36":
+    if vm.name == "antix-36":
         assert mock_warning.call_count == 1
         assert mock_thread.call_count == 0
         return
@@ -697,7 +697,7 @@ def test_111_deletevm_wrong_name(
 @mock.patch("qubesmanager.clone_vm.CloneVMDlg")
 @check_errors
 @pytest.mark.parametrize(
-    "settings_fixture", ["fedora-36", "test-vm-set", "test-blue"], indirect=True
+    "settings_fixture", ["antix-36", "test-vm-set", "test-blue"], indirect=True
 )
 def test_112_clonevm(mock_clone, settings_fixture):
     settings_window, page, vm_name = settings_fixture
@@ -1124,7 +1124,7 @@ def test_212_boot_from_device(mock_boot, mock_start, settings_fixture):
 
 
 @check_errors
-@pytest.mark.parametrize("settings_fixture", ["fedora-36-bootmodes"], indirect=True)
+@pytest.mark.parametrize("settings_fixture", ["antix-36-bootmodes"], indirect=True)
 def test_213_bootmode_template(settings_fixture):
     settings_window, page, vm_name = settings_fixture
 

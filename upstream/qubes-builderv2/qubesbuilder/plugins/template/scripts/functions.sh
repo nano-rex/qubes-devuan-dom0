@@ -12,11 +12,11 @@ DEBUG=${DEBUG:-0}
 if [ "0${VERBOSE}" -ge 2 ] || [ "${DEBUG}" == "1" ]; then
     chroot_cmd() {
         local retval
-        # Need to capture exit code after running chroot or systemd-nspawn
+        # Need to capture exit code after running chroot or runit-nspawn
         # so it will be available as a return value
         # shellcheck disable=SC2015
-        if [ "${SYSTEMD_NSPAWN_ENABLE}"  == "1" ]; then
-            systemd-nspawn -D "${INSTALL_DIR}" -M "${DIST}" ${1+"$@"} && { retval=$?; true; } || { retval=$?; true; }
+        if [ "${RUNIT_NSPAWN_ENABLE}"  == "1" ]; then
+            runit-nspawn -D "${INSTALL_DIR}" -M "${DIST}" ${1+"$@"} && { retval=$?; true; } || { retval=$?; true; }
         else
             /usr/sbin/chroot "${INSTALL_DIR}" ${1+"$@"} && { retval=$?; true; } || { retval=$?; true; }
         fi
@@ -24,8 +24,8 @@ if [ "0${VERBOSE}" -ge 2 ] || [ "${DEBUG}" == "1" ]; then
     }
 else
     chroot_cmd() {
-        if [ "${SYSTEMD_NSPAWN_ENABLE}"  == "1" ]; then
-            systemd-nspawn -D "${INSTALL_DIR}" -M "${DIST}" ${1+"$@"}
+        if [ "${RUNIT_NSPAWN_ENABLE}"  == "1" ]; then
+            runit-nspawn -D "${INSTALL_DIR}" -M "${DIST}" ${1+"$@"}
         else
             /usr/sbin/chroot "${INSTALL_DIR}" ${1+"$@"}
         fi

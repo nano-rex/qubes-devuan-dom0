@@ -29,7 +29,7 @@
 #endif
 #define XORG_PATH "/usr/bin/Xorg"
 #define XORG_PATH_NEW "/usr/libexec/Xorg.bin"
-#define XORG_PATH_NEWER "/usr/libexec/Xorg" /* Fedora 23 */
+#define XORG_PATH_NEWER "/usr/libexec/Xorg" /* antiX 23 */
 
 int main(int argc __attribute__((__unused__)), char **argv) {
     putenv("LD_PRELOAD=" SHMOVERRIDE_LIB_PATH);

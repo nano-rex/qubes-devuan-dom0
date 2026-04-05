@@ -189,7 +189,7 @@ def test_component_no_packages_1():
 executor:
   type: docker
   options:
-    image: qubes-builder-fedora
+    image: qubes-builder-antix
 """
         )
         config_file.flush()
@@ -247,13 +247,13 @@ vm:
 def test_dist():
     dist = QubesDistribution("vm-fc42")
     assert dist.version == "42"
-    assert dist.fullname == "fedora"
+    assert dist.fullname == "antix"
     assert dist.architecture == "x86_64"
     assert dist.tag == "fc42"
 
-    repr_str = "<QubesDistribution vm-fedora-42.x86_64>"
-    assert dist.to_str() == "vm-fedora-42.x86_64"
-    assert str(dist) == "vm-fedora-42.x86_64"
+    repr_str = "<QubesDistribution vm-antix-42.x86_64>"
+    assert dist.to_str() == "vm-antix-42.x86_64"
+    assert str(dist) == "vm-antix-42.x86_64"
     assert repr(dist) == repr_str
 
     dist = QubesDistribution("vm-trixie")
@@ -270,13 +270,13 @@ def test_dist():
 def test_dist_non_default_arch():
     dist = QubesDistribution("vm-fc42.ppc64le")
     assert dist.version == "42"
-    assert dist.fullname == "fedora"
+    assert dist.fullname == "antix"
     assert dist.architecture == "ppc64le"
     assert dist.tag == "fc42"
 
-    repr_str = "<QubesDistribution vm-fedora-42.ppc64le>"
-    assert dist.to_str() == "vm-fedora-42.ppc64le"
-    assert str(dist) == "vm-fedora-42.ppc64le"
+    repr_str = "<QubesDistribution vm-antix-42.ppc64le>"
+    assert dist.to_str() == "vm-antix-42.ppc64le"
+    assert str(dist) == "vm-antix-42.ppc64le"
     assert repr(dist) == repr_str
 
     dist = QubesDistribution("vm-trixie.ppc64el")
@@ -319,28 +319,28 @@ def test_dist_family():
 def test_template():
     template = QubesTemplate(
         {
-            "fedora-42-xfce": {
+            "antix-42-xfce": {
                 "dist": "vm-fc42",
                 "flavor": "notset",
                 "options": ["no-recommends", "hardened"],
             }
         }
     )
-    assert template.distribution.fullname == "fedora"
+    assert template.distribution.fullname == "antix"
     assert template.distribution.version == "42"
     assert template.distribution.package_set == "vm"
 
     repr_str = (
-        "<QubesTemplate fedora-42-xfce (options: no-recommends,hardened)>"
+        "<QubesTemplate antix-42-xfce (options: no-recommends,hardened)>"
     )
-    assert template.to_str() == "fedora-42-xfce"
-    assert str(template) == "fedora-42-xfce"
+    assert template.to_str() == "antix-42-xfce"
+    assert str(template) == "antix-42-xfce"
     assert repr(template) == repr_str
 
 
 def test_qubes_template_init_with_valid_template():
     template_dict = {
-        "fedora-42": {
+        "antix-42": {
             "dist": "fc42",
             "flavor": "minimal",
             "options": ["option1", "option2"],
@@ -349,7 +349,7 @@ def test_qubes_template_init_with_valid_template():
     }
     qubes_template = QubesTemplate(template_dict)
 
-    assert qubes_template.name == "fedora-42"
+    assert qubes_template.name == "antix-42"
     assert isinstance(qubes_template.distribution, QubesDistribution)
     assert qubes_template.flavor == "minimal"
     assert qubes_template.options == ["option1", "option2"]
@@ -373,55 +373,55 @@ def test_qubes_template_init_with_invalid_value():
 
 
 def test_qubes_template_init_with_invalid_distribution():
-    template_dict = {"fedora-42": {"dist": "host-fedora-42"}}
+    template_dict = {"antix-42": {"dist": "host-antix-42"}}
     with pytest.raises(TemplateError) as exc_info:
         QubesTemplate(template_dict)
 
     assert (
         str(exc_info.value)
-        == "Invalid provided distribution for template 'fedora-42'."
+        == "Invalid provided distribution for template 'antix-42'."
     )
 
 
 def test_qubes_template_init_with_distribution_error():
-    template_dict = {"fedora-42": {"dist": "fedora-42"}}
+    template_dict = {"antix-42": {"dist": "antix-42"}}
     with pytest.raises(TemplateError) as exc_info:
         QubesTemplate(template_dict)
 
-    assert str(exc_info.value) == "Unsupported distribution 'vm-fedora-42'."
+    assert str(exc_info.value) == "Unsupported distribution 'vm-antix-42'."
 
 
 def test_qubes_template_to_str():
-    template_dict = {"fedora-42": {"dist": "fc42"}}
+    template_dict = {"antix-42": {"dist": "fc42"}}
     qubes_template = QubesTemplate(template_dict)
 
-    assert qubes_template.to_str() == "fedora-42"
+    assert qubes_template.to_str() == "antix-42"
 
 
 def test_qubes_template_repr_with_options():
     template_dict = {
-        "fedora-42": {"dist": "fc42", "options": ["option1", "option2"]}
+        "antix-42": {"dist": "fc42", "options": ["option1", "option2"]}
     }
     qubes_template = QubesTemplate(template_dict)
 
     assert (
         repr(qubes_template)
-        == "<QubesTemplate fedora-42 (options: option1,option2)>"
+        == "<QubesTemplate antix-42 (options: option1,option2)>"
     )
 
 
 def test_qubes_template_repr_without_options():
-    template_dict = {"fedora-42": {"dist": "fc42"}}
+    template_dict = {"antix-42": {"dist": "fc42"}}
     qubes_template = QubesTemplate(template_dict)
 
-    assert repr(qubes_template) == "<QubesTemplate fedora-42>"
+    assert repr(qubes_template) == "<QubesTemplate antix-42>"
 
 
 def test_qubes_template_str():
-    template_dict = {"fedora-42": {"dist": "fc42"}}
+    template_dict = {"antix-42": {"dist": "fc42"}}
     qubes_template = QubesTemplate(template_dict)
 
-    assert str(qubes_template) == "fedora-42"
+    assert str(qubes_template) == "antix-42"
 
 
 def test_config_verification():
@@ -603,7 +603,7 @@ def test_config_templates_filter():
     with tempfile.NamedTemporaryFile("w") as config_file:
         config_file.write(
             """templates:
-  - fedora-40-xfce:
+  - antix-40-xfce:
       dist: fc40
       flavor: xfce
   - centos-stream-8:
@@ -619,7 +619,7 @@ def test_config_templates_filter():
         config = Config(config_file.name)
 
         assert [t.name for t in config.get_templates()] == [
-            "fedora-40-xfce",
+            "antix-40-xfce",
             "centos-stream-8",
             "debian-11",
         ]
@@ -628,13 +628,13 @@ def test_config_templates_filter():
         ]
         assert [
             t.name
-            for t in config.get_templates(["fedora-40-xfce", "debian-11"])
+            for t in config.get_templates(["antix-40-xfce", "debian-11"])
         ] == [
-            "fedora-40-xfce",
+            "antix-40-xfce",
             "debian-11",
         ]
         with pytest.raises(ConfigError):
-            config.get_templates(["fedora-42"])
+            config.get_templates(["antix-42"])
 
 
 def test_config_options():
@@ -657,13 +657,13 @@ executor:
         options = {
             "+components": [{"kernel": {"branch": "stable-5.15"}}],
             "force-fetch": True,
-            "executor": {"options": {"image": "fedora"}},
+            "executor": {"options": {"image": "antix"}},
         }
         config = Config(config_file.name, options)
         component = config.get_components(["kernel"])[0]
         assert component.branch == "stable-5.15"
         assert config.force_fetch == True
-        assert config.get("executor").get("options").get("image") == "fedora"
+        assert config.get("executor").get("options").get("image") == "antix"
 
 
 def test_config_merge_include():
@@ -833,7 +833,7 @@ git:
 executor:
   type: docker
   options:
-    image: "qubes-builder-fedora:latest"
+    image: "qubes-builder-antix:latest"
     something: "else"
 """
             )
@@ -892,7 +892,7 @@ components:
             executor:
               type: docker
               options:
-                image: fedora:latest
+                image: antix:latest
 """
 
 
@@ -945,7 +945,7 @@ def test_config_executor():
                 "type": "docker",
                 "options": {
                     "clean": False,
-                    "image": "fedora:latest",
+                    "image": "antix:latest",
                     "dispvm": "@dispvm",
                 },
             }
@@ -974,7 +974,7 @@ def test_config_executor():
                 "options": {
                     "clean": False,
                     "dispvm": "qubes-builder-debian-dvm",
-                    "image": "fedora:latest",
+                    "image": "antix:latest",
                 },
             }
 
@@ -1040,7 +1040,7 @@ def test_config_executor_include_dist_no_dict():
                 "options": {
                     "clean": False,
                     "dispvm": "qubes-builder-debian-dvm",
-                    "image": "fedora:latest",
+                    "image": "antix:latest",
                 },
             }
 
@@ -1067,11 +1067,11 @@ def test_config_executor_include_dist_dict():
             executor:
               type: docker
               options:
-                image: qubes-builder-fedora:latest
+                image: qubes-builder-antix:latest
         - build:
             executor:
               options:
-                dispvm: qubes-builder-fedora-dvm
+                dispvm: qubes-builder-antix-dvm
 """
         )
         config_file_included.flush()
@@ -1114,8 +1114,8 @@ def test_config_executor_include_dist_dict():
                 "type": "docker",
                 "options": {
                     "clean": False,
-                    "dispvm": "qubes-builder-fedora-dvm",
-                    "image": "fedora:latest",
+                    "dispvm": "qubes-builder-antix-dvm",
+                    "image": "antix:latest",
                 },
             }
 

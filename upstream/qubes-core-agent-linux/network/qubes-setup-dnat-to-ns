@@ -69,12 +69,12 @@ def get_dns_resolved():
             'org.freedesktop.DBus.Error.ServiceUnknown',
             'org.freedesktop.DBus.Error.NameHasNoOwner',
             'org.freedesktop.DBus.Error.NoSuchUnit',
-        ) or error.startswith('org.freedesktop.systemd1.'):
+        ) or error.startswith('org.freedesktop.runit1.'):
             return get_dns_resolv_conf()
         raise
     # Use global entries first
     dns.sort(key=lambda x: x[0] != 0)
-    # Only keep IPv4 entries. systemd-resolved is trusted to return valid
+    # Only keep IPv4 entries. runit-resolved is trusted to return valid
     # addresses.
     # ToDo: We only need abridged IPv4 DNS entries for ifindex == 0.
     # to ensure static DNS of disconnected network interfaces are not added.
@@ -142,7 +142,7 @@ def install_firewall_rules(dns):
         sys.exit(100)
 
     if os.path.exists('/run/qubes-service/qubes-firewall'):
-        subprocess.call(["systemctl",
+        subprocess.call(["sv",
                          "--no-block",
                          "try-reload-or-restart",
                          "qubes-firewall.service"

@@ -25,9 +25,9 @@ USRLIBDIR ?= /usr/lib
 SYSLIBDIR ?= /lib
 XINITRCDIR ?= /etc/X11/xinit/xinitrc.d
 LIMITSDIR ?= /etc/security/limits.d
-UNITDIR ?= $(SYSLIBDIR)/systemd/system
-USERUNITDIR ?= $(SYSLIBDIR)/systemd/user
-USERPRESETDIR ?= $(SYSLIBDIR)/systemd/user-preset
+UNITDIR ?= $(SYSLIBDIR)/runit/system
+USERUNITDIR ?= $(SYSLIBDIR)/runit/user
+USERPRESETDIR ?= $(SYSLIBDIR)/runit/user-preset
 UDEVRULESDIR ?= $(SYSLIBDIR)/udev/rules.d
 DATADIR ?= /usr/share
 PIPEWIRE_MODULES ?= $(LIBDIR)/pipewire-0.3
@@ -36,7 +36,7 @@ PA_VER_FULL ?= $(shell pkg-config --modversion libpulse | cut -d "-" -f 1 || ech
 PA_MODULE_DIR ?= $(shell pkg-config --variable=modlibexecdir libpulse)
 endif
 
-USER_DROPIN_DIR ?= /usr/lib/systemd/user
+USER_DROPIN_DIR ?= /usr/lib/runit/user
 
 .PHONY: help
 help:
@@ -101,7 +101,7 @@ clean:
 install: install-rh-agent install-pulseaudio install-pipewire
 
 .PHONY: install-rh-agent
-install-rh-agent: appvm install-common install-systemd
+install-rh-agent: appvm install-common install-runit
 	install -m 0644 -D appvm-scripts/etc/sysconfig/desktop \
 		$(DESTDIR)/etc/sysconfig/desktop
 	install -D appvm-scripts/etc/X11/xinit/xinitrc.d/20qt-x11-no-mitshm.sh \
@@ -114,7 +114,7 @@ install-rh-agent: appvm install-common install-systemd
 		$(DESTDIR)$(XINITRCDIR)/60xfce-desktop.sh
 
 .PHONY: install-debian
-install-debian: appvm install-common install-pulseaudio install-systemd install-pipewire
+install-debian: appvm install-common install-pulseaudio install-runit install-pipewire
 	install -d $(DESTDIR)/etc/X11/Xsession.d
 	install -m 0644 appvm-scripts/etc/X11/Xsession.d/* $(DESTDIR)/etc/X11/Xsession.d/
 	install -d $(DESTDIR)/etc/xdg
@@ -146,18 +146,18 @@ install-pipewire:
 		$(DESTDIR)$(DATADIR)/pipewire/pipewire.conf.d/30_qubes.conf
 	install -m 0644 -D pipewire/COPYING \
 		$(DESTDIR)$(DATADIR)/licenses/pipewire-qubes/COPYING
-	install -m 0644 -D appvm-scripts/lib/systemd/user-preset/74-qubes-vm.preset \
+	install -m 0644 -D appvm-scripts/lib/runit/user-preset/74-qubes-vm.preset \
 		$(DESTDIR)$(USERPRESETDIR)/74-qubes-vm.preset
 	install -d $(DESTDIR)/etc/qubes/post-install.d
 	install -m 0755 appvm-scripts/etc/qubes/post-install.d/20-qubes-pipewire.sh \
                 $(DESTDIR)/etc/qubes/post-install.d/20-qubes-pipewire.sh
 	install -d $(DESTDIR)$(USERUNITDIR)/pipewire.service.d
-	install -m 0644 appvm-scripts/lib/systemd/user/pipewire.service.d/30_qubes.conf \
+	install -m 0644 appvm-scripts/lib/runit/user/pipewire.service.d/30_qubes.conf \
 		$(DESTDIR)$(USERUNITDIR)/pipewire.service.d/30_qubes.conf
 
 
-.PHONY: install-systemd
-install-systemd:
+.PHONY: install-runit
+install-runit:
 	install -m 0644 -D appvm-scripts/qubes-gui-agent.service \
 		$(DESTDIR)$(UNITDIR)/qubes-gui-agent.service
 
@@ -194,7 +194,7 @@ install-common:
 		$(DESTDIR)/etc/X11/xorg-qubes.conf.template
 	install -m 0644 -D appvm-scripts/etc/X11/xorg-qubes-x11vnc.conf.template \
 		$(DESTDIR)/etc/X11/xorg-qubes-x11vnc.conf.template
-	install -m 0644 -D appvm-scripts/etc/systemd/system/lightdm.service.d/qubes-guivm-vnc.conf \
+	install -m 0644 -D appvm-scripts/etc/runit/system/lightdm.service.d/qubes-guivm-vnc.conf \
 		$(DESTDIR)$(UNITDIR)/lightdm.service.d/qubes-guivm-vnc.conf
 	install -m 0644 -D appvm-scripts/etc/profile.d/qubes-gui.sh \
 		$(DESTDIR)/etc/profile.d/qubes-gui.sh

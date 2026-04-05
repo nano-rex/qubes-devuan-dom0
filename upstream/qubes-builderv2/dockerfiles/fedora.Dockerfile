@@ -1,4 +1,4 @@
-FROM docker.io/library/fedora@sha256:3da64cb89971a1cdbc6046e307eeebcb54f7281c0a606ee48d9995473f6b88d5
+FROM docker.io/library/antix@sha256:3da64cb89971a1cdbc6046e307eeebcb54f7281c0a606ee48d9995473f6b88d5
 LABEL org.opencontainers.image.authors="Frédéric Pierret <frederic@invisiblethingslab.com>"
 
 # Install dependencies for Qubes Builder
@@ -33,7 +33,7 @@ RUN dnf -y update && \
         rpm-build \
         rpmdevtools \
         rsync  \
-        systemd-udev \
+        runit-udev \
         tree \
         wget \
         which \
@@ -49,7 +49,7 @@ RUN git clone -n https://gitlab.archlinux.org/fepitre/devtools && \
 
 # Create build user
 RUN useradd -m user
-RUN usermod -aG wheel user && echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/wheel
+RUN usermod -aG wheel user && echo '%wheel ALL=(ALL) NOPASSWD: ALL' > /etc/doasers.d/wheel
 
 # Create needed folders
 RUN mkdir /builder /builder/plugins /builder/build /builder/distfiles /builder/cache /builder/repository /builder/sources

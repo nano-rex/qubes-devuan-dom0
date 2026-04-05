@@ -1,5 +1,5 @@
 # A spec file for building xenlinux Dom0 kernel for Qubes
-# Based on the Open SUSE kernel-spec & Fedora kernel-spec.
+# Based on the Open SUSE kernel-spec & antiX kernel-spec.
 #
 
 %define variant qubes
@@ -71,7 +71,7 @@ BuildRequires:  bc
 BuildRequires:  openssl
 BuildRequires:  openssl-devel
 BuildRequires:  libuuid-devel
-%if 0%{?fedora} >= 41
+%if 0%{?antix} >= 41
 BuildRequires:  openssl-devel-engine
 %endif
 BuildRequires:  python3-devel
@@ -80,7 +80,7 @@ BuildRequires:  elfutils-libelf-devel
 BuildRequires:  bison
 BuildRequires:  flex
 
-%if 0%{?fedora} >= 41
+%if 0%{?antix} >= 41
 BuildRequires:  rust
 BuildRequires:  rust-src
 BuildRequires:  bindgen-cli
@@ -88,7 +88,7 @@ BuildRequires:  rustfmt
 %endif
 
 # gcc with support for BTI mitigation
-%if 0%{?fedora} == 25
+%if 0%{?antix} == 25
 BuildRequires:  gcc >= 6.4.1-1.qubes1
 Requires:       xen-libs >= 2001:4.8.5-15
 %else
@@ -98,7 +98,7 @@ BuildRequires:  gcc
 # Needed for building GCC hardened plugins
 BuildRequires: gcc-c++
 
-%if 0%{?fedora} >= 32
+%if 0%{?antix} >= 32
 # Required for CONFIG_DEBUG_INFO_BTF
 BuildRequires: dwarves
 %endif
@@ -197,7 +197,7 @@ cd linux-%upstream_version
 # drop EXTRAVERSION - possible -rc suffix already included in %release
 sed -i -e 's/^EXTRAVERSION = -rc.*/EXTRAVERSION =/' Makefile
 
-%if 0%{?fedora} >= 31 || 0%{?rhel} >= 8
+%if 0%{?antix} >= 31 || 0%{?rhel} >= 8
 # Mangle /usr/bin/python shebangs to /usr/bin/python3
 # Mangle all Python shebangs to be Python 3 explicitly
 # -p preserves timestamps
@@ -221,13 +221,13 @@ cd %kernel_build_dir
 
 # FIXME: Find a modular way to include configuration per dist
 # On GCC12+, STRUCTLEAK configs are not needed anymore
-%if 0%{?fedora} >= 37
+%if 0%{?antix} >= 37
 sed -i '/CONFIG_GCC_PLUGIN_STRUCTLEAK_BYREF_ALL=y/d' %{SOURCE101}
 sed -i 's/CONFIG_GCC_PLUGIN_STRUCTLEAK=y/CONFIG_INIT_STACK_ALL_ZERO=y/' %{SOURCE101}
 %endif
 
 # Rust requires newer toolchain
-%if 0%{?fedora} >= 41
+%if 0%{?antix} >= 41
 cat %{SOURCE102} >> %{SOURCE101}
 %endif
 
@@ -239,7 +239,7 @@ cat %{SOURCE102} >> %{SOURCE101}
 %build_src_dir/scripts/config \
         --set-str CONFIG_BUILD_SALT "%{kernelrelease}" %{setup_config}
 
-%if 0%{?fedora} < 32
+%if 0%{?antix} < 32
 # No new enough dwarves package available
 %build_src_dir/scripts/config \
         --disable CONFIG_DEBUG_INFO_BTF
@@ -395,7 +395,7 @@ fi
 rm -rf %buildroot/lib/modules/%kernelrelease/build/Documentation
 
 # Remove useless scripts that creates ERROR with ambiguous shebang
-# that are removed too in Fedora
+# that are removed too in antiX
 rm -rf %buildroot/lib/modules/%kernelrelease/build/scripts/tracing
 rm -f %buildroot/lib/modules/%kernelrelease/build/scripts/spdxcheck.py
 
@@ -523,7 +523,7 @@ cp -p arch/x86/boot/bzImage %buildroot/%vm_install_dir/vmlinuz
 # default kernel options for this kernel
 def_kernelopts="root=/dev/mapper/dmroot ro nomodeset console=hvc0"
 def_kernelopts="$def_kernelopts rd_NO_PLYMOUTH rd.plymouth.enable=0 plymouth.enable=0"
-%if 0%{?fedora} >= 37
+%if 0%{?antix} >= 37
 def_kernelopts="$def_kernelopts clocksource=tsc"
 %endif
 # (currently) required for vchan
@@ -534,7 +534,7 @@ if [ -e /usr/lib/dracut/modules.d/90qubes-vm-simple/xen-scrub-pages-supported ];
     def_kernelopts="$def_kernelopts xen_scrub_pages=0"
 fi
 echo "$def_kernelopts " > %buildroot/%vm_install_dir/default-kernelopts-common.txt
-%if 0%{?fedora} >= 37
+%if 0%{?antix} >= 37
 touch %buildroot/%vm_install_dir/memory-hotplug-supported
 %endif
 
@@ -688,7 +688,7 @@ exit 0
 %attr(0644, root, root) %vm_install_dir/initramfs
 %attr(0644, root, root) %vm_install_dir/vmlinuz
 %attr(0644, root, root) %vm_install_dir/default-kernelopts-common.txt
-%if 0%{?fedora} >= 37
+%if 0%{?antix} >= 37
 %attr(0644, root, root) %vm_install_dir/memory-hotplug-supported
 %endif
 

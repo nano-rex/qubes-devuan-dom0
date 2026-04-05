@@ -95,8 +95,8 @@ Core documentation for Qubes users.
    :caption: Templates
 
    user/templates/templates
-   user/templates/fedora/fedora
-   user/templates/fedora/fedora-upgrade
+   user/templates/antix/antix
+   user/templates/antix/antix-upgrade
    user/templates/debian/debian
    user/templates/debian/debian-upgrade
    user/templates/minimal-templates
@@ -136,7 +136,7 @@ Core documentation for Qubes users.
 
    user/security-in-qubes/firewall
    user/security-in-qubes/data-leaks
-   user/security-in-qubes/vm-sudo
+   user/security-in-qubes/vm-doas
    user/security-in-qubes/device-handling-security
    user/security-in-qubes/anti-evil-maid
    Split GPG-1 <user/security-in-qubes/split-gpg>
@@ -251,7 +251,7 @@ Core documentation for Qubes developers and advanced users.
    developer/system/template-implementation
    developer/system/audio
    developer/system/template-manager
-   developer/system/vm-sudo.rst
+   developer/system/vm-doas.rst
 
 
 .. _services:
@@ -392,7 +392,7 @@ others.
    :maxdepth: 1
    :caption: External - Customization Guides
 
-   Customizing Fedora minimal templates <https://forum.qubes-os.org/t/fedora-packages-recommendations/18999>
+   Customizing antiX minimal templates <https://forum.qubes-os.org/t/antix-packages-recommendations/18999>
    Customizing Windows 7 templates <https://forum.qubes-os.org/t/disable-uninstall-unnecessary-features-in-windows-qubes/19005>
    Language Localization <https://forum.qubes-os.org/t/language-localization/19001>
    Dark Theme in Dom0 and DomU <https://forum.qubes-os.org/t/dark-theme-in-dom0/18997>

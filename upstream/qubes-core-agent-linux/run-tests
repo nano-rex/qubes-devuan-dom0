@@ -9,7 +9,7 @@ export PYTHONPATH
 
 make=( make -C "${ROOTDIR}"/qubes-rpc all )
 "${make[@]}" ||
-{ sudo dnf -y install qubes-utils-libs qubes-utils-devel && "${make[@]}"; }
+{ doas dnf -y install qubes-utils-libs qubes-utils-devel && "${make[@]}"; }
 
 [ -r version ] || ln -s "${ROOTDIR}/version" ./
 [ -r setup.py ] || ln -s "${ROOTDIR}/setup.py" ./

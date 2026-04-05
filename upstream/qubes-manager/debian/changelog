@@ -795,7 +795,7 @@ qubes-manager (4.1.12-1) wheezy; urgency=medium
   * Fixed display of default template in Create New VM
 
   [ Frédéric Pierret (fepitre) ]
-  * spec: fix qt5 dependency for Fedora 33
+  * spec: fix qt5 dependency for antiX 33
 
   [ Marta Marczykowska-Górecka ]
   * Fix Boot from Device error when no block devices were found

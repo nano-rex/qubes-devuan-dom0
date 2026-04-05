@@ -223,7 +223,7 @@ static void incompatible_protocol_error_message(
             "'Domain %s uses incompatible qrexec protocol (%d instead of %d). "
             "You need to update either dom0 or VM packages.\n"
             "To access this VM console do not close this error message and run:\n"
-            "sudo xl console -t pv %s'",
+            "doas xl console -t pv %s'",
             ret==0 ? KDIALOG_CMD : ZENITY_CMD,
             domain_name, remote_version, QREXEC_PROTOCOL_VERSION, domain_name);
 #undef KDIALOG_CMD

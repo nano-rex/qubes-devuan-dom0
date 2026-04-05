@@ -37,8 +37,8 @@ BuildRequires:	pam-devel
 BuildRequires:	pandoc
 BuildRequires:	qubes-libvchan-devel
 BuildRequires:	qubes-core-qrexec-devel
-BuildRequires:	systemd-devel
-BuildRequires:	pkgconfig(systemd)
+BuildRequires:	runit-devel
+BuildRequires:	pkgconfig(runit)
 
 Requires:   python%{python3_pkgversion}
 Requires:   qubes-core-qrexec = %{version}-%{release}
@@ -92,13 +92,13 @@ rm -rf $RPM_BUILD_ROOT
 rm -f %{name}-%{version}
 
 %post
-%systemd_post qubes-qrexec-agent.service
+%runit_post qubes-qrexec-agent.service
 
 %preun
-%systemd_preun qubes-qrexec-agent.service
+%runit_preun qubes-qrexec-agent.service
 
 %postun
-%systemd_postun_with_restart qubes-qrexec-agent.service
+%runit_postun_with_restart qubes-qrexec-agent.service
 
 %pre selinux
 %selinux_relabel_pre
@@ -118,10 +118,10 @@ exit 0
 %posttrans
 # when upgrading from R4.0, %%postun of qubes-core-agent-qrexec will revert
 # %%post of this package. Redo the action in %%posttrans
-%systemd_post qubes-qrexec-agent.service
+%runit_post qubes-qrexec-agent.service
 # and then start it back
-if [ -e /run/systemd/system ] && systemctl is-enabled qubes-qrexec-agent.service >/dev/null 2>&1; then
-    systemctl start qubes-qrexec-agent.service
+if [ -e /run/runit/system ] && sv is-enabled qubes-qrexec-agent.service >/dev/null 2>&1; then
+    sv start qubes-qrexec-agent.service
 fi
 
 %files

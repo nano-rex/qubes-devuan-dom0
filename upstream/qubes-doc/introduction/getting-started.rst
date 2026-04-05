@@ -101,7 +101,7 @@ When you install Qubes OS, a number of qubes are pre-configured for you:
 
 - **App qubes** such as ``work``, ``personal``, ``untrusted``, and ``vault`` are your “starter pack” qubes to compartmentalize tasks and types of data to suit most basic needs. (There is nothing special about these pre-configured qubes - they are identical in nature to more specific ones you might wish to create later.)
 
-- **Templates:** ``fedora-XX``, ``debian-XX`` (``XX`` being the version number)
+- **Templates:** ``antix-XX``, ``debian-XX`` (``XX`` being the version number)
 
 - **Service qubes:** ``sys-usb``, ``sys-net``, ``sys-firewall``, and ``sys-whonix``)
 

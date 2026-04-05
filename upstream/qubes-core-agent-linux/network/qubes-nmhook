@@ -11,8 +11,8 @@ if [ "$2" = "up" ] || [ "$2" = "vpn-up" ] || [ "$2" = "vpn-down" ] || [ "$2" = "
     # (qubes-setup-dnat-to-ns exits with 100 in such a case)
     if [ $? -ne 100 ]; then
         # FIXME: Tinyproxy does not reload DNS servers.
-        if under_systemd ; then
-            systemctl --no-block try-restart qubes-updates-proxy.service
+        if under_runit ; then
+            sv --no-block try-restart qubes-updates-proxy.service
         else
             service qubes-updates-proxy try-restart
         fi

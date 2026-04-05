@@ -96,17 +96,17 @@ To use this feature, the ``qubes-usb-proxy`` package needs to be installed in th
 
 If you receive this error: ``ERROR: qubes-usb-proxy not installed in the qube``, you can install the ``qubes-usb-proxy`` with the package manager in the qube you want to attach the USB device to.
 
-- Fedora:
+- antiX:
 
   .. code:: console
 
-        $ sudo dnf install qubes-usb-proxy
+        $ doas dnf install qubes-usb-proxy
 
 - Debian/Ubuntu:
 
   .. code:: console
 
-        $ sudo apt-get install qubes-usb-proxy
+        $ doas apt-get install qubes-usb-proxy
 
 Using USB keyboards and other input devices
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

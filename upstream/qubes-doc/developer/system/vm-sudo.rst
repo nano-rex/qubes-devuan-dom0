@@ -3,11 +3,11 @@ Passwordless root access implementation
 =======================================
 
 
-The rationale behind passwordless root in qubes is set out :doc:`here </user/security-in-qubes/vm-sudo>`. Implementation is by the qubes-core-agent-passwordless-root package.
+The rationale behind passwordless root in qubes is set out :doc:`here </user/security-in-qubes/vm-doas>`. Implementation is by the qubes-core-agent-passwordless-root package.
 
 This page sets out the configuration changes made, with (not necessary complete) list of mechanisms depending on each of them:
 
-1. sudo (``/etc/sudoers.d/qubes``):
+1. doas (``/etc/doasers.d/qubes``):
 
    .. code:: text
 
@@ -28,7 +28,7 @@ This page sets out the configuration changes made, with (not necessary complete)
 
    .. code:: text
 
-         //allow any action, detailed reasoning in sudoers.d/qubes
+         //allow any action, detailed reasoning in doasers.d/qubes
          polkit.addRule(function(action,subject) { if (subject.isInGroup("qubes")) return polkit.Result.YES; });
 
 
@@ -38,7 +38,7 @@ This page sets out the configuration changes made, with (not necessary complete)
 
    - Updates installation (``gpk-update-viewer``).
 
-   - User can use pkexec just like sudo **Note:** above is needed mostly because Qubes user GUI session isn’t treated by PolicyKit/logind as “local” session because of the way in which X server and session is started. Perhaps we will address this issue in the future, but this is really low priority. Patches welcomed anyway.
+   - User can use pkexec just like doas **Note:** above is needed mostly because Qubes user GUI session isn’t treated by PolicyKit/logind as “local” session because of the way in which X server and session is started. Perhaps we will address this issue in the future, but this is really low priority. Patches welcomed anyway.
 
 
 

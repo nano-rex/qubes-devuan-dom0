@@ -44,7 +44,7 @@ if [ "${1}" = "remove" ] ; then
     fi
 
     for srv in qubes-sysinit qubes-misc-post qubes-network; do
-        systemctl disable ${srv}.service
+        sv disable ${srv}.service
     done
 fi
 

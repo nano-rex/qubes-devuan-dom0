@@ -1,6 +1,6 @@
 [Unit]
 Description=Qubes GUI Agent
-After=systemd-user-sessions.service
+After=runit-user-sessions.service
 ConditionPathExists=!/run/qubes-service/lightdm
 
 [Service]

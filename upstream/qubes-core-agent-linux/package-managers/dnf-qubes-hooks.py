@@ -45,7 +45,7 @@ except (ImportError, AttributeError):
 
 
 def is_active(service):
-    status = subprocess.call(["systemctl", "is-active", "--quiet", service])
+    status = subprocess.call(["sv", "is-active", "--quiet", service])
     return status == 0
 
 

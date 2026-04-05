@@ -35,7 +35,7 @@ def get_pacman_cmd(
 ):
     # Prepare generate-pacman args
     gen_pacman_cmd = [
-        "sudo",
+        "doas",
         gen_path,
         conf_template,
         conf,
@@ -65,7 +65,7 @@ def get_archchroot_cmd(
     additional_packages = additional_packages or []
 
     mkarchchroot_cmd = [
-        "sudo",
+        "doas",
         "mkarchroot",
         "-C",
         str(pacman_conf),
@@ -76,12 +76,12 @@ def get_archchroot_cmd(
     ] + additional_packages
 
     cmd = [
-        "sudo rm -rf /etc/pacman.d/gnupg/private-keys-v1.d",
-        "sudo pacman-key --init",
-        "sudo pacman-key --populate",
-        "(sudo pacman-key --refresh-keys || :)",
-        "sudo pacman-key --updatedb",
-        f"sudo mkdir -p {chroot_dir.parent}",
+        "doas rm -rf /etc/pacman.d/gnupg/private-keys-v1.d",
+        "doas pacman-key --init",
+        "doas pacman-key --populate",
+        "(doas pacman-key --refresh-keys || :)",
+        "doas pacman-key --updatedb",
+        f"doas mkdir -p {chroot_dir.parent}",
         " ".join(mkarchchroot_cmd),
     ]
 
@@ -206,7 +206,7 @@ class ArchlinuxChrootPlugin(ArchlinuxDistributionPlugin, ChrootPlugin):
 
         cmd += [
             f"cd {self.executor.get_cache_dir()}",
-            f"sudo tar cf {chroot_archive} root",
+            f"doas tar cf {chroot_archive} root",
         ]
 
         try:

@@ -61,7 +61,7 @@ mountPoints() {
     local mount_point
     mount_point="$(mountPoint "${1}")"
     # shellcheck disable=SC2005
-    echo "$(sudo grep "${mount_point}" /proc/mounts | cut -f2 -d" " | sort -r | grep "^${mount_point}" | uniq)"
+    echo "$(doas grep "${mount_point}" /proc/mounts | cut -f2 -d" " | sort -r | grep "^${mount_point}" | uniq)"
 }
 
 # ${1} = full path to mountpoint;
@@ -95,15 +95,15 @@ umount_kill() {
         [[ ${cache["${dir}"]+_} ]] && continue || cache["${dir}"]=1
 
         # Kill of any processes within mountpoint
-        sudo lsof "${dir}" 2>/dev/null | grep "${dir}" | tail -n +2 | awk '{print $2}' | xargs --no-run-if-empty sudo kill -9
+        doas lsof "${dir}" 2>/dev/null | grep "${dir}" | tail -n +2 | awk '{print $2}' | xargs --no-run-if-empty doas kill -9
 
         # Umount
         if ! [ "${kill_only}" ]; then
 
             # Mount point found in mtab
-            if sudo mountpoint -q "${dir}"; then
+            if doas mountpoint -q "${dir}"; then
                 echo "INFO: umount ${dir}"
-                sudo umount -n "${dir}" 2>/dev/null || sudo umount -n -l "${dir}" 2>/dev/null ||
+                doas umount -n "${dir}" 2>/dev/null || doas umount -n -l "${dir}" 2>/dev/null ||
                     echo "ERROR: umount ${dir} unsuccessful!"
             # Umount entries not found within 'mountpoint'
             else
@@ -114,7 +114,7 @@ umount_kill() {
                 # shellcheck disable=SC2001
                 base="$(echo "${base}" | sed 's/[\].*$//')"
                 dir="${dir}/${base}"
-                sudo umount -v -f -n "${dir}" 2>/dev/null || sudo umount -v -f -n -l "${dir}" 2>/dev/null ||
+                doas umount -v -f -n "${dir}" 2>/dev/null || doas umount -v -f -n -l "${dir}" 2>/dev/null ||
                     echo "ERROR: umount ${dir} unsuccessful!"
             fi
         fi

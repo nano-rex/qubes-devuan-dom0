@@ -4,16 +4,16 @@ set -euo pipefail
 case $0 in (/*) cd "${0%/*}/";; (*/*) cd "./${0%/*}";; (*) :;; esac
 make gpt
 chk () {
-    loopdev=$(sudo losetup --nooverlap --find --sector-size "$1" --show -- dummy.img)
+    loopdev=$(doas losetup --nooverlap --find --sector-size "$1" --show -- dummy.img)
     if [[ "$loopdev" != '/dev/loop0' ]]; then
         printf 'Loop device is not /dev/loop0 (got %q), expect test failure\n' "$loopdev"
     fi >&3
     echo Dumping broken partition table
-    sudo sfdisk --label=gpt --dump -- "$loopdev"
-    sudo ./gpt fix "$loopdev"
+    doas sfdisk --label=gpt --dump -- "$loopdev"
+    doas ./gpt fix "$loopdev"
     echo Dumping fixed partition table
-    sudo sfdisk --label=gpt --dump -- "$loopdev"
-    sudo losetup -d "$loopdev"
+    doas sfdisk --label=gpt --dump -- "$loopdev"
+    doas losetup -d "$loopdev"
 }
 
 go () (

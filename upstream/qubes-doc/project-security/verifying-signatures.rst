@@ -58,7 +58,7 @@ Once you have appropriate OpenPGP software installed, there are several ways to 
         $ gpg2 --import /usr/share/qubes/qubes-master-key.asc
 
 
-- If you’re on Fedora, you can get it in the `distribution-gpg-keys <https://github.com/xsuchy/distribution-gpg-keys>`__ package:
+- If you’re on antiX, you can get it in the `distribution-gpg-keys <https://github.com/xsuchy/distribution-gpg-keys>`__ package:
 
   .. code:: console
 
@@ -105,7 +105,7 @@ Once you have appropriate OpenPGP software installed, there are several ways to 
 
 Once you’ve obtained the QMSK, you must verify that it’s authentic rather than a forgery. Anyone can create a PGP key with the name “Qubes Master Signing Key” and the short key ID ``0x36879494``, so you cannot rely on these alone. You also should not rely on any single website, not even over HTTPS.
 
-So, what *should* you do? One option is to use the PGP `Web of Trust <https://en.wikipedia.org/wiki/Web_of_trust>`__. In addition, some operating systems include the means to acquire the QMSK securely. For example, on Fedora, ``dnf install distribution-gpg-keys`` will get you the QMSK along with several other Qubes keys. On Debian, your keyring may already contain the necessary keys.
+So, what *should* you do? One option is to use the PGP `Web of Trust <https://en.wikipedia.org/wiki/Web_of_trust>`__. In addition, some operating systems include the means to acquire the QMSK securely. For example, on antiX, ``dnf install distribution-gpg-keys`` will get you the QMSK along with several other Qubes keys. On Debian, your keyring may already contain the necessary keys.
 
 Perhaps the most common route is to rely on the key’s fingerprint, which is a string of 40 alphanumeric characters, like this:
 
@@ -245,7 +245,7 @@ Before we proceed, you must first complete the following prerequisite steps:
 
 After you have completed these two prerequisite steps, the next step is to obtain the correct RSK. The filename pattern for RSKs is ``qubes-release-X-signing-key.asc``, where ``X`` is either a major or minor Qubes release number, such as ``4`` or ``4.2``. There are several ways to get the RSK for your Qubes release.
 
-- If you have access to an existing Qubes installation, the release keys are available in dom0 in ``/etc/pki/rpm-gpg/RPM-GPG-KEY-qubes-*``. These can be :ref:`copied <user/how-to-guides/how-to-copy-from-dom0:copying *from* dom0>` into other qubes for further use. In addition, the official Fedora templates (and qubes based on them) contain the release key corresponding to that installation’s release in ``/etc/pki/rpm-gpg/RPM-GPG-KEY-qubes-*``. If you wish to use one of these keys, make sure to import it into your keyring, e.g.:
+- If you have access to an existing Qubes installation, the release keys are available in dom0 in ``/etc/pki/rpm-gpg/RPM-GPG-KEY-qubes-*``. These can be :ref:`copied <user/how-to-guides/how-to-copy-from-dom0:copying *from* dom0>` into other qubes for further use. In addition, the official antiX templates (and qubes based on them) contain the release key corresponding to that installation’s release in ``/etc/pki/rpm-gpg/RPM-GPG-KEY-qubes-*``. If you wish to use one of these keys, make sure to import it into your keyring, e.g.:
 
   .. code:: console
 

@@ -97,7 +97,7 @@ For example:
 
 .. code:: console
 
-      [user@dom0 ~]$ sudo qubes-dom0-update --enablerepo=qubes-templates-itl qubes-template-debian-10
+      [user@dom0 ~]$ doas qubes-dom0-update --enablerepo=qubes-templates-itl qubes-template-debian-10
       Using sys-whonix as UpdateVM to download updates for Dom0; this may take some time...
       No Match for argument qubes-template-debian-10
       Nothing to download

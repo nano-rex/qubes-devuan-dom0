@@ -72,7 +72,7 @@ class CallbackPool(qubes.storage.Pool):
     qvm-pool -o conf_id=testing-succ-file-01 -a test callback
     qvm-pool
     ls /mnt/test01
-    qvm-pool -r test && sudo rm -rf /mnt/test01
+    qvm-pool -r test && doas rm -rf /mnt/test01
 
     echo '#!/bin/bash'$'\n''i=1 ; for arg in "$@" ; do echo "$i: $arg" >> /tmp/callback.log ; (( i++)) ; done ; exit 0' > /usr/bin/testCbLogArgs && chmod +x /usr/bin/testCbLogArgs
     rm -f /tmp/callback.log
@@ -94,7 +94,7 @@ class CallbackPool(qubes.storage.Pool):
     qvm-start test-vm
     cat /tmp/callback.log (pre_sinit & 2x pre_volume_start & 2x post_volume_start should be added)
     qvm-shutdown --wait test-vm && qvm-remove test-vm
-    qvm-pool -r test && sudo rm -rf /mnt/test02
+    qvm-pool -r test && doas rm -rf /mnt/test02
     less /tmp/callback.log (2x post_volume_stop, 2x post_volume_remove, post_destroy should be added)
 
     qvm-pool -o conf_id=testing-succ-file-02 -a test callback
@@ -107,13 +107,13 @@ class CallbackPool(qubes.storage.Pool):
     cat /tmp/callback.log
     #close the disposable VM
     qvm-remove test-dvm
-    qvm-pool -r test && sudo rm -rf /mnt/test02
+    qvm-pool -r test && doas rm -rf /mnt/test02
 
     qvm-pool -o conf_id=testing-succ-file-03 -a test callback
     qvm-pool
     ls /mnt/test03
     less /tmp/callback.log (pre_setup should be there, no more arguments)
-    qvm-pool -r test && sudo rm -rf /mnt/test03
+    qvm-pool -r test && doas rm -rf /mnt/test03
     less /tmp/callback.log (nothing should have been added)
 
     #luks pool test:
@@ -121,8 +121,8 @@ class CallbackPool(qubes.storage.Pool):
     qvm-pool -o conf_id=testing-succ-file-luks -a tluks callback
     ls /mnt/
     qvm-pool
-    sudo cryptsetup status test-luks
-    sudo mount | grep test_luks
+    doas cryptsetup status test-luks
+    doas mount | grep test_luks
     ls /mnt/test_luks/
     qvm-create -l red -P tluks test-luks (journalctl -b0 should show two pre_volume_create callbacks)
     ls /mnt/test_luks/appvms/test-luks/
@@ -130,13 +130,13 @@ class CallbackPool(qubes.storage.Pool):
     qvm-start test-luks
     #reboot
     grep luks /var/lib/qubes/qubes.xml
-    sudo cryptsetup status test-luks (should be inactive due to late pre_sinit!)
+    doas cryptsetup status test-luks (should be inactive due to late pre_sinit!)
     qvm-start test-luks
-    sudo mount | grep test_luks
+    doas mount | grep test_luks
     qvm-shutdown --wait test-luks
     qvm-remove test-luks
     qvm-pool -r tluks
-    sudo cryptsetup status test-luks
+    doas cryptsetup status test-luks
     ls -l /mnt/
 
     #ephemeral luks pool test (key in RAM / lost on reboot):
@@ -144,8 +144,8 @@ class CallbackPool(qubes.storage.Pool):
     ls /mnt/
     ls /mnt/ram
     md5sum /mnt/ram/teph.key (1)
-    sudo mount|grep -E 'ram|test'
-    sudo cryptsetup status test-eph
+    doas mount|grep -E 'ram|test'
+    doas cryptsetup status test-eph
     qvm-create -l red -P teph test-eph (should execute two pre_volume_create callbacks)
     qvm-volume | grep test-eph
     ls /mnt/test_eph/appvms/test-eph/ (should have private.img and volatile.img)
@@ -154,11 +154,11 @@ class CallbackPool(qubes.storage.Pool):
     #reboot
     ls /mnt/ram (should be empty)
     ls /mnt/
-    sudo mount|grep -E 'ram|test' (should be empty)
+    doas mount|grep -E 'ram|test' (should be empty)
     qvm-ls | grep eph (should still have test-eph)
     grep eph /var/lib/qubes/qubes.xml (should still have test-eph)
     qvm-remove test-eph (should create a new encrypted pool backend)
-    sudo cryptsetup status test-eph
+    doas cryptsetup status test-eph
     grep eph /var/lib/qubes/qubes.xml (only the pool should be left)
     ls /mnt/test_eph/ (should have the appvms directory etc.)
     qvm-create -l red -P teph test-eph2
@@ -167,18 +167,18 @@ class CallbackPool(qubes.storage.Pool):
     qvm-start test-eph2
     md5sum /mnt/ram/teph.key ((2), different than in (1))
     qvm-shutdown --wait test-eph2
-    systemctl restart qubesd
+    sv restart qubesd
     qvm-start test-eph2 (trigger storage re-init)
     md5sum /mnt/ram/teph.key (same as in (2))
     qvm-shutdown --wait test-eph2
-    sudo umount /mnt/test_eph
+    doas umount /mnt/test_eph
     qvm-create -l red -P teph test-eph-fail (must fail with error in journalctl)
     ls /mnt/test_eph/ (should be empty)
-    systemctl restart qubesd
+    sv restart qubesd
     qvm-remove test-eph2
     qvm-create -l red -P teph test-eph3
     md5sum /mnt/ram/teph.key (same as in (2))
-    sudo mount|grep -E 'ram|test'
+    doas mount|grep -E 'ram|test'
     ls /mnt/test_eph/appvms/test-eph3
     qvm-remove test-eph3
     qvm-ls | grep test-eph

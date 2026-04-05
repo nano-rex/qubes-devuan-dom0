@@ -27,8 +27,8 @@ fi
 
 type pulseaudio >/dev/null 2>&1 || exit 0
 
-if [ -f /lib/systemd/user/pulseaudio.service ]; then
-  # pulseaudio will be managed by systemd, do nothing
+if [ -f /lib/runit/user/pulseaudio.service ]; then
+  # pulseaudio will be managed by runit, do nothing
   exit 0
 fi
 

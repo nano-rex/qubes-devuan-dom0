@@ -37,7 +37,7 @@ class GrubBase(object):
     def setUp(self):
         super(GrubBase, self).setUp()
         supported = False
-        if self.template.startswith("fedora-"):
+        if self.template.startswith("antix-"):
             supported = True
         elif self.template.startswith("debian-"):
             supported = True
@@ -48,7 +48,7 @@ class GrubBase(object):
                 "Template {} not supported by this test".format(self.template)
             )
         if "dracut" in self.id() and not self.template.startswith("debian-"):
-            self.skipTest("dracut already tested in default test for Fedora")
+            self.skipTest("dracut already tested in default test for antiX")
 
     def install_packages(self, vm):
         if os.environ.get("QUBES_TEST_SKIP_KERNEL_INSTALL") == "1":
@@ -58,10 +58,10 @@ class GrubBase(object):
                 "Installing kernel packages, you can skip by setting "
                 "QUBES_TEST_SKIP_KERNEL_INSTALL=1 in environment"
             )
-        if self.template.startswith("fedora-"):
+        if self.template.startswith("antix-"):
             assert (
                 not self.force_dracut
-            ), "Fedora uses dracut by default already"
+            ), "antiX uses dracut by default already"
             cmd_install1 = (
                 "dnf clean expire-cache && "
                 "dnf install -y qubes-kernel-vm-support grub2-tools"
@@ -101,7 +101,7 @@ class GrubBase(object):
                 )
 
     def get_kernel_version(self, vm):
-        if self.template.startswith("fedora-"):
+        if self.template.startswith("antix-"):
             cmd_get_kernel_version = (
                 "rpm -q kernel-core|sort -V|tail -1|" "cut -d - -f 3-"
             )
@@ -232,11 +232,11 @@ class TC_40_PVGrub(GrubBase):
     kernel = None
 
     def setUp(self):
-        if "fedora" in self.template:
+        if "antix" in self.template:
             # requires a zstd decompression filter in grub
             # (see grub_file_filter_id enum in grub sources)
             self.skipTest(
-                "Fedora kernel is compressed with zstd "
+                "antiX kernel is compressed with zstd "
                 "which is not supported by pvgrub2"
             )
         if "debian-13" in self.template:

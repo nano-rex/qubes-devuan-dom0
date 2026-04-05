@@ -126,7 +126,7 @@ The above covers updating *within* a given operating system (OS) release. Eventu
 
 In the case of Qubes OS itself, we will make an `announcement <https://www.qubes-os.org/news/categories/>`__ when a supported Qubes OS release is approaching EOL and another when it has actually reached EOL, and we will provide :doc:`instructions for upgrading to the next stable supported Qubes OS release </user/downloading-installing-upgrading/upgrade/upgrade>`.
 
-Periodic upgrades are also important for templates. For example, you might be using a :doc:`Fedora template </user/templates/fedora/fedora>`. The `Fedora Project <https://getfedora.org/>`__ is independent of the Qubes OS Project. They set their own `schedule <https://fedoraproject.org/wiki/Fedora_Release_Life_Cycle#Maintenance_Schedule>`__ for when each Fedora release reaches EOL. You can always find out when an OS reaches EOL from the upstream project that maintains it. We also pass along any EOL notices we receive for official template OSes as a convenience to Qubes users (see the :ref:`supported template releases <user/downloading-installing-upgrading/supported-releases:templates>`).
+Periodic upgrades are also important for templates. For example, you might be using a :doc:`antiX template </user/templates/antix/antix>`. The `antiX Project <https://getantix.org/>`__ is independent of the Qubes OS Project. They set their own `schedule <https://antixproject.org/wiki/antiX_Release_Life_Cycle#Maintenance_Schedule>`__ for when each antiX release reaches EOL. You can always find out when an OS reaches EOL from the upstream project that maintains it. We also pass along any EOL notices we receive for official template OSes as a convenience to Qubes users (see the :ref:`supported template releases <user/downloading-installing-upgrading/supported-releases:templates>`).
 
 The one exception to all this is the specific release used for dom0 (not to be confused with Qubes OS as a whole), which :ref:`doesn’t have to be upgraded <user/downloading-installing-upgrading/supported-releases:note on dom0 and eol>`.
 
@@ -150,7 +150,7 @@ Some firmware is loaded by the OS at runtime. Such firmware is provided by the `
 
 Qubes OS supports updating system firmware in three different ways. Which one to use depends on the device whose firmware is being updated.
 
-- If a device is attached to a domU, it should be updated using **fwupd**. fwupd is included in both Debian and Fedora repositories. It requires Internet access to use, but you can use the updates proxy if you need to update firmware from an offline VM. You can use either the command-line ``fwupdmgr`` tool or any of the graphical interfaces to fwupd.
+- If a device is attached to a domU, it should be updated using **fwupd**. fwupd is included in both Debian and antiX repositories. It requires Internet access to use, but you can use the updates proxy if you need to update firmware from an offline VM. You can use either the command-line ``fwupdmgr`` tool or any of the graphical interfaces to fwupd.
 
 - If a device is attached to dom0, use the ``qubes-fwupdmgr`` command-line tool. This tool uses fwupd internally, but it fetches firmware and metadata over qrexec from the dom0 UpdateVM, rather than fetching them from the Internet. Unfortunately, their is no graphical interface for this tool yet.
 
@@ -176,7 +176,7 @@ In a dom0 terminal, install the ``fwupd-qubes-dom0`` package:
 
 .. code:: console
 
-      $ sudo qubes-dom0-update fwupd-qubes-dom0
+      $ doas qubes-dom0-update fwupd-qubes-dom0
 
 
 
@@ -184,7 +184,7 @@ Once the package is installed:
 
 .. code:: console
 
-      $ sudo qubes-fwupdmgr get-devices
+      $ doas qubes-fwupdmgr get-devices
 
 
 
@@ -202,9 +202,9 @@ Once resolved, in a dom0 terminal:
 
 .. code:: console
 
-      $ sudo qubes-fwupdmgr get-devices
-      $ sudo qubes-fwupdmgr refresh
-      $ sudo qubes-fwupdmgr update
+      $ doas qubes-fwupdmgr get-devices
+      $ doas qubes-fwupdmgr refresh
+      $ doas qubes-fwupdmgr update
 
 
 

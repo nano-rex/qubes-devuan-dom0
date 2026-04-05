@@ -26,11 +26,11 @@ Summary instructions for Debian templates
 
       [user@dom0 ~]$ qvm-clone debian-<old> debian-<new>
       [user@dom0 ~]$ qvm-run -a debian-<new> gnome-terminal
-      [user@debian-<new> ~]$ sudo sed -i 's/<old-name>/<new-name>/g' /etc/apt/sources.list
-      [user@debian-<new> ~]$ sudo sed -i 's/<old-name>/<new-name>/g' /etc/apt/sources.list.d/qubes-r4.list
-      [user@debian-<new> ~]$ sudo apt update
-      [user@debian-<new> ~]$ sudo apt upgrade
-      [user@debian-<new> ~]$ sudo apt dist-upgrade
+      [user@debian-<new> ~]$ doas sed -i 's/<old-name>/<new-name>/g' /etc/apt/sources.list
+      [user@debian-<new> ~]$ doas sed -i 's/<old-name>/<new-name>/g' /etc/apt/sources.list.d/qubes-r4.list
+      [user@debian-<new> ~]$ doas apt update
+      [user@debian-<new> ~]$ doas apt upgrade
+      [user@debian-<new> ~]$ doas apt dist-upgrade
       [user@dom0 ~]$ qvm-shutdown debian-<new>
 
 
@@ -65,8 +65,8 @@ These instructions will show you how to upgrade Debian templates. The same gener
 
    .. code:: console
 
-         [user@debian-<new> ~]$ sudo sed -i 's/<old-name>/<new-name>/g' /etc/apt/sources.list
-         [user@debian-<new> ~]$ sudo sed -i 's/<old-name>/<new-name>/g' /etc/apt/sources.list.d/qubes-r4.list
+         [user@debian-<new> ~]$ doas sed -i 's/<old-name>/<new-name>/g' /etc/apt/sources.list
+         [user@debian-<new> ~]$ doas sed -i 's/<old-name>/<new-name>/g' /etc/apt/sources.list.d/qubes-r4.list
 
 
 
@@ -74,9 +74,9 @@ These instructions will show you how to upgrade Debian templates. The same gener
 
    .. code:: console
 
-         [user@debian-<new> ~]$ sudo apt update
-         [user@debian-<new> ~]$ sudo apt upgrade
-         [user@debian-<new> ~]$ sudo apt dist-upgrade
+         [user@debian-<new> ~]$ doas apt update
+         [user@debian-<new> ~]$ doas apt upgrade
+         [user@debian-<new> ~]$ doas apt dist-upgrade
 
 
 
@@ -84,7 +84,7 @@ These instructions will show you how to upgrade Debian templates. The same gener
 
    .. code:: console
 
-         [user@debian-<new> ~]$ sudo apt-get autoremove
+         [user@debian-<new> ~]$ doas apt-get autoremove
 
 
 
@@ -92,7 +92,7 @@ These instructions will show you how to upgrade Debian templates. The same gener
 
    .. code:: console
 
-         [user@debian-<new> ~]$ sudo apt-get clean
+         [user@debian-<new> ~]$ doas apt-get clean
 
 
 
@@ -100,10 +100,10 @@ These instructions will show you how to upgrade Debian templates. The same gener
 
    .. code:: console
 
-         [user@debian-<new> ~]$ sudo fstrim -av
+         [user@debian-<new> ~]$ doas fstrim -av
          [user@dom0 ~]$ qvm-shutdown debian-<new>
          [user@dom0 ~]$ qvm-start debian-<new>
-         [user@debian-<new> ~]$ sudo fstrim -av
+         [user@debian-<new> ~]$ doas fstrim -av
 
 
 8. Shut down the new template.

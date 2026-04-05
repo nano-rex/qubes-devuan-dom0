@@ -39,7 +39,7 @@ if [ "$1" = "install" ] ; then
     # Required groups
     # --------------------------------------------------------------------------
     groupadd --force --system qubes
-    groupadd --force --system sudo
+    groupadd --force --system doas
 
     # --------------------------------------------------------------------------
     # User add / modifications
@@ -70,7 +70,7 @@ if [ "$1" = "upgrade" ] ; then
             fi
         fi
     fi
-    ## Allow passwordless login for user "user" (when using 'sudo xl console').
+    ## Allow passwordless login for user "user" (when using 'doas xl console').
     ## https://github.com/QubesOS/qubes-issues/issues/1130
     if grep -q "^$user:!:" /etc/shadow ; then
         passwd --delete -- "$user" >/dev/null || true

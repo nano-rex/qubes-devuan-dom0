@@ -15,7 +15,7 @@ Components Makefile.builder file
 
 Variables for Linux build:
 
-- ``RPM_SPEC_FILES`` List (space separated) of spec files for RPM package build. Path should be relative to component root directory. :doc:`QubesBuilder </developer/building/qubes-builder>` will install all BuildRequires (in chroot environment) before the build. In most Qubes components all spec files are kept in *rpm_spec* directory. This is mainly used for Fedora packages build.
+- ``RPM_SPEC_FILES`` List (space separated) of spec files for RPM package build. Path should be relative to component root directory. :doc:`QubesBuilder </developer/building/qubes-builder>` will install all BuildRequires (in chroot environment) before the build. In most Qubes components all spec files are kept in *rpm_spec* directory. This is mainly used for antiX packages build.
 
 - ``ARCH_BUILD_DIRS`` List (space separated) of directories with PKGBUILD files for Archlinux package build. Similar to RPM build, :doc:`QubesBuilder </developer/building/qubes-builder>` will install all makedepends, then build the package.
 

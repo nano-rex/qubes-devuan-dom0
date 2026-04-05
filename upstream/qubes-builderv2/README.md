@@ -14,18 +14,18 @@ Local, Qubes and Windows executors are available.
 
 ## Dependencies
 
-Fedora:
+antiX:
 
 ```bash
-$ sudo dnf install $(cat dependencies-fedora.txt)
-$ test -f /usr/share/qubes/marker-vm && sudo dnf install qubes-gpg-split
+$ doas dnf install $(cat dependencies-antix.txt)
+$ test -f /usr/share/qubes/marker-vm && doas dnf install qubes-gpg-split
 ```
 
 Debian:
 
 ```bash
-$ sudo apt install $(cat dependencies-debian.txt)
-$ test -f /usr/share/qubes/marker-vm && sudo apt install qubes-gpg-split
+$ doas apt install $(cat dependencies-debian.txt)
+$ test -f /usr/share/qubes/marker-vm && doas apt install qubes-gpg-split
 ```
 
 > Remark: Sequoia packages `sequoia-chameleon-gnupg` is available since Trixie (Debian 13).
@@ -38,13 +38,13 @@ $ git submodule update --init
 
 ## Docker executor
 
-Add `user` to the `docker` group if you wish to avoid using `sudo`:
+Add `user` to the `docker` group if you wish to avoid using `doas`:
 
 ```
 $ usermod -aG docker user
 ```
 
-You may need to `sudo su user` to get this to work in the current shell. You
+You may need to `doas su user` to get this to work in the current shell. You
 can add this group owner change to `/rw/config/rc.local`.
 
 In order to use the Docker executor, you must build the image using the
@@ -52,53 +52,53 @@ provided dockerfiles. Docker images are built from `scratch` with `mock`
 chroot cache archive. The rational is to use only built-in distribution
 tool that take care of verifying content and not third-party content
 like Docker images from external registries. As this may not be possible
-under Debian as build host, we allow to pull Fedora docker image with
+under Debian as build host, we allow to pull antiX docker image with
 a specific sha256.
 
 In order to ease Docker or Podman image generation, a tool `generate-container-image.sh`
 is provided under `tools` directory. It takes as input container engine
 and optionally the Mock configuration file path or identifier.
 
-For example, to build a Fedora 36 x86-64 docker image with `mock`:
+For example, to build a antiX 36 x86-64 docker image with `mock`:
 ```bash
-$ tools/generate-container-image.sh docker fedora-36-x86_64
+$ tools/generate-container-image.sh docker antix-36-x86_64
 ```
 or a Podman image:
 ```bash
-$ tools/generate-container-image.sh podman fedora-36-x86_64
+$ tools/generate-container-image.sh podman antix-36-x86_64
 ```
 
 If not specifying the `mock` configuration, it will simply build the
-docker image based on the Fedora docker image.
+docker image based on the antiX docker image.
 
 ### Detailed steps for Mock
 
 You may want to customize your `mock` build process instead of using `generate-container-image.sh`.
 
 First, build Mock chroot according to your own configuration or use
-default ones provided. For example, to build a Fedora 36 x86-64 mock
+default ones provided. For example, to build a antiX 36 x86-64 mock
 chroot from scratch:
 ```bash
-$ sudo mock --init --no-bootstrap-chroot --config-opts chroot_setup_cmd='install dnf @buildsys-build' -r fedora-36-x86_64
+$ doas mock --init --no-bootstrap-chroot --config-opts chroot_setup_cmd='install dnf @buildsys-build' -r antix-36-x86_64
 ```
 
-By default, it creates a `config.tar.gz` located at `/var/cache/mock/fedora-36-x86_64/root_cache/`.
+By default, it creates a `config.tar.gz` located at `/var/cache/mock/antix-36-x86_64/root_cache/`.
 Second, build the docker image:
 ```bash
-$ docker build -f dockerfiles/fedora.Dockerfile -t qubes-builder-fedora /var/cache/mock/fedora-36-x86_64/root_cache/
+$ docker build -f dockerfiles/antix.Dockerfile -t qubes-builder-antix /var/cache/mock/antix-36-x86_64/root_cache/
 ```
 
 ## Qubes executor
 
 We assume that the [template](https://www.qubes-os.org/doc/templates/) chosen
-for building components inside a disposable qube is `fedora-39`. Install the
+for building components inside a disposable qube is `antix-39`. Install the
 following dependencies inside the template:
 
 ```bash
-$ sudo dnf install $(cat dependencies-fedora-qubes-executor.txt)
+$ doas dnf install $(cat dependencies-antix-qubes-executor.txt)
 ```
 
-Then, clone the disposable template based on Fedora 39, `fedora-39-dvm`, to
+Then, clone the disposable template based on antiX 39, `antix-39-dvm`, to
 `qubes-builder-dvm`. Set its private volume storage space to at least 30 GB.
 
 Let's assume that the qube hosting `qubes-builder` is called `work-qubesos`.
@@ -109,7 +109,7 @@ Now, start the disposable template `qubes-builder-dvm` and create the following
 directories:
 
 ```bash
-$ sudo mkdir -p /rw/bind-dirs/builder /rw/config/qubes-bind-dirs.d
+$ doas mkdir -p /rw/bind-dirs/builder /rw/config/qubes-bind-dirs.d
 ```
 
 Create the file `/rw/config/qubes-bind-dirs.d/builder.conf` with the contents:
@@ -486,7 +486,7 @@ We provide the following list of available keys:
   plus a commit id or tag will be used.
 
 Here is a non-exhaustive list of distribution-specific keys:
-- `host-fc41` --- Fedora 41 for the `host` package set content only
+- `host-fc41` --- antiX 41 for the `host` package set content only
 - `vm-bullseye` --- Bullseye for the `vm` package set only
 
 `build_windows` specific: all output artifacts for a component need to be specified in
@@ -554,7 +554,7 @@ source:
 ```
 
 It defines builds for the `host` and `vm` package sets for all supported RPM
-distributions, like Fedora, CentOS Stream, and soon openSUSE with the `rpm`
+distributions, like antiX, CentOS Stream, and soon openSUSE with the `rpm`
 level key. This key instructs RPM plugins to take as input provided spec files
 in the `build` key. For Debian-related distributions, only the `buster` and
 `bullseye` distributions have builds defined with the level key `deb`. Similar
@@ -967,11 +967,11 @@ components:
             executor:
               type: podman
               options:
-                image: fedoraimg
+                image: antiximg
 ```
 
 For the `fetch` stage, the Qubes executor with disposable template `qubes-builder-debian-dvm` will be used for both `vm-fc42` and `vm-jammy`.
-For the `build` stage of `vm-fc42`, the Podman executor with container image `fedoraimg` will be used.
+For the `build` stage of `vm-fc42`, the Podman executor with container image `antiximg` will be used.
 For the `sign` stage, the Qubes executor with disposable template `signing-access-dvm` will be used for both `vm-fc42` and `vm-jammy`
 For the `prep` stage of `vm-jammy`, the Local executor with base directory `/some/path` will be used.
 

@@ -44,10 +44,10 @@ BuildRequires:  python-rpm-macros
 %else
 BuildRequires:  python%{python3_pkgversion}-rpm-macros
 %endif
-BuildRequires:  systemd-rpm-macros
+BuildRequires:  runit-rpm-macros
 
 Requires:   python%{python3_pkgversion}
-%if 0%{?fedora} < 42
+%if 0%{?antix} < 42
 Requires:   python%{python3_pkgversion}-gbulb
 %else
 Requires:   python%{python3_pkgversion}-gobject >= 3.50.0

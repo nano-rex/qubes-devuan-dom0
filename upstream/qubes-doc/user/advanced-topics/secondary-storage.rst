@@ -50,8 +50,8 @@ First, collect some information in a dom0 terminal:
 
 .. code:: console
 
-      $ sudo pvs
-      $ sudo lvs
+      $ doas pvs
+      $ doas lvs
 
 
 Take note of the VG and thin pool names for your second drive, then register it with Qubes, where ``<pool_name>`` is a freely chosen pool name, ``<vg_name>`` is LVM volume group name and ``<thin_pool_name>`` is LVM thin pool name:
@@ -73,7 +73,7 @@ It is possible to use an existing Btrfs storage if it is configured. In dom0, av
 .. code:: console
 
       $ mount -t btrfs
-      $ sudo btrfs filesystem show
+      $ doas btrfs filesystem show
 
 
 To register the storage to qubes use the following command where ``<pool_name>`` is a freely chosen pool name adn ``<dir_path>`` is the mounted path to the second Btrfs storage:
@@ -117,8 +117,8 @@ Assuming the secondary hard disk is at /dev/sdb , you can encrypt the drive as f
 
 .. code:: console
 
-      $ sudo cryptsetup luksFormat --sector-size=512 /dev/sdb
-      $ sudo blkid /dev/sdb
+      $ doas cryptsetup luksFormat --sector-size=512 /dev/sdb
+      $ doas blkid /dev/sdb
 
 
 
@@ -141,21 +141,21 @@ First create the physical volume:
 
 .. code:: console
 
-      $ sudo pvcreate /dev/mapper/luks-b20975aa-8318-433d-8508-6c23982c6cde
+      $ doas pvcreate /dev/mapper/luks-b20975aa-8318-433d-8508-6c23982c6cde
 
 
 Then create the LVM volume group, we will use for example “qubes” as the :
 
 .. code:: console
 
-      $ sudo vgcreate qubes /dev/mapper/luks-b20975aa-8318-433d-8508-6c23982c6cde
+      $ doas vgcreate qubes /dev/mapper/luks-b20975aa-8318-433d-8508-6c23982c6cde
 
 
 And then use “poolhd0” as the (LVM thin pool name):
 
 .. code:: console
 
-      $ sudo lvcreate -T -n poolhd0 -l +100%FREE qubes
+      $ doas lvcreate -T -n poolhd0 -l +100%FREE qubes
 
 
 Finally we will tell Qubes to add a new pool on the just created thin pool:
@@ -174,22 +174,22 @@ First create the physical volume:
 .. code:: console
 
       # <label> Btrfs Label
-      $ sudo mkfs.btrfs -L <label> /dev/mapper/luks-b20975aa-8318-433d-8508-6c23982c6cde
+      $ doas mkfs.btrfs -L <label> /dev/mapper/luks-b20975aa-8318-433d-8508-6c23982c6cde
 
 
 Then mount the new Btrfs filesystem with compression enabled if desired, where ``<compression>`` can take the values ``zlib|lzo|zstd``:
 
 .. code:: console
 
-      $ sudo mkdir -p /mnt/new_qube_storage
-      $ sudo mount /dev/mapper/luks-b20975aa-8318-433d-8508-6c23982c6cde /mnt/new_qube_storage -o compress=<compression>
+      $ doas mkdir -p /mnt/new_qube_storage
+      $ doas mount /dev/mapper/luks-b20975aa-8318-433d-8508-6c23982c6cde /mnt/new_qube_storage -o compress=<compression>
 
 
 Create a subvolume to hold the data:
 
 .. code:: console
 
-      $ sudo btrfs subvolume create /mnt/new_qube_storage/qubes
+      $ doas btrfs subvolume create /mnt/new_qube_storage/qubes
 
 
 Finally we will tell Qubes to add a new pool on the just created Btrfs subvolume:

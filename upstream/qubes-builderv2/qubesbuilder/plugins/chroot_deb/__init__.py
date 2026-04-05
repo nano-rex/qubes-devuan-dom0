@@ -144,7 +144,7 @@ class DEBChrootPlugin(DEBDistributionPlugin, ChrootPlugin):
                 f"printf '%s\\n' 'HOOKDIR={self.executor.get_plugins_dir()}/chroot_deb/debootstrap-scripts' >> {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
             ]
         pbuilder_cmd = [
-            f"sudo -E pbuilder create --distribution {self.dist.name}",
+            f"doas -E pbuilder create --distribution {self.dist.name}",
             f"--configfile {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc",
         ]
         cmd.append(" ".join(pbuilder_cmd))
@@ -192,7 +192,7 @@ class DEBChrootPlugin(DEBDistributionPlugin, ChrootPlugin):
                     f"printf '%s\\n' 'HOOKDIR={self.executor.get_plugins_dir()}/chroot_deb/debootstrap-scripts' >> {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc"
                 ]
             pbuilder_cmd = [
-                f"sudo -E pbuilder execute --distribution {self.dist.name}",
+                f"doas -E pbuilder execute --distribution {self.dist.name}",
                 f"--configfile {self.executor.get_plugins_dir()}/chroot_deb/pbuilder/pbuilderrc",
                 f"--bindmounts {self.executor.get_cache_dir()}/aptcache:/tmp/aptcache",
                 f"-- {self.executor.get_plugins_dir()}/chroot_deb/scripts/apt-download-packages {' '.join(additional_packages)}",

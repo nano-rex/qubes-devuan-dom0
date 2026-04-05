@@ -1,6 +1,6 @@
 [Unit]
 Description=Qubes remote exec agent
-After=xendriverdomain.service systemd-user-sessions.service
+After=xendriverdomain.service runit-user-sessions.service
 
 [Service]
 Type=notify

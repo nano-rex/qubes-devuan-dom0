@@ -47,9 +47,9 @@
 %define build_efi 0
 %endif
 %if "%dist" >= ".fc20"
-%define with_systemd_presets 1
+%define with_runit_presets 1
 %else
-%define with_systemd_presets 0
+%define with_runit_presets 0
 %endif
 
 # workaround for https://bugzilla.redhat.com/1671883 (dwz leaving temp files of
@@ -82,7 +82,7 @@ Provides: xen-gvt
 # Out-of-tree patches.
 #
 # Use the following patch numbers:
-# 100+:  Fedora
+# 100+:  antiX
 # 200+:  EFI workarounds
 # 300+:  Backports
 # 500+:  Security fixes
@@ -148,7 +148,7 @@ Patch1000: 1000-Do-not-access-network-during-the-build.patch
 Patch1001: 1001-hotplug-store-block-params-for-cleanup.patch
 Patch1002: 1002-libxl-do-not-start-dom0-qemu-when-not-needed.patch
 Patch1003: 1003-libxl-do-not-start-qemu-in-dom0-if-possible.patch
-Patch1004: 1004-systemd-enable-xenconsoled-logging-by-default.patch
+Patch1004: 1004-runit-enable-xenconsoled-logging-by-default.patch
 Patch1005: 1005-hotplug-trigger-udev-event-on-block-attach-detach.patch
 Patch1006: 1006-libxl-use-EHCI-for-providing-tablet-USB-device.patch
 Patch1007: 1007-libxl-allow-kernel-cmdline-without-kernel-if-stubdom.patch
@@ -179,7 +179,7 @@ Patch1202: 1202-libxl-Add-partially-Intel-GVT-g-support-xengt-device.patch
 BuildRequires: libidn-devel zlib-devel SDL-devel curl-devel
 BuildRequires: libX11-devel gtk2-devel libaio-devel
 %endif
-# build using Fedora seabios and ipxe packages for roms
+# build using antiX seabios and ipxe packages for roms
 BuildRequires: seabios-bin ipxe-roms-qemu
 %ifarch %{ix86} x86_64
 # for the VMX "bios"
@@ -229,12 +229,12 @@ ExclusiveArch: x86_64 aarch64
 BuildRequires: ocaml, ocaml-findlib
 BuildRequires: perl(Data::Dumper)
 %endif
-%if %with_systemd_presets
-Requires(post): systemd
-Requires(preun): systemd
-BuildRequires: systemd
+%if %with_runit_presets
+Requires(post): runit
+Requires(preun): runit
+BuildRequires: runit
 %endif
-BuildRequires: systemd-devel
+BuildRequires: runit-devel
 %ifarch armv7hl aarch64
 BuildRequires: libfdt-devel
 %endif
@@ -293,7 +293,7 @@ Requires: xen-hypervisor-abi = %{hv_abi}
 # perl is used in /etc/xen/scripts/locking.sh
 # Recommends: perl
 %ifnarch armv7hl aarch64
-# use /usr/bin/qemu-system-i386 in Fedora instead of qemu-xen
+# use /usr/bin/qemu-system-i386 in antiX instead of qemu-xen
 #Recommends: qemu-system-x86-core
 # rom file for qemu-xen-traditional
 Recommends: ipxe-roms-qemu
@@ -412,7 +412,7 @@ mkdir -p dist/install%{_libdir}/ocaml/stublibs
 %endif
 # BEGIN QUBES SPECIFIC PART
 EXTRA_CFLAGS_XEN_TOOLS="$RPM_OPT_FLAGS $LDFLAGS"
-%if 0%{?fedora} >= 37
+%if 0%{?antix} >= 37
 EXTRA_CFLAGS_XEN_TOOLS="$EXTRA_CFLAGS_XEN_TOOLS -Wno-error=use-after-free"
 %endif
 export EXTRA_CFLAGS_XEN_TOOLS
@@ -438,7 +438,7 @@ CONFIG_EXTRA="$CONFIG_EXTRA --with-system-seabios=/usr/share/seabios/bios-256k.b
 %else
 CONFIG_EXTRA="$CONFIG_EXTRA --disable-seabios"
 %endif
-./configure --prefix=%{_prefix} --libdir=%{_libdir} --libexecdir=%{_libexecdir} --with-system-qemu=/usr/bin/qemu-system-i386 --with-linux-backend-modules="xen-evtchn xen-gntdev xen-gntalloc xen-blkback xen-netback xen-pciback xen-scsiback xen-acpi-processor" --enable-systemd --disable-pygrub $CONFIG_EXTRA
+./configure --prefix=%{_prefix} --libdir=%{_libdir} --libexecdir=%{_libexecdir} --with-system-qemu=/usr/bin/qemu-system-i386 --with-linux-backend-modules="xen-evtchn xen-gntdev xen-gntalloc xen-blkback xen-netback xen-pciback xen-scsiback xen-acpi-processor" --enable-runit --disable-pygrub $CONFIG_EXTRA
 unset CFLAGS CXXFLAGS FFLAGS LDFLAGS
 export LDFLAGS="$LDFLAGS_SAVE"
 export CFLAGS="$CFLAGS_SAVE -Wno-error=address"
@@ -678,50 +678,50 @@ done
 
 # BEGIN QUBES SPECIFIC PART
 %dnl %post
-%dnl %if %with_systemd_presets
-%dnl %systemd_post xendomains.service
+%dnl %if %with_runit_presets
+%dnl %runit_post xendomains.service
 %dnl %else
 %dnl if [ $1 == 1 ]; then
-%dnl   /bin/systemctl enable xendomains.service
+%dnl   /bin/sv enable xendomains.service
 %dnl fi
 %dnl %endif
 %dnl
 %dnl %preun
-%dnl %if %with_systemd_presets
-%dnl %systemd_preun xendomains.service
+%dnl %if %with_runit_presets
+%dnl %runit_preun xendomains.service
 %dnl %else
 %dnl if [ $1 == 0 ]; then
-%dnl /bin/systemctl disable xendomains.service
+%dnl /bin/sv disable xendomains.service
 %dnl fi
 %dnl %endif
 # END QUBES SPECIFIC PART
 
 %post runtime
-%if %with_systemd_presets
+%if %with_runit_presets
 # BEGIN QUBES SPECIFIC PART
-%systemd_post xenstored.service xenconsoled.service xen-init-dom0.service
+%runit_post xenstored.service xenconsoled.service xen-init-dom0.service
 # END QUBES SPECIFIC PART
 %else
 if [ $1 == 1 ]; then
-  /bin/systemctl enable xenstored.service
-  /bin/systemctl enable xenconsoled.service
+  /bin/sv enable xenstored.service
+  /bin/sv enable xenconsoled.service
 # BEGIN QUBES SPECIFIC PART
-  /bin/systemctl enable xen-init-dom0.service
+  /bin/sv enable xen-init-dom0.service
 # END QUBES SPECIFIC PART
 fi
 %endif
 
 %preun runtime
-%if %with_systemd_presets
+%if %with_runit_presets
 # BEGIN QUBES SPECIFIC PART
-%systemd_preun xenstored.service xenconsoled.service xen-init-dom0.service
+%runit_preun xenstored.service xenconsoled.service xen-init-dom0.service
 # END QUBES SPECIFIC PART
 %else
 if [ $1 == 0 ]; then
-  /bin/systemctl disable xenstored.service
-  /bin/systemctl disable xenconsoled.service
+  /bin/sv disable xenstored.service
+  /bin/sv disable xenconsoled.service
 # BEGIN QUBES SPECIFIC PART
-  /bin/systemctl disable xen-init-dom0.service
+  /bin/sv disable xen-init-dom0.service
 # END QUBES SPECIFIC PART
 fi
 %endif
@@ -816,20 +816,20 @@ fi
 
 %if %build_ocaml
 %post ocaml
-%if %with_systemd_presets
-%systemd_post oxenstored.service
+%if %with_runit_presets
+%runit_post oxenstored.service
 %else
 if [ $1 == 1 ]; then
-  /bin/systemctl enable oxenstored.service
+  /bin/sv enable oxenstored.service
 fi
 %endif
 
 %preun ocaml
-%if %with_systemd_presets
-%systemd_preun oxenstored.service
+%if %with_runit_presets
+%runit_preun oxenstored.service
 %else
 if [ $1 == 0 ]; then
-  /bin/systemctl disable oxenstored.service
+  /bin/sv disable oxenstored.service
 fi
 %endif
 %endif

@@ -1,5 +1,5 @@
 LIBDIR ?= /usr/lib
-SYSTEM_DROPIN_DIR ?= /lib/systemd/system
+SYSTEM_DROPIN_DIR ?= /lib/runit/system
 SYSCONFDIR ?= /etc
 GRUBCONFDIR ?= $(SYSCONFDIR)/default
 DRACUTCONFDIR ?= $(LIBDIR)/dracut/dracut.conf.d

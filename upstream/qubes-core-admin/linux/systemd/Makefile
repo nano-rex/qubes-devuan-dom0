@@ -1,4 +1,4 @@
-UNITDIR ?= /usr/lib/systemd/system
+UNITDIR ?= /usr/lib/runit/system
 
 all:
 	true

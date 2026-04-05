@@ -23,7 +23,7 @@ If you would prefer to perform a clean installation rather than upgrading in-pla
 
    .. code:: console
 
-         $ sudo qubes-dom0-update -y qubes-dist-upgrade
+         $ doas qubes-dom0-update -y qubes-dist-upgrade
 
 
 
@@ -58,7 +58,7 @@ In place upgrade is a complex operation. For this reason, we provide a ``qubes-d
 
 .. code:: console
 
-      $ sudo qubes-dom0-update -y qubes-dist-upgrade
+      $ doas qubes-dom0-update -y qubes-dist-upgrade
 
 
 
@@ -75,7 +75,7 @@ Full list of options can be obtained with ``qubes-dist-upgrade --help``:
       Options:
           --update, -t                       (STAGE 1) Update of dom0, TemplatesVM and StandaloneVM.
           --release-upgrade, -r              (STAGE 2) Update 'qubes-release' for Qubes R4.2.
-          --dist-upgrade, -s                 (STAGE 3) Upgrade to Qubes R4.2 and Fedora 37 repositories.
+          --dist-upgrade, -s                 (STAGE 3) Upgrade to Qubes R4.2 and antiX 37 repositories.
           --template-standalone-upgrade, -l  (STAGE 4) Upgrade templates and standalone VMs to R4.2 repository.
           --finalize, -x                     (STAGE 5) Finalize upgrade. It does:
                                                - resync applications and features
@@ -104,7 +104,7 @@ After installing the tool, before-reboot stages can be performed at once with:
 
 .. code:: console
 
-      $ sudo qubes-dist-upgrade --all-pre-reboot
+      $ doas qubes-dist-upgrade --all-pre-reboot
 
 
 
@@ -116,7 +116,7 @@ After completing “STAGE 1” through “STAGE 3”, restart the system. Then p
 
 .. code:: console
 
-      $ sudo qubes-dist-upgrade --all-post-reboot
+      $ doas qubes-dist-upgrade --all-post-reboot
 
 
 

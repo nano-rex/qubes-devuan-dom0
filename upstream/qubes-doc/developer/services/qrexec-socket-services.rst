@@ -55,7 +55,7 @@ If your program handles multiple services, create multiple symlinks. You can dis
 
 Do not run the program as root.
 
-You can use systemd and socket activation so that the program is started only when the service is invoked. See the below example.
+You can use runit and socket activation so that the program is started only when the service is invoked. See the below example.
 
 Example: ``qrexec-policy-agent``
 --------------------------------
@@ -67,21 +67,21 @@ Example: ``qrexec-policy-agent``
 
 - Runs as a daemon, to save some overhead on starting process.
 
-- Runs as a normal user. This is achieved using user’s instance of systemd.
+- Runs as a normal user. This is achieved using user’s instance of runit.
 
-- Uses systemd socket activation. This way it can be installed in all VMs, but started only if it’s ever needed.
+- Uses runit socket activation. This way it can be installed in all VMs, but started only if it’s ever needed.
 
 
 
 See the `qubes-core-qrexec <https://github.com/QubesOS/qubes-core-qrexec/>`__ repository for details.
 
-Systemd unit files
+Runit unit files
 ^^^^^^^^^^^^^^^^^^
 
 
-**/lib/systemd/user/qubes-qrexec-policy-agent.service**: This is the service configuration.
+**/lib/runit/user/qubes-qrexec-policy-agent.service**: This is the service configuration.
 
-.. code:: systemd
+.. code:: runit
 
       [Unit]
       Description=Qubes remote exec policy agent
@@ -98,9 +98,9 @@ Systemd unit files
 
 
 
-**/lib/systemd/user/qubes-qrexec-policy-agent.socket**: This is the socket file that will activate the service.
+**/lib/runit/user/qubes-qrexec-policy-agent.socket**: This is the socket file that will activate the service.
 
-.. code:: systemd
+.. code:: runit
 
       [Unit]
       Description=Qubes remote exec policy agent socket
@@ -118,12 +118,12 @@ Systemd unit files
 
 Note the ``ConditionUser`` and ``ConditionGroup`` that ensure that the socket and service is started only as the right user
 
-Start the socket using ``systemctl --user start``. Enable it using ``systemctl --user enable``, so that it starts automatically.
+Start the socket using ``sv --user start``. Enable it using ``sv --user enable``, so that it starts automatically.
 
 .. code:: console
 
-      $ systemctl --user start qubes-qrexec-policy-agent.socket
-      $ systemctl --user enable qubes-qrexec-policy-agent.socket
+      $ sv --user start qubes-qrexec-policy-agent.socket
+      $ sv --user enable qubes-qrexec-policy-agent.socket
 
 
 
@@ -131,7 +131,7 @@ Alternatively, you can enable the service by creating a symlink:
 
 .. code:: console
 
-      $ sudo ln -s /lib/systemd/user/qubes-qrexec-policy-agent.socket /lib/systemd/user/sockets.target.wants/
+      $ doas ln -s /lib/runit/user/qubes-qrexec-policy-agent.socket /lib/runit/user/sockets.target.wants/
 
 
 
@@ -143,7 +143,7 @@ Link in qubes-rpc
 
 .. code:: console
 
-      $ sudo ln -s /var/run/qubes/policy-agent.sock /etc/qubes-rpc/policy.Ask
+      $ doas ln -s /var/run/qubes/policy-agent.sock /etc/qubes-rpc/policy.Ask
 
 
 
@@ -151,13 +151,13 @@ Python server with socket activation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-Socket activation in systemd works by starting our program with the socket file already bound at a specific file descriptor. It’s a simple mechanism based on a few environment variables, but the canonical way is to use the ``sd_listen_fds()`` function from systemd library (or, in our case, its Python version).
+Socket activation in runit works by starting our program with the socket file already bound at a specific file descriptor. It’s a simple mechanism based on a few environment variables, but the canonical way is to use the ``sd_listen_fds()`` function from runit library (or, in our case, its Python version).
 
-Install the Python systemd library:
+Install the Python runit library:
 
 .. code:: console
 
-      $ sudo dnf install python3-systemd
+      $ doas dnf install python3-runit
 
 
 
@@ -169,7 +169,7 @@ Here is the server code:
       import asyncio
       import socket
 
-      from systemd.daemon import listen_fds
+      from runit.daemon import listen_fds
 
 
       class SocketService:
@@ -260,7 +260,7 @@ Further reading
 
 - `qubes-core-qrexec <https://github.com/QubesOS/qubes-core-qrexec/>`__ repository - contains the above example
 
-- `systemd.socket <https://www.freedesktop.org/software/systemd/man/systemd.socket.html>`__ - socket unit configuration
+- `runit.socket <https://www.freedesktop.org/software/runit/man/runit.socket.html>`__ - socket unit configuration
 
 - `Streams in Python asyncio <https://docs.python.org/3/library/asyncio-stream.html>`__
 

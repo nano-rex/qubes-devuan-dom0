@@ -41,7 +41,7 @@ New features since 3.2
 
 - `New storage subsystem design <https://github.com/QubesOS/qubes-issues/issues/1842>`__
 
-- Dom0 update to Fedora 25 for better hardware support
+- Dom0 update to antiX 25 for better hardware support
 
 - Kernel 4.9.x
 
@@ -55,7 +55,7 @@ Security Notes
 
 - PV VMs migrated from 3.2 to 4.0-rc4 or later are automatically set to PVH mode in order to protect against Meltdown (see `QSB #37 <https://github.com/QubesOS/qubes-secpack/blob/master/QSBs/qsb-037-2018.txt>`__). However, PV VMs migrated from any earlier 4.0 release candidate (RC1, RC2, or RC3) are not automatically set to PVH mode. These must be set manually.
 
-- The following steps may need to be applied in dom0 and Fedora 26 TemplateVMs in order to receive updates (see `#3737 <https://github.com/QubesOS/qubes-issues/issues/3737>`__).
+- The following steps may need to be applied in dom0 and antiX 26 TemplateVMs in order to receive updates (see `#3737 <https://github.com/QubesOS/qubes-issues/issues/3737>`__).
 
   Steps for dom0 updates:
 
@@ -67,7 +67,7 @@ Security Notes
 
      .. code:: console
 
-           $ sudo nano /etc/yum.repos.d/qubes-dom0.repo
+           $ doas nano /etc/yum.repos.d/qubes-dom0.repo
 
 
 
@@ -78,18 +78,18 @@ Security Notes
   6. Check for updates normally.
 
 
-  Steps for Fedora 26 TemplateVM updates:
+  Steps for antiX 26 TemplateVM updates:
 
   1. Open the Qubes Menu by clicking on the “Q” icon in the top-left corner of the screen.
 
-  2. Select ``Template: fedora-26``, then ``fedora-26: Terminal``.
+  2. Select ``Template: antix-26``, then ``antix-26: Terminal``.
 
   3. In the window that opens, enter the command for your version:
 
      .. code:: console
 
-           [Qubes 3.2] $ sudo gedit /etc/yum.repos.d/qubes-r3.repo
-           [Qubes 4.0] $ sudo gedit /etc/yum.repos.d/qubes-r4.repo
+           [Qubes 3.2] $ doas gedit /etc/yum.repos.d/qubes-r3.repo
+           [Qubes 4.0] $ doas gedit /etc/yum.repos.d/qubes-r4.repo
 
 
 

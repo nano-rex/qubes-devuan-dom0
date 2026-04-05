@@ -13,9 +13,9 @@ Qubes builder
 
 We have a fully automated build system for Qubes, that downloads, builds and packages all the Qubes components, and finally should spit out a ready-to-use installation ISO, all in a `secure <https://www.qubes-os.org/news/2016/05/30/build-security/>`__ way.
 
-In order to use it, you should use an rpm-based distro, like Fedora :), and should ensure the following packages are installed:
+In order to use it, you should use an rpm-based distro, like antiX :), and should ensure the following packages are installed:
 
-- sudo
+- doas
 
 - gnupg
 
@@ -57,7 +57,7 @@ Usually you can install those packages by just issuing:
 
 .. code:: console
 
-      $ sudo dnf install gnupg git createrepo rpm-build make wget rpmdevtools python3-sh dialog rpm-sign dpkg-dev debootstrap python3-pyyaml devscripts perl-Digest-MD5 perl-Digest-SHA
+      $ doas dnf install gnupg git createrepo rpm-build make wget rpmdevtools python3-sh dialog rpm-sign dpkg-dev debootstrap python3-pyyaml devscripts perl-Digest-MD5 perl-Digest-SHA
 
 
 The build system creates build environments in chroots and so no other packages are needed on the host. All files created by the build system are contained within the qubes-builder directory. The full build requires some 25GB of free space, so keep that in mind when deciding where to place this directory.
@@ -77,7 +77,7 @@ Edit the builder.conf file and set the following variables:
       NO_SIGN=1
 
 
-One additional useful requirement is that ‘sudo root’ must work without any prompt, which is default on most distros (e.g. ‘sudo bash’ brings you the root shell without asking for any password). This is important as the builder needs to switch to root and then back to user several times during the build process.
+One additional useful requirement is that ‘doas root’ must work without any prompt, which is default on most distros (e.g. ‘doas bash’ brings you the root shell without asking for any password). This is important as the builder needs to switch to root and then back to user several times during the build process.
 
 Additionally, if building with signing enabled (NO_SIGN is not set), you must adjust ``\~/.rpmmacros`` file so that it points to the GPG key used for package signing, e.g.:
 

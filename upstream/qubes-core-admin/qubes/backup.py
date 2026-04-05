@@ -465,8 +465,8 @@ class Backup:
 
             # Home dir should have only user-owned files, so fix it now
             # to prevent permissions problems - some root-owned files can
-            # left after 'sudo bash' and similar commands
-            subprocess.check_call(["sudo", "chown", "-R", local_user, home_dir])
+            # left after 'doas bash' and similar commands
+            subprocess.check_call(["doas", "chown", "-R", local_user, home_dir])
 
             home_to_backup = [self.FileToBackup(home_dir, "dom0-home/")]
             vm_files = home_to_backup

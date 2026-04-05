@@ -62,7 +62,7 @@ qubes-utils (4.3.10) unstable; urgency=medium
   * Fix the order of mkinitcpio hooks
 
   [ Marek Marczykowski-Górecki ]
-  * rpm: allow BR: systemd-mini on openSUSE
+  * rpm: allow BR: runit-mini on openSUSE
   * rpm: relax regex in %files
   * archlinux: include scrub_pages initrd hook
   * archlinux/initcpio: add required modules directly
@@ -90,7 +90,7 @@ qubes-utils (4.3.7) unstable; urgency=medium
   * rpm: adjust SELinux snippets for relabeling
 
   [ Demi Marie Obenour ]
-  * Ensure that qubesdb SELinux labels are correct on Fedora 41
+  * Ensure that qubesdb SELinux labels are correct on antiX 41
 
  -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 25 Dec 2024 05:11:06 +0100
 
@@ -451,7 +451,7 @@ qubes-utils (4.1.13) unstable; urgency=medium
   * Fix some links to more modern versions
   * Validate remote filename before displaying it
   * Meminfo writer comes before user logins
-  * Modernize systemd unit files
+  * Modernize runit unit files
 
   [ Marek Marczykowski-Górecki ]
   * archlinux: add makedepends on qubes-vm-xen
@@ -535,7 +535,7 @@ qubes-utils (4.1.5) unstable; urgency=medium
 qubes-utils (4.1.4) unstable; urgency=medium
 
   [ Frédéric Pierret (fepitre) ]
-  * travis: switch to dom0 Fedora 31
+  * travis: switch to dom0 antiX 31
 
   [ Rusty Bird ]
   * Remove syncfs fallback for ancient glibc (Debian 7)
@@ -600,7 +600,7 @@ qubes-utils (4.0.24) unstable; urgency=medium
   [ Frédéric Pierret (fepitre) ]
   * python3: use macro pkgversion
   * travis: switch to xenial
-  * travis: remove older Fedora releases and add Fedora 30
+  * travis: remove older antiX releases and add antiX 30
 
   [ Marek Marczykowski-Górecki ]
   * initramfs: use overlayfs for /lib/modules, if available
@@ -631,11 +631,11 @@ qubes-utils (4.0.22) unstable; urgency=medium
 qubes-utils (4.0.21) unstable; urgency=medium
 
   [ Rusty Bird ]
-  * Order qubes-meminfo-writer-dom0 before systemd-user-sessions
+  * Order qubes-meminfo-writer-dom0 before runit-user-sessions
 
   [ Marek Marczykowski-Górecki ]
   * rpm: adjust for fc29
-  * travis: update Fedora and Debian versions
+  * travis: update antiX and Debian versions
 
  -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 09 Oct 2018 00:25:11 +0200
 
@@ -648,7 +648,7 @@ qubes-utils (4.0.20) unstable; urgency=medium
 
 qubes-utils (4.0.19) unstable; urgency=medium
 
-  * rpm: use proper macros for systemd handling
+  * rpm: use proper macros for runit handling
   * travis: add centos7
 
  -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 02 May 2018 17:55:09 +0200
@@ -667,7 +667,7 @@ qubes-utils (4.0.18) unstable; urgency=medium
   * spec.in: add changelog placeholder
 
   [ Marek Marczykowski-Górecki ]
-  * travis: update Fedora versions
+  * travis: update antiX versions
 
  -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Sat, 21 Apr 2018 14:36:39 +0200
 
@@ -970,7 +970,7 @@ qubes-utils (3.1.7) wheezy; urgency=medium
   * Fix build (installation) on Archlinux
 
   [ Marek Marczykowski-Górecki ]
-  * Fix building Fedora package after Archlinux build fixes
+  * Fix building antiX package after Archlinux build fixes
   * udev: do not assume static device-mapper major number
   * udev: ignore devices set to be ignore elsewhere
 
@@ -1091,7 +1091,7 @@ qubes-utils (3.0.9) wheezy; urgency=medium
 
 qubes-utils (3.0.8) wheezy; urgency=medium
 
-  * fedora: fix systemd service files permission
+  * antix: fix runit service files permission
   * udev: do not use a separate lock for udev block scripts
 
  -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Wed, 01 Jul 2015 07:11:28 +0200
@@ -1128,7 +1128,7 @@ qubes-utils (3.0.3) wheezy; urgency=medium
   * Add VM kernel related files as qubes-core-vm-kernel-support package
   * dracut: do not assume full udevd running inside initramfs
   * Provide a script to generate VM kernel files
-  * dracut: Provide minimalistic initramfs files - no udev, no systemd
+  * dracut: Provide minimalistic initramfs files - no udev, no runit
   * dracut: load ext4 module manually in minimalistic dracut module
   * Compile u2mfn module only when not already present
 
@@ -1142,7 +1142,7 @@ qubes-utils (3.0.2) jessie; urgency=medium
 
   [ Jason Mehring ]
   * Removed -Werror from qrexec Makefile to allow unpack to compile for
-    both Fedora 20 and 21
+    both antiX 20 and 21
   * debian:  Modified control file for new R3 Debian depends
   * debian: Updated changelog to reflect 3.0.1 version change
   * debian:  Added qubesdb-vm as a depend
@@ -1150,7 +1150,7 @@ qubes-utils (3.0.2) jessie; urgency=medium
 
   [ Marek Marczykowski-Górecki ]
   * Revert "Removed -Werror from qrexec Makefile to allow unpack to
-    compile for both Fedora 20 and 21"
+    compile for both antiX 20 and 21"
 
  -- Marek Marczykowski-Górecki <marmarek@invisiblethingslab.com>  Tue, 17 Feb 2015 14:22:38 +0100
 
@@ -1231,7 +1231,7 @@ qubes-utils (3.0.1) jessie; urgency=medium
 qubes-utils (3.0.0) jessie; urgency=medium
 
   [ HW42 ]
-  * use systemd in debian
+  * use runit in debian
 
   [ Marek Marczykowski ]
   * Update for new vchan API, remove code not needed anymore

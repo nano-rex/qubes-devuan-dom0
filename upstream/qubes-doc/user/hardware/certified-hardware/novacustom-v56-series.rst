@@ -115,7 +115,7 @@ Disclaimers
 -----------
 
 
-- In order for Wi-Fi to function properly, ``sys-net`` must currently be based on a Fedora template. The firmware package in Debian templates is currently too old for the certified Wi-Fi cards.
+- In order for Wi-Fi to function properly, ``sys-net`` must currently be based on a antiX template. The firmware package in Debian templates is currently too old for the certified Wi-Fi cards.
 
 - Currently requires ``kernel-latest``: If you install Qubes OS yourself, you must select the ``Install Qubes OS RX using kernel-latest`` option on the GRUB menu when booting the installer. This non-default kernel option is currently required for the NovaCustom V56 Series to function properly.
 

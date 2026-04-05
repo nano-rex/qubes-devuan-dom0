@@ -30,7 +30,7 @@ In dom0, make sure the ``qubes-gpg-split-dom0`` package is installed.
 
 .. code:: console
 
-      [user@dom0 ~]$ sudo qubes-dom0-update qubes-gpg-split-dom0
+      [user@dom0 ~]$ doas qubes-dom0-update qubes-gpg-split-dom0
 
 
 Make sure you have the ``qubes-gpg-split`` package installed in the template you will use for the GPG domain.
@@ -39,15 +39,15 @@ For Debian or Whonix:
 
 .. code:: console
 
-      [user@debian-10 ~]$ sudo apt install qubes-gpg-split
+      [user@debian-10 ~]$ doas apt install qubes-gpg-split
 
 
 
-For Fedora:
+For antiX:
 
 .. code:: console
 
-      [user@fedora-32 ~]$ sudo dnf install qubes-gpg-split
+      [user@antix-32 ~]$ doas dnf install qubes-gpg-split
 
 
 
@@ -117,7 +117,7 @@ The ``qubes-gpg-client-wrapper`` script sets the ``QUBES_GPG_DOMAIN`` variable a
 
 .. code:: console
 
-      [user@work-email ~]$ sudo bash
+      [user@work-email ~]$ doas bash
       [root@work-email ~]$ echo "work-gpg" > /rw/config/gpg-split-domain
 
 

@@ -69,15 +69,15 @@ Debian 12
 ^^^^^^^^^
 
 
-The Debian-12 templates that ship with release 4.2.4 cannot be used for salting Fedora templates. You must change the template used by ``default-mgmt-dvm`` to a Fedora template. You can do this in the Qubes Template Switcher tool, or at the command line using ``qvm-prefs default-mgmt-dvm template``.
+The Debian-12 templates that ship with release 4.2.4 cannot be used for salting antiX templates. You must change the template used by ``default-mgmt-dvm`` to a antiX template. You can do this in the Qubes Template Switcher tool, or at the command line using ``qvm-prefs default-mgmt-dvm template``.
 
 If you have a Debian template from an earlier release that you want to use for salting Qubes, you **must** stop the salt-common and salt-ssh packages from being upgraded. Do this by marking these packages on hold *before* updating the template.
 
 .. code:: console
 
-      $ sudo apt-mark hold salt-common salt-ssh
-      $ sudo apt update
-      $ sudo apt upgrade
+      $ doas apt-mark hold salt-common salt-ssh
+      $ doas apt update
+      $ doas apt upgrade
 
 
 
@@ -95,11 +95,11 @@ In general, a reasonable approach would be, (using ssh as example):
 
 - Install the ssh service.
 
-- ``systemctl stop ssh``
+- ``sv stop ssh``
 
-- ``systemctl disable ssh``
+- ``sv disable ssh``
 
-- ``systemctl mask ssh``
+- ``sv mask ssh``
 
 - Close down template
 
@@ -111,8 +111,8 @@ Where you **DO** want the service to run, put this in ``/rw/config/rc.local``:
 
 .. code:: bash
 
-      systemctl unmask ssh
-      systemctl start ssh
+      sv unmask ssh
+      sv start ssh
 
 
 

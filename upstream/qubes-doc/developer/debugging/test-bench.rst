@@ -76,9 +76,9 @@ Internet access is intentionally disabled by default in dom0. But to ease the de
 
 5. Configure your DHCP server so your testbench gets static IP and connect your machine to your local network. You should ensure that your testbench can reach the Internet.
 
-6. You’ll need to run the above script on every startup. To automate this save the following systemd service ``/etc/systemd/system/dom0-network-direct.service``
+6. You’ll need to run the above script on every startup. To automate this save the following runit service ``/etc/runit/system/dom0-network-direct.service``
 
-   .. code:: systemd
+   .. code:: runit
 
          [Unit]
          Description=Connect network to dom0
@@ -96,16 +96,16 @@ Internet access is intentionally disabled by default in dom0. But to ease the de
 
    .. code:: console
 
-         $ sudo systemctl enable sshd
-         $ sudo systemctl start sshd
+         $ doas sv enable sshd
+         $ doas sv start sshd
 
-         $ sudo systemctl enable dom0-network-direct
-         $ sudo systemctl start dom0-network-direct
-
-
+         $ doas sv enable dom0-network-direct
+         $ doas sv start dom0-network-direct
 
 
-   **Note:** If you want to install additional software in dom0 and your only network card was assigned to dom0, then *instead* of the usual ``sudo qubes-dom0-update <PACKAGE>`` now you run ``sudo dnf --setopt=reposdir=/etc/yum.repos.d install <PACKAGE>``.
+
+
+   **Note:** If you want to install additional software in dom0 and your only network card was assigned to dom0, then *instead* of the usual ``doas qubes-dom0-update <PACKAGE>`` now you run ``doas dnf --setopt=reposdir=/etc/yum.repos.d install <PACKAGE>``.
 
 Install Tests and Their Dependencies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -123,26 +123,26 @@ The following commands should work for you, but do keep in mind that the provisi
       # https://github.com/marmarek/openqa-tests-qubesos/blob/master/tests/update.pm
 
       # Install git
-      $ sudo qubes-dom0-update git || sudo dnf --setopt=reposdir=/etc/yum.repos.d install git
+      $ doas qubes-dom0-update git || doas dnf --setopt=reposdir=/etc/yum.repos.d install git
 
       # Download the openQA automated testing environment Salt configuration
       $ git clone https://github.com/marmarek/openqa-tests-qubesos/
       $ cd openqa-tests-qubesos/extra-files
-      $ sudo cp -a system-tests/ /srv/salt/
-      $ sudo qubesctl top.enable system-tests
+      $ doas cp -a system-tests/ /srv/salt/
+      $ doas qubesctl top.enable system-tests
 
       # Install the same configuration as the one in openQA
       $ QUBES_VERSION=4.1
       $ PILLAR_DIR=/srv/pillar/base/update
-      $ sudo mkdir -p $PILLAR_DIR
-      $ printf 'update:\n  qubes_ver: '$QUBES_VERSION'\n' | sudo tee $PILLAR_DIR/init.sls
-      $ printf "base:\n  '*':\n    - update\n" | sudo tee $PILLAR_DIR/init.top
-      $ sudo qubesctl top.enable update pillar=True
+      $ doas mkdir -p $PILLAR_DIR
+      $ printf 'update:\n  qubes_ver: '$QUBES_VERSION'\n' | doas tee $PILLAR_DIR/init.sls
+      $ printf "base:\n  '*':\n    - update\n" | doas tee $PILLAR_DIR/init.top
+      $ doas qubesctl top.enable update pillar=True
 
       # Apply states to dom0 and VMs
       # NOTE: These commands can take several minutes (if not more) without showing output
-      $ sudo qubesctl --show-output state.highstate
-      $ sudo qubesctl --max-concurrency=2 --skip-dom0 --templates --show-output state.highstate
+      $ doas qubesctl --show-output state.highstate
+      $ doas qubesctl --max-concurrency=2 --skip-dom0 --templates --show-output state.highstate
 
 
 Development VM
@@ -213,7 +213,7 @@ This step is optional, but very helpful. Put these scripts somewhere in your ``$
       scp "${@}" testbench:"${TMPDIR}" || echo "check if you have 'scp' installed on your testbench"
 
       while [ $# -gt 0 ]; do
-              ssh testbench sudo rpm -i --replacepkgs --replacefiles "${TMPDIR}/$(basename ${1})"
+              ssh testbench doas rpm -i --replacepkgs --replacefiles "${TMPDIR}/$(basename ${1})"
               shift
       done
 
@@ -234,7 +234,7 @@ This step is optional, but very helpful. Put these scripts somewhere in your ``$
       #qb -c core-admin package fetch
 
       qb -c core-admin -d host-fc41 prep build
-      # update your dom0 fedora distribution as appropriate
+      # update your dom0 antix distribution as appropriate
       qtb-install qubes-src/core-admin/rpm/x86_64/qubes-core-dom0-*.rpm
       qtb-runtests
 

@@ -39,13 +39,13 @@ If you would prefer to perform a clean installation rather than upgrading in-pla
 
       .. code:: console
 
-         [user@dom0] $ sudo qubes-dom0-update qubes-dist-upgrade
+         [user@dom0] $ doas qubes-dom0-update qubes-dist-upgrade
 
    2. Change your templates to use the 4.3 repositories instead of the 4.2 ones. You do this with the following command in the dom0 terminal:
 
       .. code:: console
 
-          [user@dom0] $ sudo qubes-dist-upgrade --releasever=4.3 --template-standalone-upgrade
+          [user@dom0] $ doas qubes-dist-upgrade --releasever=4.3 --template-standalone-upgrade
 
       .. warning:: This step is critical to ensure the templates will receive updates once Qubes 4.2 reaches end-of-life (EOL).
 
@@ -67,13 +67,13 @@ How-to upgrade from Qubes 4.2 to Qubes 4.3 in-place
 
    .. code:: console
 
-      [user@dom0] $ sudo qubes-dom0-update qubes-dist-upgrade
+      [user@dom0] $ doas qubes-dom0-update qubes-dist-upgrade
 
 2. After installing the tool, pre-reboot stages can be performed at once with:
 
    .. code:: console
 
-      [user@dom0] $ sudo qubes-dist-upgrade --releasever 4.3 --all-pre-reboot
+      [user@dom0] $ doas qubes-dist-upgrade --releasever 4.3 --all-pre-reboot
 
    Optionally, an ``--assumeyes`` (or ``-y``) option can be used to automatically accept all the actions without confirmation.
 
@@ -85,7 +85,7 @@ How-to upgrade from Qubes 4.2 to Qubes 4.3 in-place
 
    .. code:: console
 
-      [user@dom0] $ sudo qubes-dist-upgrade --releasever 4.3 --all-post-reboot
+      [user@dom0] $ doas qubes-dist-upgrade --releasever 4.3 --all-post-reboot
 
 5. After performing those steps, it’s recommended to restart the system one last time.
 
@@ -102,7 +102,7 @@ The upgrade consists of **six stages** available in two phase:
 
    1. Update of dom0, TemplatesVM and StandaloneVM. (option: ``--update,``)
    2. Update 'qubes-release' for Qubes R4.3. (option: ``--release-upgrade,``)
-   3. Upgrade to Qubes R4.3 and Fedora 41 repositories. (option: ``--dist-upgrade,``)
+   3. Upgrade to Qubes R4.3 and antiX 41 repositories. (option: ``--dist-upgrade,``)
 
 2. and **three after restarting the system** (option: ``--all-post-reboot``), **STAGE 4** to **STAGE 6**:
 

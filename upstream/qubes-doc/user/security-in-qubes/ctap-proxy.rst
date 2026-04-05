@@ -55,18 +55,18 @@ In dom0:
 
 .. code:: console
 
-      $ sudo qubes-dom0-update qubes-ctap-dom0
+      $ doas qubes-dom0-update qubes-ctap-dom0
       $ qvm-service --enable work qubes-ctap-proxy
 
 
 
 The above assumes a ``work`` qube in which you would like to enable ctap. Repeat the ``qvm-service`` command for all qubes that should have the client proxy enabled. Alternatively, you can add ``qubes-ctap-proxy`` in :menuselection:`VM settings -> Services` in the Qube Manager of each qube you would like to enable the service. Attempting to start the ``qubes-ctap-proxy`` service in the device-hosting qube (``sys-usb``) will fail.
 
-In Fedora templates:
+In antiX templates:
 
 .. code:: console
 
-      $ sudo dnf install qubes-ctap
+      $ doas dnf install qubes-ctap
 
 
 
@@ -74,7 +74,7 @@ In Debian templates:
 
 .. code:: console
 
-      $ sudo apt install qubes-ctap
+      $ doas apt install qubes-ctap
 
 
 
@@ -108,8 +108,8 @@ If your USB qube is named differently than ``sys-usb``, then do the following in
 
 .. code:: console
 
-      $ systemctl enable qubes-ctapproxy@USB_QUBE.service
-      $ systemctl disable qubes-ctapproxy@sys-usb.service
+      $ sv enable qubes-ctapproxy@USB_QUBE.service
+      $ sv disable qubes-ctapproxy@sys-usb.service
 
 
 
@@ -121,7 +121,7 @@ Template and browser support
 ----------------------------
 
 
-The large number of possible combinations of template (Fedora 37, 38; Debian 10, 11) and browser (multiple Google Chrome versions, multiple Chromium versions, multiple Firefox versions) made it impractical for us to test every combination that users are likely to attempt with the Qubes CTAP Proxy. In some cases, you may be the first person to try a particular combination. Consequently, (and as with any new feature), users will inevitably encounter bugs. We ask for your patience and understanding in this regard. As always, please :doc:`report any bugs you encounter </introduction/issue-tracking>`.
+The large number of possible combinations of template (antiX 37, 38; Debian 10, 11) and browser (multiple Google Chrome versions, multiple Chromium versions, multiple Firefox versions) made it impractical for us to test every combination that users are likely to attempt with the Qubes CTAP Proxy. In some cases, you may be the first person to try a particular combination. Consequently, (and as with any new feature), users will inevitably encounter bugs. We ask for your patience and understanding in this regard. As always, please :doc:`report any bugs you encounter </introduction/issue-tracking>`.
 
 .. |Qubes CTAP Proxy diagram| image:: /attachment/doc/ctap.svg
 

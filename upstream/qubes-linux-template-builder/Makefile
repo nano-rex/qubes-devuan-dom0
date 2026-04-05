@@ -66,9 +66,9 @@ rootimg-build:
 ifeq (,$(TEMPLATE_SCRIPTS))
 	$(error Building template $(DIST) not supported by any of configured plugins)
 endif
-	sudo env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))") \
+	doas env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))") \
 		./prepare_image prepared_images/$(TEMPLATE_NAME).img
-	sudo env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))") \
+	doas env -i $(foreach var,$(TEMPLATE_ENV_WHITELIST),$(var)="$($(var))") \
 		./qubeize_image prepared_images/$(TEMPLATE_NAME).img $(TEMPLATE_NAME)
 
 update-repo-templates-itl: update-repo-templates.itl
@@ -91,10 +91,10 @@ prepare-repo-template:
 	mkdir -p pkgs-for-template/$(DIST)
 
 clean:
-	sudo rm -fr qubeized_images/root.img.*
-	sudo rm -fr qubeized_images/$(TEMPLATE_NAME)*
-	sudo rm -fr rpmbuild/BUILDROOT/*
-	sudo rm -fr rpmbuild/tmp/*
+	doas rm -fr qubeized_images/root.img.*
+	doas rm -fr qubeized_images/$(TEMPLATE_NAME)*
+	doas rm -fr rpmbuild/BUILDROOT/*
+	doas rm -fr rpmbuild/tmp/*
 	# We're not removing any images from prepared_images/ intentionally
 	# because the user might want to keep using the same image for a long time
 	# and they are not dependent on any of the Qubes packages

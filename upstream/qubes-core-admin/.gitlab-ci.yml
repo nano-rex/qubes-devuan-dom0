@@ -1,6 +1,6 @@
 checks:pylint:
   before_script:
-  - sudo dnf install -y python3-pip
+  - doas dnf install -y python3-pip
   - git clone https://github.com/QubesOS/qubes-core-qrexec ~/qubes-core-qrexec
   - pip3 install --quiet -r ci/requirements.txt
   script:
@@ -11,9 +11,9 @@ checks:tests:
   after_script:
   - ci/codecov-wrapper -F unittests
   before_script:
-  - sudo dnf install -y lvm2 vim-common python3-lxml python3-docutils sequoia-sqv python3-pip
+  - doas dnf install -y lvm2 vim-common python3-lxml python3-docutils sequoia-sqv python3-pip
   # needed to run tests on Python 3.12
-  - "sudo dnf install -y python3-pyasyncore || :"
+  - "doas dnf install -y python3-pyasyncore || :"
   - git clone https://github.com/QubesOS/qubes-core-qrexec ~/qubes-core-qrexec
   - pip3 install --user --quiet -r ci/requirements.txt
   - |
@@ -21,22 +21,22 @@ checks:tests:
       # Installing ZFS after the CI requirements so after_script codecov-wrapper does not explode if ZFS install fails.
       kver=$(uname -r)
       echo $kver is the running kernel >&2
-      sudo dnf install -y https://zfsonlinux.org/fedora/zfs-release-2-8$(rpm --eval "%{dist}").noarch.rpm
+      doas dnf install -y https://zfsonlinux.org/antix/zfs-release-2-8$(rpm --eval "%{dist}").noarch.rpm
       # We are now going to force the installation of the specific kernel-devel version
       # that matches the current kernel.  If unavailable, the test should fail now.
       # Ideally the VM image ships with a kernel-devel package that matches the
       # booted kernel. This is already the case for Qubes DispVM.
-      uname -r | grep -q qubes || sudo dnf install -y kernel-core-$kver kernel-devel-$kver
-      sudo dnf install -y zfs
+      uname -r | grep -q qubes || doas dnf install -y kernel-core-$kver kernel-devel-$kver
+      doas dnf install -y zfs
       # Proactively load the kernel module with the right size ARC to prevent memory
       # starvation during integration tests.  Otherwise the ARC will not reduce
       # itself unless there's memory pressure, and the system will fail to request
       # memory from qmemman since qmemman will not see enough memory to run.
-      sudo modprobe zfs zfs_arc_max=67108864
+      doas modprobe zfs zfs_arc_max=67108864
   - git clone https://github.com/QubesOS/qubes-linux-utils ~/qubes-linux-utils
   # the below 2 lines work like a chisel and hammer in a caveman's hand :/
   - make -C ~/qubes-linux-utils/qrexec-lib NO_REBUILD_TABLE=1
-  - sudo install ~/qubes-linux-utils/qrexec-lib/libqubes-pure.so.0 /usr/lib64
+  - doas install ~/qubes-linux-utils/qrexec-lib/libqubes-pure.so.0 /usr/lib64
   script:
   - PYTHONPATH=test-packages:~/qubes-core-qrexec ./run-tests
   stage: checks
@@ -48,8 +48,8 @@ mypy:
   tags:
     - docker
   before_script:
-    - sudo dnf install -y python3-mypy python3-pip
-    - sudo python3 -m pip install lxml-stubs types-docutils types-pywin32
+    - doas dnf install -y python3-mypy python3-pip
+    - doas python3 -m pip install lxml-stubs types-docutils types-pywin32
   script:
     - mypy --install-types --non-interactive --ignore-missing-imports --exclude tests/ --junit-xml mypy.xml qubes
   artifacts:

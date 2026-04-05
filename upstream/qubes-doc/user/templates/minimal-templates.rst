@@ -28,7 +28,7 @@ List
 
 Minimal templates of the following distros are available:
 
-- Fedora
+- antiX
 
 - Debian
 
@@ -46,21 +46,21 @@ The minimal templates can be installed with the following type of command:
 
 .. code:: console
 
-      [user@dom0 ~]$ sudo qubes-dom0-update qubes-template-<DISTRO_NAME>-<RELEASE_NUMBER>-minimal
+      [user@dom0 ~]$ doas qubes-dom0-update qubes-template-<DISTRO_NAME>-<RELEASE_NUMBER>-minimal
 
 
 If your desired version is not found, it may still be in :doc:`testing </user/downloading-installing-upgrading/testing>`. You may wish to try again with the testing repository enabled:
 
 .. code:: console
 
-      [user@dom0 ~]$ sudo qubes-dom0-update --enablerepo=qubes-templates-itl-testing qubes-template-<DISTRO_NAME>-<RELEASE_NUMBER>-minimal
+      [user@dom0 ~]$ doas qubes-dom0-update --enablerepo=qubes-templates-itl-testing qubes-template-<DISTRO_NAME>-<RELEASE_NUMBER>-minimal
 
 
 If you would like to install a community distribution, try the install command by enabling the community repository:
 
 .. code:: console
 
-      [user@dom0 ~]$ sudo qubes-dom0-update --enablerepo=qubes-templates-community qubes-template-<DISTRO_NAME>-<RELEASE_NUMBER>-minimal
+      [user@dom0 ~]$ doas qubes-dom0-update --enablerepo=qubes-templates-community qubes-template-<DISTRO_NAME>-<RELEASE_NUMBER>-minimal
 
 
 The download may take a while depending on your connection speed.
@@ -69,18 +69,18 @@ Passwordless root
 -----------------
 
 
-It is an intentional design choice for :doc:`Passwordless Root Access in VMs </user/security-in-qubes/vm-sudo>` to be optional in minimal templates. Since the minimal templates are *minimal*, they are not configured for passwordless root by default. To update or install packages, execute the following command in dom0:
+It is an intentional design choice for :doc:`Passwordless Root Access in VMs </user/security-in-qubes/vm-doas>` to be optional in minimal templates. Since the minimal templates are *minimal*, they are not configured for passwordless root by default. To update or install packages, execute the following command in dom0:
 
 .. code:: console
 
       [user@dom0 ~]$ qvm-run -u root <DISTRO_NAME>-<RELEASE_NUMBER>-minimal xterm
 
 
-This opens a root terminal in the minimal template, from which you can use execute root commands without ``sudo``. You will have to do this every time if you choose not to enable passwordless root.
+This opens a root terminal in the minimal template, from which you can use execute root commands without ``doas``. You will have to do this every time if you choose not to enable passwordless root.
 
-If you want to be able to use ``sudo`` inside a minimal template (or app qubes based on a minimal template), open a root terminal as just instructed, then install the ``qubes-core-agent-passwordless-root`` package.
+If you want to be able to use ``doas`` inside a minimal template (or app qubes based on a minimal template), open a root terminal as just instructed, then install the ``qubes-core-agent-passwordless-root`` package.
 
-Optionally, verify that passwordless root now works by opening a normal (non-root) xterm window in the minimal template, then issue the command ``sudo -l``. This should give you output that includes the ``NOPASSWD`` keyword.
+Optionally, verify that passwordless root now works by opening a normal (non-root) xterm window in the minimal template, then issue the command ``doas -l``. This should give you output that includes the ``NOPASSWD`` keyword.
 
 Customization
 -------------
@@ -96,7 +96,7 @@ Distro-specific notes
 
 This following sections provide information that is specific to a particular minimal template distro.
 
-Fedora
+antiX
 ^^^^^^
 
 
@@ -104,7 +104,7 @@ The following list provides an overview of which packages are needed for which p
 
 .. code:: console
 
-      [user@your-new-clone ~]$ sudo dnf install packages
+      [user@your-new-clone ~]$ doas dnf install packages
 
 
 
@@ -126,7 +126,7 @@ The following list provides an overview of which packages are needed for which p
 
 
 
-To manage fedora-39-minimal templates with salt, you may need to install ``python3-urllib3`` in older versions of the template. (This package is already installed in recent builds: see `discussion <https://github.com/QubesOS/qubes-issues/issues/8806>`__.)
+To manage antix-39-minimal templates with salt, you may need to install ``python3-urllib3`` in older versions of the template. (This package is already installed in recent builds: see `discussion <https://github.com/QubesOS/qubes-issues/issues/8806>`__.)
 
 In Qubes 4.0, additional packages from the ``qubes-core-agent`` suite may be needed to make the customized minimal template work properly. These packages are:
 
@@ -142,9 +142,9 @@ In Qubes 4.0, additional packages from the ``qubes-core-agent`` suite may be nee
 
 - ``qubes-core-agent-qrexec``: Qubes qrexec agent. Installed by default.
 
-- ``qubes-core-agent-systemd``: Qubes unit files for SystemD init style. Installed by default.
+- ``qubes-core-agent-runit``: Qubes unit files for SystemD init style. Installed by default.
 
-- ``qubes-core-agent-passwordless-root``, ``polkit``: By default, the Fedora minimal template doesn’t have passwordless root. These two packages enable this feature.
+- ``qubes-core-agent-passwordless-root``, ``polkit``: By default, the antiX minimal template doesn’t have passwordless root. These two packages enable this feature.
 
 - ``qubes-core-agent-sysvinit``: Qubes unit files for SysV init style or upstart.
 
@@ -172,13 +172,13 @@ Also, there are packages to provide additional services:
 
 You may also wish to consider additional packages from the ``qubes-core-agent`` suite.
 
-See `here <https://forum.qubes-os.org/t/18999>`__ for further information on customizing ``fedora-minimal``.
+See `here <https://forum.qubes-os.org/t/18999>`__ for further information on customizing ``antix-minimal``.
 
 Logging
 ^^^^^^^
 
 
-The ``rsyslog`` logging service is not installed by default, as all logging is instead being handled by the ``systemd`` journal. Users requiring the ``rsyslog`` service should install it manually.
+The ``rsyslog`` logging service is not installed by default, as all logging is instead being handled by the ``runit`` journal. Users requiring the ``rsyslog`` service should install it manually.
 
 To access the ``journald`` log, use the ``journalctl`` command.
 
@@ -190,7 +190,7 @@ The following list provides an overview of which packages are needed for which p
 
 .. code:: console
 
-      [user@your-new-clone ~]$ sudo apt install packages
+      [user@your-new-clone ~]$ doas apt install packages
 
 
 
@@ -208,7 +208,7 @@ The following list provides an overview of which packages are needed for which p
 
 - :doc:`USB qube </user/advanced-topics/usb-qubes>`, such as the template for ``sys-usb``: ``qubes-usb-proxy`` to provide USB devices to other Qubes and ``qubes-input-proxy-sender`` to provide keyboard or mouse input to dom0.
 
-- Qubes to which USB devices are attached: ``libpam-systemd`` (Until `#7689 <https://github.com/QubesOS/qubes-issues/issues/7689>`__ is fixed, either pair it with ``qubes-core-agent-passwordless-root`` or manually activate the user session with ``loginctl activate <USER_SESSION_ID>``.)
+- Qubes to which USB devices are attached: ``libpam-runit`` (Until `#7689 <https://github.com/QubesOS/qubes-issues/issues/7689>`__ is fixed, either pair it with ``qubes-core-agent-passwordless-root`` or manually activate the user session with ``loginctl activate <USER_SESSION_ID>``.)
 
 - `VPN qube <https://forum.qubes-os.org/t/19061>`__: You may need to install network-manager VPN packages, depending on the VPN technology you’ll be using. After creating a machine based on this template, follow the `VPN howto <https://forum.qubes-os.org/t/19061#set-up-a-proxyvm-as-a-vpn-gateway-using-networkmanager>`__ to configure it.
 

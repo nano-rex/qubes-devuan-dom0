@@ -103,7 +103,7 @@ class RPMChrootPlugin(RPMDistributionPlugin, ChrootPlugin):
         ]
 
         mock_cmd = [
-            f"sudo --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION",
+            f"doas --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION",
             f"/usr/libexec/mock/mock",
             f"--root {self.executor.get_plugins_dir()}/chroot_rpm/mock/{mock_conf}",
             "--disablerepo=builder-local",

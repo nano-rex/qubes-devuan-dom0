@@ -374,7 +374,7 @@ class TC_20_NonAudio(TC_00_AppVMMixin):
             try:
                 self.loop.run_until_complete(
                     self.testvm2.run_for_stdio(
-                        "systemctl stop qubes-qrexec-agent.service", user="root"
+                        "sv stop qubes-qrexec-agent.service", user="root"
                     )
                 )
             except subprocess.CalledProcessError:
@@ -596,7 +596,7 @@ class TC_20_NonAudio(TC_00_AppVMMixin):
             self.app.save()
             # break vm and dom0 time, to check if qvm-sync-clock would fix it
             subprocess.check_call(
-                ["sudo", "date", "-s", "2001-01-01T12:34:56"],
+                ["doas", "date", "-s", "2001-01-01T12:34:56"],
                 stdout=subprocess.DEVNULL,
             )
             self.loop.run_until_complete(
@@ -611,7 +611,7 @@ class TC_20_NonAudio(TC_00_AppVMMixin):
 
             p = self.loop.run_until_complete(
                 asyncio.create_subprocess_exec(
-                    "sudo", "qvm-sync-clock", stdout=asyncio.subprocess.DEVNULL
+                    "doas", "qvm-sync-clock", stdout=asyncio.subprocess.DEVNULL
                 )
             )
             self.loop.run_until_complete(p.wait())
@@ -631,7 +631,7 @@ class TC_20_NonAudio(TC_00_AppVMMixin):
         except:
             # reset time to some approximation of the real time
             subprocess.Popen(
-                ["sudo", "date", "-u", "-s", "@" + start_time.decode()]
+                ["doas", "date", "-u", "-s", "@" + start_time.decode()]
             )
             raise
         finally:

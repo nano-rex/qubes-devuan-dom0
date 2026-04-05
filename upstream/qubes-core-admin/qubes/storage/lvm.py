@@ -32,7 +32,7 @@ import qubes.storage
 import qubes.utils
 import json
 
-_sudo, _dd, _lvm = "sudo", "dd", "lvm"
+_doas, _dd, _lvm = "doas", "dd", "lvm"
 
 
 class ThinPool(qubes.storage.Pool):
@@ -245,7 +245,7 @@ _init_cache_cmd = [
     "--reportformat=json",
 ]
 if os.getuid() != 0:
-    _init_cache_cmd.insert(0, _sudo)
+    _init_cache_cmd.insert(0, _doas)
 
 
 def _parse_lvm_cache(lvm_output):
@@ -604,7 +604,7 @@ class ThinVolume(qubes.storage.Volume):
                 if not os.access(
                     "/dev/" + self._vid_import, os.W_OK
                 ) or not os.access(src_path, os.R_OK):
-                    cmd.insert(0, _sudo)
+                    cmd.insert(0, _doas)
 
                 p = await asyncio.create_subprocess_exec(*cmd)
                 await p.wait()
@@ -921,7 +921,7 @@ def _get_lvm_cmdline(cmd):
     else:
         raise NotImplementedError("unsupported action: " + action)
     if os.getuid() != 0:
-        cmd = [_sudo, _lvm] + lvm_cmd
+        cmd = [_doas, _lvm] + lvm_cmd
     else:
         cmd = [_lvm] + lvm_cmd
 

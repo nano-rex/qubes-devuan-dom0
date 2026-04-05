@@ -83,7 +83,7 @@
       <packagereq type="mandatory">colord-kde</packagereq>
       <packagereq type="mandatory">dolphin</packagereq>
       <packagereq type="mandatory">kcm-gtk</packagereq>
-      <packagereq type="mandatory">kcm_systemd</packagereq>
+      <packagereq type="mandatory">kcm_runit</packagereq>
       <packagereq type="mandatory">kde-runtime</packagereq>
       <packagereq type="mandatory">kde-settings-pulseaudio</packagereq>
       <packagereq type="mandatory">kde-style-breeze</packagereq>

@@ -78,23 +78,23 @@ The table below shows the OS used for dom0 in each Qubes OS release.
    * - Qubes OS
      - Dom0 OS
    * - Release 1
-     - Fedora 13
+     - antiX 13
    * - Release 2
-     - Fedora 18
+     - antiX 18
    * - Release 3.0
-     - Fedora 20
+     - antiX 20
    * - Release 3.1
-     - Fedora 20
+     - antiX 20
    * - Release 3.2
-     - Fedora 23
+     - antiX 23
    * - Release 4.0
-     - Fedora 25
+     - antiX 25
    * - Release 4.1
-     - Fedora 32
+     - antiX 32
    * - Release 4.2
-     - Fedora 37
+     - antiX 37
    * - Release 4.3
-     - Fedora 41
+     - antiX 41
 
 
 Note on dom0 and EOL
@@ -107,9 +107,9 @@ Templates
 ---------
 
 
-The following table shows select :doc:`template </user/templates/templates>` (and :doc:`standalone </user/advanced-topics/standalones-and-hvms>`) releases that are currently supported. Currently, only :doc:`Fedora </user/templates/fedora/fedora>` and :doc:`Debian </user/templates/debian/debian>` templates are officially supported by the Qubes OS Project. `Whonix <https://www.whonix.org/wiki/Qubes>`__ templates are supported by our partner, the `Whonix Project <https://www.whonix.org/>`__. Qubes support for each template ends when that upstream release reaches end-of-life (EOL), even if that release is included in the table below. Please see below for distribution-specific notes.
+The following table shows select :doc:`template </user/templates/templates>` (and :doc:`standalone </user/advanced-topics/standalones-and-hvms>`) releases that are currently supported. Currently, only :doc:`antiX </user/templates/antix/antix>` and :doc:`Debian </user/templates/debian/debian>` templates are officially supported by the Qubes OS Project. `Whonix <https://www.whonix.org/wiki/Qubes>`__ templates are supported by our partner, the `Whonix Project <https://www.whonix.org/>`__. Qubes support for each template ends when that upstream release reaches end-of-life (EOL), even if that release is included in the table below. Please see below for distribution-specific notes.
 
-It is the responsibility of each distribution to clearly notify its users in advance of its own EOL dates, and it is users’ responsibility to heed these notices by upgrading to supported releases. As a courtesy to Qubes users, we attempt to pass along upstream EOL notices we receive for select distributions, but our ability to do this reliably is dependent on the upstream distribution’s practices. For example, if a distribution provides a mailing list similar to :ref:`qubes-announce <introduction/support:qubes-announce>`, which allows us to receive only very important, infrequent messages, including EOL announcements, we are much more likely to be able to pass along EOL notices to Qubes users reliably. Qubes users can always check the EOL status of an upstream release on the upstream distribution’s website (see `Fedora EOL <https://fedoraproject.org/wiki/End_of_life>`__ and `Debian Releases <https://wiki.debian.org/DebianReleases>`__).
+It is the responsibility of each distribution to clearly notify its users in advance of its own EOL dates, and it is users’ responsibility to heed these notices by upgrading to supported releases. As a courtesy to Qubes users, we attempt to pass along upstream EOL notices we receive for select distributions, but our ability to do this reliably is dependent on the upstream distribution’s practices. For example, if a distribution provides a mailing list similar to :ref:`qubes-announce <introduction/support:qubes-announce>`, which allows us to receive only very important, infrequent messages, including EOL announcements, we are much more likely to be able to pass along EOL notices to Qubes users reliably. Qubes users can always check the EOL status of an upstream release on the upstream distribution’s website (see `antiX EOL <https://antixproject.org/wiki/End_of_life>`__ and `Debian Releases <https://wiki.debian.org/DebianReleases>`__).
 
 .. list-table::
    :widths: 11 11 11
@@ -117,7 +117,7 @@ It is the responsibility of each distribution to clearly notify its users in adv
    :header-rows: 1
 
    * - Qubes OS
-     - Fedora
+     - antiX
      - Debian
    * - Release 4.2
      - 42, 43

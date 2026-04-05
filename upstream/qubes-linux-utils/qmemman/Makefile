@@ -13,11 +13,11 @@ meminfo-writer: meminfo-writer.o
 install:
 	install -D meminfo-writer $(DESTDIR)/$(BINDIR)/meminfo-writer
 ifeq (1,${DEBIANBUILD})
-	install -d $(DESTDIR)/lib/systemd/system/
-	install -m 0644 qubes-meminfo-writer.service $(DESTDIR)/lib/systemd/system/
+	install -d $(DESTDIR)/lib/runit/system/
+	install -m 0644 qubes-meminfo-writer.service $(DESTDIR)/lib/runit/system/
 else
-	install -d $(DESTDIR)/usr/lib/systemd/system/
-	install -m 0644 qubes-meminfo-writer*service $(DESTDIR)/usr/lib/systemd/system/
+	install -d $(DESTDIR)/usr/lib/runit/system/
+	install -m 0644 qubes-meminfo-writer*service $(DESTDIR)/usr/lib/runit/system/
 endif
 clean:
 	rm -f meminfo-writer xenstore-watch *.o

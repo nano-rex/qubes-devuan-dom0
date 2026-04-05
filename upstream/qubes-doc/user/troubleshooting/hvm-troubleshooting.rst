@@ -11,7 +11,7 @@ The HVM may pause on boot, showing a fixed cursor. After a while a series of war
 
 .. code:: output
 
-      BUG: soft lockup - CPU#0 stuck for 23s! [systemd-udevd:244]
+      BUG: soft lockup - CPU#0 stuck for 23s! [runit-udevd:244]
 
 
 

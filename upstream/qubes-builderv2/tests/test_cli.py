@@ -499,7 +499,7 @@ def test_component_host_fc37_init_cache(artifacts_dir):
     )
     assert (
         artifacts_dir
-        / "cache/chroot/host-fc37/fedora-37-x86_64/root_cache/cache.tar.gz"
+        / "cache/chroot/host-fc37/antix-37-x86_64/root_cache/cache.tar.gz"
     ).exists()
 
 
@@ -999,7 +999,7 @@ def test_component_host_fc37_prep_skip(artifacts_dir):
     ).decode()
     print(result)
     assert (
-        "core-qrexec:host-fedora-37.x86_64: Source hash is the same than already prepared source. Skipping."
+        "core-qrexec:host-antix-37.x86_64: Source hash is the same than already prepared source. Skipping."
         in result
     )
 
@@ -1017,7 +1017,7 @@ def test_component_host_fc37_build_skip(artifacts_dir):
     ).decode()
     print(result)
     assert (
-        "core-qrexec:host-fedora-37.x86_64: Source hash is the same than already built source. Skipping."
+        "core-qrexec:host-antix-37.x86_64: Source hash is the same than already built source. Skipping."
         in result
     )
 
@@ -2074,11 +2074,11 @@ def _get_template_timestamp(artifacts_dir, template_name, stage):
 
 
 #
-# Pipeline for Fedora 40 template
+# Pipeline for antiX 40 template
 #
 
 
-def test_template_fedora_40_minimal_prep(artifacts_dir):
+def test_template_antix_40_minimal_prep(artifacts_dir):
     qb_call(
         DEFAULT_BUILDER_CONF,
         artifacts_dir,
@@ -2094,49 +2094,49 @@ def test_template_fedora_40_minimal_prep(artifacts_dir):
         DEFAULT_BUILDER_CONF,
         artifacts_dir,
         "-t",
-        "fedora-40-minimal",
+        "antix-40-minimal",
         "template",
         "prep",
     )
 
-    assert (artifacts_dir / "templates/fedora-40-minimal.prep.yml").exists()
+    assert (artifacts_dir / "templates/antix-40-minimal.prep.yml").exists()
     assert (
-        artifacts_dir / "templates/qubeized_images/fedora-40-minimal/root.img"
+        artifacts_dir / "templates/qubeized_images/antix-40-minimal/root.img"
     ).exists()
-    assert (artifacts_dir / "templates/fedora-40-minimal/appmenus").exists()
+    assert (artifacts_dir / "templates/antix-40-minimal/appmenus").exists()
     assert (
-        artifacts_dir / "templates/fedora-40-minimal/template.conf"
+        artifacts_dir / "templates/antix-40-minimal/template.conf"
     ).exists()
 
 
-def test_template_fedora_40_minimal_build(artifacts_dir):
+def test_template_antix_40_minimal_build(artifacts_dir):
     qb_call(
         DEFAULT_BUILDER_CONF,
         artifacts_dir,
         "-t",
-        "fedora-40-minimal",
+        "antix-40-minimal",
         "template",
         "build",
     )
 
     template_prep_timestamp = _get_template_timestamp(
-        artifacts_dir, "fedora-40-minimal", "prep"
+        artifacts_dir, "antix-40-minimal", "prep"
     )
 
     template_timestamp = _get_template_timestamp(
-        artifacts_dir, "fedora-40-minimal", "build"
+        artifacts_dir, "antix-40-minimal", "build"
     )
 
     assert template_timestamp == template_prep_timestamp
 
     rpm_path = (
         artifacts_dir
-        / f"templates/rpm/qubes-template-fedora-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
+        / f"templates/rpm/qubes-template-antix-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
     )
     assert rpm_path.exists()
 
 
-def test_template_fedora_40_minimal_sign(artifacts_dir):
+def test_template_antix_40_minimal_sign(artifacts_dir):
     env = os.environ.copy()
     with tempfile.TemporaryDirectory() as tmpdir:
         gnupghome = f"{tmpdir}/gnupg"
@@ -2153,7 +2153,7 @@ def test_template_fedora_40_minimal_sign(artifacts_dir):
             DEFAULT_BUILDER_CONF,
             artifacts_dir,
             "-t",
-            "fedora-40-minimal",
+            "antix-40-minimal",
             "template",
             "sign",
             env=env,
@@ -2163,12 +2163,12 @@ def test_template_fedora_40_minimal_sign(artifacts_dir):
     assert dbpath.exists()
 
     template_timestamp = _get_template_timestamp(
-        artifacts_dir, "fedora-40-minimal", "build"
+        artifacts_dir, "antix-40-minimal", "build"
     )
 
     rpm_path = (
         artifacts_dir
-        / f"templates/rpm/qubes-template-fedora-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
+        / f"templates/rpm/qubes-template-antix-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
     )
     assert rpm_path.exists()
     result = subprocess.run(
@@ -2180,7 +2180,7 @@ def test_template_fedora_40_minimal_sign(artifacts_dir):
     assert "digests signatures OK" in result.stdout.decode()
 
 
-def test_template_fedora_40_minimal_publish(artifacts_dir):
+def test_template_antix_40_minimal_publish(artifacts_dir):
     env = os.environ.copy()
     with tempfile.TemporaryDirectory() as tmpdir:
         gnupghome = f"{tmpdir}/gnupg"
@@ -2195,7 +2195,7 @@ def test_template_fedora_40_minimal_publish(artifacts_dir):
             DEFAULT_BUILDER_CONF,
             artifacts_dir,
             "-t",
-            "fedora-40-minimal",
+            "antix-40-minimal",
             "repository",
             "publish",
             "templates-itl-testing",
@@ -2203,12 +2203,12 @@ def test_template_fedora_40_minimal_publish(artifacts_dir):
         )
 
         with open(
-            artifacts_dir / "templates/fedora-40-minimal.publish.yml"
+            artifacts_dir / "templates/antix-40-minimal.publish.yml"
         ) as f:
             info = yaml.safe_load(f.read())
 
         template_timestamp = _get_template_timestamp(
-            artifacts_dir, "fedora-40-minimal", "build"
+            artifacts_dir, "antix-40-minimal", "build"
         )
 
         assert info.get("timestamp", []) == template_timestamp
@@ -2220,7 +2220,7 @@ def test_template_fedora_40_minimal_publish(artifacts_dir):
         fake_time = (
             datetime.datetime.now(datetime.UTC) - datetime.timedelta(days=7)
         ).strftime("%Y%m%d%H%M")
-        publish_file = artifacts_dir / "templates/fedora-40-minimal.publish.yml"
+        publish_file = artifacts_dir / "templates/antix-40-minimal.publish.yml"
 
         for r in info["repository-publish"]:
             if r["name"] == "templates-itl-testing":
@@ -2234,7 +2234,7 @@ def test_template_fedora_40_minimal_publish(artifacts_dir):
             DEFAULT_BUILDER_CONF,
             artifacts_dir,
             "-t",
-            "fedora-40-minimal",
+            "antix-40-minimal",
             "repository",
             "publish",
             "templates-itl",
@@ -2251,7 +2251,7 @@ def test_template_fedora_40_minimal_publish(artifacts_dir):
 
     # Check that packages are in the published repository
     for repository in ["templates-itl-testing", "templates-itl"]:
-        rpm = f"qubes-template-fedora-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
+        rpm = f"qubes-template-antix-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
         repository_dir = (
             f"file://{artifacts_dir}/repository-publish/rpm/r4.2/{repository}"
         )
@@ -2270,8 +2270,8 @@ def test_template_fedora_40_minimal_publish(artifacts_dir):
         )
 
 
-# @pytest.mark.depends(on=['test_template_publish_fedora_40_minimal'])
-def test_template_fedora_40_minimal_publish_new(artifacts_dir):
+# @pytest.mark.depends(on=['test_template_publish_antix_40_minimal'])
+def test_template_antix_40_minimal_publish_new(artifacts_dir):
     env = os.environ.copy()
     with tempfile.TemporaryDirectory() as tmpdir:
         gnupghome = f"{tmpdir}/gnupg"
@@ -2282,9 +2282,9 @@ def test_template_fedora_40_minimal_publish_new(artifacts_dir):
         env["HOME"] = tmpdir
 
         assert (
-            artifacts_dir / "templates/fedora-40-minimal.build.yml"
+            artifacts_dir / "templates/antix-40-minimal.build.yml"
         ).exists()
-        with open(artifacts_dir / "templates/fedora-40-minimal.build.yml") as f:
+        with open(artifacts_dir / "templates/antix-40-minimal.build.yml") as f:
             data = yaml.safe_load(f.read())
         assert data.get("timestamp", None)
         template_timestamp = parsedate(data["timestamp"]).strftime("%Y%m%d%H%M")
@@ -2295,7 +2295,7 @@ def test_template_fedora_40_minimal_publish_new(artifacts_dir):
         ).strftime("%Y%m%d%H%M")
         data["timestamp"] = new_timestamp
         with open(
-            artifacts_dir / "templates/fedora-40-minimal.prep.yml", "w"
+            artifacts_dir / "templates/antix-40-minimal.prep.yml", "w"
         ) as f:
             f.write(yaml.dump(data))
 
@@ -2303,7 +2303,7 @@ def test_template_fedora_40_minimal_publish_new(artifacts_dir):
             DEFAULT_BUILDER_CONF,
             artifacts_dir,
             "-t",
-            "fedora-40-minimal",
+            "antix-40-minimal",
             "template",
             "build",
             "sign",
@@ -2312,7 +2312,7 @@ def test_template_fedora_40_minimal_publish_new(artifacts_dir):
 
         rpm_path = (
             artifacts_dir
-            / f"templates/rpm/qubes-template-fedora-40-minimal-4.2.0-{new_timestamp}.noarch.rpm"
+            / f"templates/rpm/qubes-template-antix-40-minimal-4.2.0-{new_timestamp}.noarch.rpm"
         )
         assert rpm_path.exists()
 
@@ -2323,14 +2323,14 @@ def test_template_fedora_40_minimal_publish_new(artifacts_dir):
             DEFAULT_BUILDER_CONF,
             artifacts_dir,
             "-t",
-            "fedora-40-minimal",
+            "antix-40-minimal",
             "repository",
             "publish",
             "templates-itl-testing",
             env=env,
         )
 
-        publish_file = artifacts_dir / "templates/fedora-40-minimal.publish.yml"
+        publish_file = artifacts_dir / "templates/antix-40-minimal.publish.yml"
         with open(publish_file) as f:
             info = yaml.safe_load(f.read())
 
@@ -2357,7 +2357,7 @@ def test_template_fedora_40_minimal_publish_new(artifacts_dir):
             DEFAULT_BUILDER_CONF,
             artifacts_dir,
             "-t",
-            "fedora-40-minimal",
+            "antix-40-minimal",
             "repository",
             "publish",
             "templates-itl",
@@ -2375,8 +2375,8 @@ def test_template_fedora_40_minimal_publish_new(artifacts_dir):
     # Check that packages are in the published repository
     for repository in ["templates-itl-testing", "templates-itl"]:
         rpms = {
-            f"qubes-template-fedora-40-minimal-4.2.0-{template_timestamp}.noarch.rpm",
-            f"qubes-template-fedora-40-minimal-4.2.0-{new_timestamp}.noarch.rpm",
+            f"qubes-template-antix-40-minimal-4.2.0-{template_timestamp}.noarch.rpm",
+            f"qubes-template-antix-40-minimal-4.2.0-{new_timestamp}.noarch.rpm",
         }
         repository_dir = (
             f"file://{artifacts_dir}/repository-publish/rpm/r4.2/{repository}"
@@ -2396,7 +2396,7 @@ def test_template_fedora_40_minimal_publish_new(artifacts_dir):
         )
 
 
-def test_template_fedora_40_minimal_unpublish(artifacts_dir):
+def test_template_antix_40_minimal_unpublish(artifacts_dir):
     env = os.environ.copy()
     with tempfile.TemporaryDirectory() as tmpdir:
         gnupghome = f"{tmpdir}/gnupg"
@@ -2407,7 +2407,7 @@ def test_template_fedora_40_minimal_unpublish(artifacts_dir):
         env["HOME"] = tmpdir
 
         template_timestamp = _get_template_timestamp(
-            artifacts_dir, "fedora-40-minimal", "build"
+            artifacts_dir, "antix-40-minimal", "build"
         )
 
         # unpublish from templates-itl
@@ -2415,14 +2415,14 @@ def test_template_fedora_40_minimal_unpublish(artifacts_dir):
             DEFAULT_BUILDER_CONF,
             artifacts_dir,
             "-t",
-            "fedora-40-minimal",
+            "antix-40-minimal",
             "repository",
             "unpublish",
             "templates-itl",
             env=env,
         )
 
-        publish_file = artifacts_dir / "templates/fedora-40-minimal.publish.yml"
+        publish_file = artifacts_dir / "templates/antix-40-minimal.publish.yml"
         with open(publish_file) as f:
             info = yaml.safe_load(f.read())
 
@@ -2433,7 +2433,7 @@ def test_template_fedora_40_minimal_unpublish(artifacts_dir):
 
     # Check that packages are in the published repository
     for repository in ["templates-itl-testing", "templates-itl"]:
-        rpm = f"qubes-template-fedora-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
+        rpm = f"qubes-template-antix-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
         repository_dir = (
             f"file://{artifacts_dir}/repository-publish/rpm/r4.2/{repository}"
         )
@@ -2460,13 +2460,13 @@ def test_template_fedora_40_minimal_unpublish(artifacts_dir):
 #
 
 
-def test_template_fedora_for_iso(artifacts_dir):
+def test_template_antix_for_iso(artifacts_dir):
     env = os.environ.copy()
     with tempfile.TemporaryDirectory() as tmpdir:
         template_timestamp = _get_template_timestamp(
-            artifacts_dir, "fedora-40-minimal", "build"
+            artifacts_dir, "antix-40-minimal", "build"
         )
-        rpm = f"qubes-template-fedora-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
+        rpm = f"qubes-template-antix-40-minimal-4.2.0-{template_timestamp}.noarch.rpm"
 
         qb_call(
             DEFAULT_BUILDER_CONF,
@@ -2488,7 +2488,7 @@ def test_template_fedora_for_iso(artifacts_dir):
             kickstart_f.write(
                 """
 %packages
-qubes-template-fedora-40-minimal
+qubes-template-antix-40-minimal
 %end
 """
             )
@@ -2498,7 +2498,7 @@ qubes-template-fedora-40-minimal
             DEFAULT_BUILDER_CONF,
             artifacts_dir,
             "-t",
-            "fedora-40-minimal",
+            "antix-40-minimal",
             "-o",
             f"iso:kickstart={kickstart!s}",
             "installer",

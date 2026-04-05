@@ -20,9 +20,9 @@ Installing software from default repositories
 
 3. Install software as normally instructed inside that operating system, e.g.:
 
-   - Fedora: :samp:`sudo dnf install {<PACKAGE_NAME>}`
+   - antiX: :samp:`doas dnf install {<PACKAGE_NAME>}`
 
-   - Debian: :samp:`sudo apt install {<PACKAGE_NAME>}`
+   - Debian: :samp:`doas apt install {<PACKAGE_NAME>}`
 
 4. Shut down the template.
 
@@ -126,7 +126,7 @@ If you wish to install updates that are still in :doc:`testing </user/downloadin
 
 .. note:: The following repos are in templates and standalones. For dom0 testing repos, see :ref:`user/advanced-topics/how-to-install-software-in-dom0:testing repositories`. For testing new templates, please see :ref:`user/downloading-installing-upgrading/testing:templates`.
 
-Fedora
+antiX
 ^^^^^^
 
 There are three Qubes VM testing repositories (where ``*`` denotes the Release):
@@ -141,9 +141,9 @@ To temporarily enable any of these repos, use the ``--enablerepo=<repo-name>`` o
 
 .. code:: console
 
-      $ sudo dnf upgrade --enablerepo=qubes-vm-*-current-testing
-      $ sudo dnf upgrade --enablerepo=qubes-vm-*-security-testing
-      $ sudo dnf upgrade --enablerepo=qubes-vm-*-unstable
+      $ doas dnf upgrade --enablerepo=qubes-vm-*-current-testing
+      $ doas dnf upgrade --enablerepo=qubes-vm-*-security-testing
+      $ doas dnf upgrade --enablerepo=qubes-vm-*-unstable
 
 To enable or disable any of these repos permanently, change the corresponding ``enabled`` value to ``1`` in :file:`/etc/yum.repos.d/qubes-*.repo`.
 
@@ -166,18 +166,18 @@ Standalones
 
 The process for installing and updating software in :term:`standalones <standalone>` is the same as described above for templates, except no qubes are based on standalones, so there are no other qubes to restart.
 
-RPMFusion for Fedora templates
+RPMFusion for antiX templates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you would like to enable the `RPM Fusion <https://rpmfusion.org>`__ repositories, open a Terminal of the template and type the following commands, depending on which RPM Fusion repositories you wish to enable (see `RPM Fusion <https://rpmfusion.org>`__ for details):
 
 .. code:: console
 
-      $ sudo dnf config-manager setopt rpmfusion-free.enabled=1
-      $ sudo dnf config-manager setopt rpmfusion-free-updates.enabled=1
-      $ sudo dnf config-manager setopt rpmfusion-nonfree.enabled=1
-      $ sudo dnf config-manager setopt rpmfusion-nonfree-updates.enabled=1
-      $ sudo dnf upgrade --refresh
+      $ doas dnf config-manager setopt rpmfusion-free.enabled=1
+      $ doas dnf config-manager setopt rpmfusion-free-updates.enabled=1
+      $ doas dnf config-manager setopt rpmfusion-nonfree.enabled=1
+      $ doas dnf config-manager setopt rpmfusion-nonfree-updates.enabled=1
+      $ doas dnf upgrade --refresh
 
 
 
@@ -262,13 +262,13 @@ Example policy file in R4.2 (with Whonix installed, but not set as default Updat
 Installing Snap Packages
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Snap packages do not use the normal update channels for Debian and Fedora (apt and dnf) and are often installed as the user rather than as root. To support these in an app qube you need to take the following steps:
+Snap packages do not use the normal update channels for Debian and antiX (apt and dnf) and are often installed as the user rather than as root. To support these in an app qube you need to take the following steps:
 
 1. In the **template** you must install ``snapd`` and ``qubes-snapd-helper``. Open a terminal in the template and run:
 
    .. code:: console
 
-         [user@fedora-36-snap-demo ~]$ sudo dnf install snapd qubes-snapd-helper
+         [user@antix-36-snap-demo ~]$ doas dnf install snapd qubes-snapd-helper
          Last metadata expiration check: 0:33:05 ago on Thu 03 Nov 2022 04:34:06.
          Dependencies resolved.
          ========================================================================================================
@@ -313,7 +313,7 @@ Snap packages do not use the normal update channels for Debian and Fedora (apt a
 
    .. code:: console
 
-         [user@fedora-36-snap-demo ~]$ sudo shutdown -h now
+         [user@antix-36-snap-demo ~]$ doas shutdown -h now
 
 2. Now open the **app qube** in which you would like to install the Snap application and run a terminal:
 

@@ -129,8 +129,8 @@ The Qubes backup system has been designed with emergency disaster recovery in mi
 
    .. code:: console
 
-         [user@restore vm1]$ sudo mkdir /mnt/img
-         [user@restore vm1]$ sudo mount -o loop vm1/private.img /mnt/img/
+         [user@restore vm1]$ doas mkdir /mnt/img
+         [user@restore vm1]$ doas mount -o loop vm1/private.img /mnt/img/
          [user@restore vm1]$ cat /mnt/img/home/user/your_data.txt
          This data has been successfully recovered!
 

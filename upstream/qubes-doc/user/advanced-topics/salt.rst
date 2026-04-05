@@ -238,7 +238,7 @@ Let’s start with a quick example:
       my new and shiny VM:
         qvm.present:
           - name: salt-test # can be omitted when same as ID
-          - template: fedora-21
+          - template: antix-21
           - label: yellow
           - mem: 2000
           - vcpus: 4
@@ -408,7 +408,7 @@ You can use these formulae to download, install, and configure qubes in Qubes. T
 
 
 
-In dom0, you can apply a single state with ``sudo qubesctl state.sls STATE_NAME``. For example, ``sudo qubesctl state.sls qvm.personal`` will create a ``personal`` qube (if it does not already exist) with all its dependencies (template, ``sys-firewall``, and ``sys-net``).
+In dom0, you can apply a single state with ``doas qubesctl state.sls STATE_NAME``. For example, ``doas qubesctl state.sls qvm.personal`` will create a ``personal`` qube (if it does not already exist) with all its dependencies (template, ``sys-firewall``, and ``sys-net``).
 
 Available states
 ^^^^^^^^^^^^^^^^
@@ -478,7 +478,7 @@ Vault app qube with no NetVM enabled.
 ^^^^^^^^^^^^^^^^^^^^^^
 
 
-Default disposable template - fedora-26-dvm app qube
+Default disposable template - antix-26-dvm app qube
 
 ``qvm.anon-whonix``
 ^^^^^^^^^^^^^^^^^^^
@@ -498,17 +498,17 @@ Whonix workstation app qube for Whonix disposables.
 
 Setup UpdatesProxy to route all templates updates through Tor (sys-whonix here).
 
-``qvm.template-fedora-21``
+``qvm.template-antix-21``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-Fedora-21 template
+antiX-21 template
 
-``qvm.template-fedora-21-minimal``
+``qvm.template-antix-21-minimal``
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-Fedora-21 minimal template
+antiX-21 minimal template
 
 ``qvm.template-debian-7``
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -542,7 +542,7 @@ Updates dom0. Example (executed in dom0):
 
 .. code:: console
 
-      $ sudo qubesctl --show-output state.sls update.qubes-dom0
+      $ doas qubesctl --show-output state.sls update.qubes-dom0
 
 
 
@@ -554,7 +554,7 @@ Updates domUs. Example to update all templates (executed in dom0):
 
 .. code:: console
 
-      $ sudo qubesctl --show-output --skip-dom0 --templates state.sls update.qubes-vm
+      $ doas qubesctl --show-output --skip-dom0 --templates state.sls update.qubes-vm
 
 
 
@@ -632,7 +632,7 @@ The output for each qube is logged in ``/var/log/qubes/mgmt-VM_NAME.log``.
 
 If the log does not contain useful information:
 
-1. Run ``sudo qubesctl --skip-dom0 --target=VM_NAME state.apply``
+1. Run ``doas qubesctl --skip-dom0 --target=VM_NAME state.apply``
 
 2. When your qube is being started (yellow) press Ctrl-z on qubesctl.
 
@@ -662,15 +662,15 @@ Known Pitfalls
 --------------
 
 
-Using fedora-24-minimal
+Using antix-24-minimal
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 
-The fedora-24-minimal package is missing the ``sudo`` package. You can install it via:
+The antix-24-minimal package is missing the ``doas`` package. You can install it via:
 
 .. code:: console
 
-      $ qvm-run -p -u root fedora-24-minimal-template 'dnf install -y sudo'
+      $ qvm-run -p -u root antix-24-minimal-template 'dnf install -y doas'
 
 
 The ``-p`` will cause the execution to wait until the package is installed. Having the ``-p`` flag is important when using a state with ``cmd.run``.
@@ -685,7 +685,7 @@ If you install multiple templates you may encounter this error. The solution is 
 
       install template and shutdown updateVM:
         cmd.run:
-        - name: sudo qubes-dom0-update -y fedora-24; qvm-shutdown {{ salt.cmd.run(qubes-prefs updateVM) }}
+        - name: doas qubes-dom0-update -y antix-24; qvm-shutdown {{ salt.cmd.run(qubes-prefs updateVM) }}
 
 
 

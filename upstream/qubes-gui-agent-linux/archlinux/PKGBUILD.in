@@ -41,7 +41,7 @@ build() {
     rm -f pulse/pulsecore
     ln -s "pulsecore-${_pa_ver}" pulse/pulsecore
 
-    # Bug fixes : /var/run/console depends on pam_console, which is fedora specific
+    # Bug fixes : /var/run/console depends on pam_console, which is antix specific
     # As a consequence, /var/run/console does not exists and qubes-gui-agent will always fail
     sed 's:ExecStartPre=/bin/touch:#ExecStartPre=/bin/touch:' -i appvm-scripts/qubes-gui-agent.service
     # Ensure that qubes-gui-agent starts after user autologin
@@ -77,7 +77,7 @@ package_qubes-vm-gui() {
         SYSLIBDIR=/usr/lib
 
     # Specific to archlinux: qubes session needs to be the last started script when Xorg starts.
-    # For Fedora Qubes devs team chose to populate it in /etc/sysconfig/desktop, but this is not supported by Archlinux
+    # For antiX Qubes devs team chose to populate it in /etc/sysconfig/desktop, but this is not supported by Archlinux
     # Using z-qubes-session allows it to be the last started script in xinitrc.d...
     mkdir -p "${pkgdir}/etc/X11/xinit/xinitrc.d/"
     install -D archlinux/PKGBUILD-z-qubes-session.sh "${pkgdir}/etc/X11/xinit/xinitrc.d/z-qubes-session.sh"

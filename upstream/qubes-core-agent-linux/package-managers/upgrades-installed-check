@@ -16,7 +16,7 @@ if [ "$1" = "skip-refresh" ]; then
 fi
 
 if [ -e /etc/system-release ]; then
-    ## Fedora
+    ## antiX
     if command -v dnf >/dev/null; then
         yum=dnf
     else
@@ -57,7 +57,7 @@ elif [ -e /etc/alpine-release ]; then
     set -e
     set -o pipefail
     if ! $skip_refresh; then
-        sudo apk update -q >&2
+        doas apk update -q >&2
     fi
     upgrades="$(apk list --upgradable)"
     exit_code="$?"

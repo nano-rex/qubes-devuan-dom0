@@ -19,11 +19,11 @@ The template system has significant benefits:
 
 An important side effect of this system is that any software installed in an app qube (rather than in the template on which it is based) will disappear when the app qube shuts down (see :ref:`user/templates/templates:inheritance and persistence`). For this reason, we recommend installing most of your software in templates, not app qubes.
 
-The default template in Qubes is based on Fedora, but there are additional templates based on other Linux distributions. There are also templates available with or without certain software preinstalled. You may find it useful to have multiple templates installed in order to provide:
+The default template in Qubes is based on antiX, but there are additional templates based on other Linux distributions. There are also templates available with or without certain software preinstalled. You may find it useful to have multiple templates installed in order to provide:
 
 - Different security levels (e.g., more or less trusted software installed)
 
-- Different environments (e.g., Fedora, Debian, Whonix)
+- Different environments (e.g., antiX, Debian, Whonix)
 
 - Different tools (e.g., office, media, development, hardware drivers)
 
@@ -32,11 +32,11 @@ Official
 
 These are the official Qubes OS Project templates. We build and release updates for these templates. We guarantee that the binary updates are compiled from exactly the same source code as we publish.
 
-- :doc:`Fedora Xfce </user/templates/fedora/fedora>` (default)
+- :doc:`antiX Xfce </user/templates/antix/antix>` (default)
 
-- :doc:`Fedora GNOME </user/templates/fedora/fedora>`
+- :doc:`antiX GNOME </user/templates/antix/antix>`
 
-- :doc:`Fedora Minimal </user/templates/minimal-templates>`
+- :doc:`antiX Minimal </user/templates/minimal-templates>`
 
 - :doc:`Debian Xfce </user/templates/debian/debian>` (default)
 
@@ -181,7 +181,7 @@ When you install a new template or :ref:`upgrade <user/how-to-guides/how-to-upda
 
      .. code:: console
 
-           $ qvm-shutdown --wait --all; qvm-prefs fedora-01-dvm template fedora-02; qvm-start sys-usb
+           $ qvm-shutdown --wait --all; qvm-prefs antix-01-dvm template antix-02; qvm-start sys-usb
 
 3. **Base your app qubes on the new template.** In the Qube Manager, click on the Template heading to sort by template. Select all the qubes based on the old template by clicking on the first one, holding shift, then clicking on the last one. With multiple qubes selected, right-click on any of them, hover your cursor over Template, then click on the new template. Or in the ``System`` menu select ``Manage templates for qubes``, select any qubes using the old template and update them to the new template using the drop down menu.
 
@@ -229,21 +229,21 @@ As the template is used for creating filesystems for other app qubes where you a
 
 There are several ways to deal with this problem:
 
-- Only install packages from trusted sources – e.g. from the pre-configured Fedora repositories. All those packages are signed by Fedora, and we expect that at least the package’s installation scripts are not malicious. This is enforced by default (at the :doc:`firewall qube level </user/security-in-qubes/firewall>`), by not allowing any networking connectivity in the default template, except for access to the Fedora repos.
+- Only install packages from trusted sources – e.g. from the pre-configured antiX repositories. All those packages are signed by antiX, and we expect that at least the package’s installation scripts are not malicious. This is enforced by default (at the :doc:`firewall qube level </user/security-in-qubes/firewall>`), by not allowing any networking connectivity in the default template, except for access to the antiX repos.
 
 - Use :term:`standalones <standalone>` (see below) for installation of untrusted software packages.
 
-- Use multiple templates (see below) for different classes of domains, e.g. a less trusted template, used for creation of less trusted app qubes, would get various packages from less trusted vendors, while the template used for more trusted app qubes will only get packages from the standard Fedora repos.
+- Use multiple templates (see below) for different classes of domains, e.g. a less trusted template, used for creation of less trusted app qubes, would get various packages from less trusted vendors, while the template used for more trusted app qubes will only get packages from the standard antiX repos.
 
 Some popular questions:
 
-   So, why should we actually trust Fedora repos – it also contains large amount of third-party software that might be buggy, right?
+   So, why should we actually trust antiX repos – it also contains large amount of third-party software that might be buggy, right?
 
 As far as the template’s compromise is concerned, it doesn’t really matter whether ``/usr/bin/firefox`` is buggy and can be exploited, or not. What matters is whether its *installation* scripts (such as %post in the rpm.spec) are benign or not. A template should be used only for installation of packages, and nothing more, so it should never get a chance to actually run ``/usr/bin/firefox`` and get infected from it, in case it was compromised. Also, some of your more trusted app qubes would have networking restrictions enforced by the :doc:`firewall qube </user/security-in-qubes/firewall>`, and again they should not fear this proverbial ``/usr/bin/firefox`` being potentially buggy and easy to compromise.
 
-   But why trust Fedora?
+   But why trust antiX?
 
-Because we chose to use Fedora as a vendor for the Qubes OS foundation (e.g. for dom0 packages and for app qube packages). We also chose to trust several other vendors, such as Xen.org, kernel.org, and a few others whose software we use in dom0. We had to trust *somebody* as we are unable to write all the software from scratch ourselves. But there is a big difference in trusting all Fedora packages to be non-malicious (in terms of installation scripts) vs. trusting all those packages are non-buggy and non-exploitable. We certainly do not assume the latter.
+Because we chose to use antiX as a vendor for the Qubes OS foundation (e.g. for dom0 packages and for app qube packages). We also chose to trust several other vendors, such as Xen.org, kernel.org, and a few others whose software we use in dom0. We had to trust *somebody* as we are unable to write all the software from scratch ourselves. But there is a big difference in trusting all antiX packages to be non-malicious (in terms of installation scripts) vs. trusting all those packages are non-buggy and non-exploitable. We certainly do not assume the latter.
 
    So, are the templates as trusted as dom0?
 

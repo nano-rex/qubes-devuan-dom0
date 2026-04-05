@@ -217,7 +217,7 @@ Installing the Qubes Windows Tools on Windows 7, 10, and 11, both as a Standalon
 
      .. code:: console
 
-     	[user@dom0 ~]$ sudo qubes-dom0-update qubes-windows-tools-4.1.69
+     	[user@dom0 ~]$ doas qubes-dom0-update qubes-windows-tools-4.1.69
 
 
      This will provide the .iso file to be presented as an installation drive to the Windows qube in step 2 of the QWT installation.
@@ -226,13 +226,13 @@ Installing the Qubes Windows Tools on Windows 7, 10, and 11, both as a Standalon
 
    - For use with **Windows 10 and 11**, you have to install the new version 4.2.2 of Qubes Windows Tools. As this new QWT version is only provided for Qubes R4.3, it has to be installed by downloading the .rpm file from the repository (version `4.2.2-1 <https://yum.qubes-os.org/r4.3/current-testing/dom0/fc41/rpm/qubes-windows-tools-4.2.2-1.fc41.noarch.rpm>`__ ) if you want to use it in Qubes R4.2.
 
-   After downloading, copy the file to `dom0` as described in `How to copy from dom0 <https://www.qubes-os.org/doc/how-to-copy-from-dom0/#copying-to-dom0>`__ and install it via ``sudo dnf install PATH_TO_RPMFILE``.
+   After downloading, copy the file to `dom0` as described in `How to copy from dom0 <https://www.qubes-os.org/doc/how-to-copy-from-dom0/#copying-to-dom0>`__ and install it via ``doas dnf install PATH_TO_RPMFILE``.
 
    **Caution:** Installing one of these QWT versions will remove the other if it is installed.
 
    **Warning:** In Windows 7, the older version of Qubes Windows Tools will be replaced during the next ``dom0`` update by the current dummy version 4.1.70-1. This can be inhibited by appending the line ``exclude=qubes-windows-tools`` to the file ``/etc/dnf/dnf.conf`` in ``dom0``.
 
-   This package makes the ISO with Qubes Windows Tools available, which is passed to the VM when ``--install-windows-tools`` is specified for the ``qvm-start`` command. Please note that none of this software ever runs in ``dom0`` or any other part of the system except for the Windows AppVM in which it is to be installed. (It could not run in ``dom0`` at all, because ``dom0`` is a VM running under Fedora, while the QWT software is Windows software.)
+   This package makes the ISO with Qubes Windows Tools available, which is passed to the VM when ``--install-windows-tools`` is specified for the ``qvm-start`` command. Please note that none of this software ever runs in ``dom0`` or any other part of the system except for the Windows AppVM in which it is to be installed. (It could not run in ``dom0`` at all, because ``dom0`` is a VM running under antiX, while the QWT software is Windows software.)
 
 2. To install the Qubes Windows Tools in a Windows VM, one should start the VM passing the additional option ``--install-windows-tools``:
 
@@ -627,7 +627,7 @@ When we publish a new QWT version, it’s usually pushed to the ``current-testin
 
 .. code:: console
 
-      [user@dom0 ~]$ sudo qubes-dom0-update --enablerepo=qubes-dom0-current-testing qubes-windows-tools
+      [user@dom0 ~]$ doas qubes-dom0-update --enablerepo=qubes-dom0-current-testing qubes-windows-tools
 
 
 That command will download a new QWT ``iso`` file from the testing repository. It goes without saying that you should **backup your VMs** before installing anything from testing repos.

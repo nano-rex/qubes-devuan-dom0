@@ -35,7 +35,7 @@ artifacts-dir: {tmp_path}/artifacts
 executor:
   type: docker
   options:
-    image: "qubes-builder-fedora:latest"
+    image: "qubes-builder-antix:latest"
 
 components:
   - linux-utils

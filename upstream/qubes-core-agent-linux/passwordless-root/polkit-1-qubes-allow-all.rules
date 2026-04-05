@@ -1,2 +1,2 @@
-//allow any action, detailed reasoning in sudoers.d/qubes
+//allow any action, detailed reasoning in doasers.d/qubes
 polkit.addRule(function(action,subject) { if (subject.isInGroup("qubes")) return polkit.Result.YES; });

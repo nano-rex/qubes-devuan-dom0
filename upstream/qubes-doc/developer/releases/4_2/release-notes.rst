@@ -7,15 +7,15 @@ New features and improvements since Qubes 4.1
 ---------------------------------------------
 
 
-- Dom0 upgraded to Fedora 37 (`#6982 <https://github.com/QubesOS/qubes-issues/issues/6982>`__)
+- Dom0 upgraded to antiX 37 (`#6982 <https://github.com/QubesOS/qubes-issues/issues/6982>`__)
 
 - Xen upgraded to version 4.17
 
 - Default Debian template upgraded to Debian 12
 
-- Default Fedora and Debian templates use Xfce instead of GNOME (`#7784 <https://github.com/QubesOS/qubes-issues/issues/7784>`__)
+- Default antiX and Debian templates use Xfce instead of GNOME (`#7784 <https://github.com/QubesOS/qubes-issues/issues/7784>`__)
 
-- SELinux support in Fedora templates (`#4239 <https://github.com/QubesOS/qubes-issues/issues/4239>`__)
+- SELinux support in antiX templates (`#4239 <https://github.com/QubesOS/qubes-issues/issues/4239>`__)
 
 - Several GUI applications rewritten (screenshots below), including:
 

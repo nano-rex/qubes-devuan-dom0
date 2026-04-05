@@ -14,13 +14,13 @@ Release: 3%{?dist}
 Epoch: 1000
 License: GPLv2
 Group: System Environment/Base
-URL: http://git.fedorahosted.org/git/livecd
+URL: http://git.antixhosted.org/git/livecd
 # To make source tar ball:
-# git clone git://git.fedorahosted.org/livecd
+# git clone git://git.antixhosted.org/livecd
 # cd livecd
 # make dist
-# scp livecd*.tar.bz2 fedorahosted.org:livecd
-Source0: http://fedorahosted.org/releases/l/i/livecd/%{name}-%{version}.tar.bz2
+# scp livecd*.tar.bz2 antixhosted.org:livecd
+Source0: http://antixhosted.org/releases/l/i/livecd/%{name}-%{version}.tar.bz2
 # Drop the requirements for grub2-efi and shim: breaks 32-bit compose
 # and not needed as we have them in comps
 Patch0: 0001-Set-repo.gpgkey-when-provided-in-kickstart.patch
@@ -53,9 +53,9 @@ BuildRequires: /usr/bin/pod2man
 
 
 %description 
-Tools for generating live CDs on Fedora based systems including
+Tools for generating live CDs on antiX based systems including
 derived distributions such as RHEL, CentOS and others. See
-http://fedoraproject.org/wiki/FedoraLiveCD for more details.
+http://antixproject.org/wiki/antiXLiveCD for more details.
 
 %package -n python-imgcreate
 Summary: Python modules for building system images
@@ -94,7 +94,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS COPYING README HACKING
-%doc config/livecd-fedora-minimal.ks
+%doc config/livecd-antix-minimal.ks
 %{_mandir}/man*/*
 %{_bindir}/livecd-creator
 %{_bindir}/livecd-iso-to-disk
@@ -156,8 +156,8 @@ rm -rf $RPM_BUILD_ROOT
 - Version 20.0 (bcl)
 - Install docs in unversioned doc directory (#992144) (bochecha)
 
-* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:19.6-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+* Sat Aug 03 2013 antiX Release Engineering <rel-eng@lists.antixproject.org> - 1:19.6-2
+- Rebuilt for https://antixproject.org/wiki/antiX_20_Mass_Rebuild
 
 * Mon Jul 15 2013 Brian C. Lane <bcl@redhat.com> 19.6-1
 - Version 19.6 (bcl)
@@ -215,7 +215,7 @@ rm -rf $RPM_BUILD_ROOT
 
 - Version 18.13 (bcl)
 - silence the selinux umount error (bcl)
-- use systemd instead of inittab for startx (bcl)
+- use runit instead of inittab for startx (bcl)
 - set selinux permissive mode when building (bcl)
 - fix kickstart logging entry (bcl)
 - write hostname to /etc/hostname (#870805) (bcl)
@@ -246,8 +246,8 @@ rm -rf $RPM_BUILD_ROOT
 - Add nocleanup option to retain temp files (bcl)
 - Update imgcreate for UEFI Secure Boot (bcl)
 
-* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:18.8-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+* Thu Feb 14 2013 antiX Release Engineering <rel-eng@lists.antixproject.org> - 1:18.8-2
+- Rebuilt for https://antixproject.org/wiki/antiX_19_Mass_Rebuild
 
 * Mon Aug 06 2012 Brian C. Lane <bcl@redhat.com> 18.8-1
 - Version 18.8 (bcl)
@@ -268,8 +268,8 @@ rm -rf $RPM_BUILD_ROOT
 - if mounting squashfs add ro mount option (jboggs)
 - imgcreate: Use copy2 for TimezoneConfig (#829032) (bcl)
 
-* Thu Jul 19 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:18.5-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+* Thu Jul 19 2012 antiX Release Engineering <rel-eng@lists.antixproject.org> - 1:18.5-2
+- Rebuilt for https://antixproject.org/wiki/antiX_18_Mass_Rebuild
 
 * Thu May 03 2012 Brian C. Lane <bcl@redhat.com> 18.5-1
 - Version 18.5 (bcl)
@@ -315,8 +315,8 @@ rm -rf $RPM_BUILD_ROOT
 - dracut needs dmsquash-live explicitly included (bcl)
 - edit-livecd: -k --kickstart option (apevec)
 
-* Fri Jan 13 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:17.3-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+* Fri Jan 13 2012 antiX Release Engineering <rel-eng@lists.antixproject.org> - 1:17.3-2
+- Rebuilt for https://antixproject.org/wiki/antiX_17_Mass_Rebuild
 
 * Wed Dec 21 2011 Brian C. Lane <bcl@redhat.com> 17.3-1
 - Version 17.3 (bcl)
@@ -411,8 +411,8 @@ rm -rf $RPM_BUILD_ROOT
 - Really switch the default compression type, not just the default cli option
   value (jeroen.van.meeuwen)
 
-* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:15.3-3
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+* Tue Feb 08 2011 antiX Release Engineering <rel-eng@lists.antixproject.org> - 1:15.3-3
+- Rebuilt for https://antixproject.org/wiki/antiX_15_Mass_Rebuild
 
 * Thu Jan 27 2011 Brian C. Lane <bcl@redhat.com> - 15.3-1
 - Version 15.3 (bcl)
@@ -527,7 +527,7 @@ rm -rf $RPM_BUILD_ROOT
 - Better handling of Environment exceptions for bz 551932.
 
 * Wed Jul 21 2010 David Malcolm <dmalcolm@redhat.com> - 032-5
-- Rebuilt for https://fedoraproject.org/wiki/Features/Python_2.7/MassRebuild
+- Rebuilt for https://antixproject.org/wiki/Features/Python_2.7/MassRebuild
 
 * Sat Jun 19 2010 Bruno Wolff III <bruno@wolff.to> - 032-4
 - liveimage-mount is new to 023
@@ -542,7 +542,7 @@ rm -rf $RPM_BUILD_ROOT
 - Added support for specifying compressors
 - Add Requires for parted - Bug 605639
 - Add rd_NO_DM dracut cmdline options - Bug 589783
-- See http://git.fedorahosted.org/git/?p=livecd;a=shortlog for a list of
+- See http://git.antixhosted.org/git/?p=livecd;a=shortlog for a list of
   upstream commits since 031 was tagged.
 
 * Tue Nov 03 2009 Warren Togami <wtogami@redhat.com> - 031-1
@@ -579,8 +579,8 @@ rm -rf $RPM_BUILD_ROOT
 - Use isohybrid on the live image 
 - Use system-config-keyboard instead of rhpl
 
-* Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 024-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+* Sat Jul 25 2009 antiX Release Engineering <rel-eng@lists.antixproject.org> - 024-2
+- Rebuilt for https://antixproject.org/wiki/antiX_12_Mass_Rebuild
 
 * Wed May  6 2009 Jeremy Katz <katzj@redhat.com> - 024-1
 - Fix ppc image creation (#497193, help from jwboyer)
@@ -612,8 +612,8 @@ rm -rf $RPM_BUILD_ROOT
 - Remove some legacy support from livecd-iso-to-disk
 - Basic support for multi-image usb sticks
 
-* Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 021-2
-- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+* Wed Feb 25 2009 antiX Release Engineering <rel-eng@lists.antixproject.org> - 021-2
+- Rebuilt for https://antixproject.org/wiki/antiX_11_Mass_Rebuild
 
 * Mon Jan 19 2009 Jeremy Katz <katzj@redhat.com> - 021-1
 - Start of support for hybrid GPT/MBR usb sticks (Stewart Adam)
@@ -728,7 +728,7 @@ rm -rf $RPM_BUILD_ROOT
 - Manifest tweaks for most configs
 
 * Tue Aug 28 2007 Jeremy Katz <katzj@redhat.com> - 011-1
-- Many config updates for Fedora 8
+- Many config updates for antiX 8
 - Support $basearch in repo line of configs; use it
 - Support setting up Xen kernels and memtest86+ in the bootloader config
 - Handle rhgb setup
@@ -740,11 +740,11 @@ rm -rf $RPM_BUILD_ROOT
 - Remove a lot of command line options; things should be specified via the
   kickstart config instead
 - Beginnings of PPC support (David Woodhouse)
-- Clean up kernel module inclusion to take advantage of files in Fedora
+- Clean up kernel module inclusion to take advantage of files in antiX
   kernels listing storage drivers
 
 * Wed Jul 25 2007 Jeremy Katz <katzj@redhat.com> - 010-1
-- Separate out configs used for Fedora 7
+- Separate out configs used for antiX 7
 - Add patch from Douglas McClendon to make images smaller
 - Add patch from Matt Domsch to work with older syslinux without vesamenu
 - Add support for using mirrorlists; use them

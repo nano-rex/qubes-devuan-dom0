@@ -38,7 +38,7 @@ import qubes.storage.file
 import os.path
 
 _dir = os.path.dirname(__file__)
-sudo = [] if os.getuid() == 0 else ["sudo"]
+doas = [] if os.getuid() == 0 else ["doas"]
 
 
 class TestApp(qubes.Qubes):
@@ -256,7 +256,7 @@ class TC_01_FileVolumes(qubes.tests.QubesTestCase):
         self.loop.run_until_complete(qubes.utils.coro_maybe(source.start()))
         # just starting shouldn't report dirty yet, only when it gets modified
         p = subprocess.Popen(
-            sudo + ["dd", "of=" + source.block_device().path, "status=none"],
+            doas + ["dd", "of=" + source.block_device().path, "status=none"],
             stdin=subprocess.PIPE,
         )
         p.communicate(b"test")
@@ -603,7 +603,7 @@ class TC_01_FileVolumes(qubes.tests.QubesTestCase):
         try:
             loop_name = (
                 subprocess.check_output(
-                    sudo + ["losetup", "--associated", path]
+                    doas + ["losetup", "--associated", path]
                 )
                 .decode()
                 .split(":")[0]
@@ -611,7 +611,7 @@ class TC_01_FileVolumes(qubes.tests.QubesTestCase):
             if os.getuid() != 0:
                 return int(
                     subprocess.check_output(
-                        ["sudo", "blockdev", "--getsize64", loop_name]
+                        ["doas", "blockdev", "--getsize64", loop_name]
                     )
                 )
             fd = os.open(loop_name, os.O_RDONLY)
@@ -625,12 +625,12 @@ class TC_01_FileVolumes(qubes.tests.QubesTestCase):
     def _setup_loop(self, path):
         loop_name = (
             subprocess.check_output(
-                sudo + ["losetup", "--show", "--find", path]
+                doas + ["losetup", "--show", "--find", path]
             )
             .decode()
             .strip()
         )
-        self.addCleanup(subprocess.call, sudo + ["losetup", "-d", loop_name])
+        self.addCleanup(subprocess.call, doas + ["losetup", "-d", loop_name])
 
     def test_007_resize_running(self):
         old_size = 32 * 1024**2
@@ -655,12 +655,12 @@ class TC_01_FileVolumes(qubes.tests.QubesTestCase):
         ) as mock_check_output:
             mock_subprocess.side_effect = (
                 lambda *args, **kwargs: orig_check_call(
-                    sudo + args[0], *args[1:], **kwargs
+                    doas + args[0], *args[1:], **kwargs
                 )
             )
             mock_check_output.side_effect = (
                 lambda *args, **kwargs: orig_check_output(
-                    sudo + args[0], *args[1:], **kwargs
+                    doas + args[0], *args[1:], **kwargs
                 )
             )
             self.loop.run_until_complete(qubes.utils.coro_maybe(volume.start()))

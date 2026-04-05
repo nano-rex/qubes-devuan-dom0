@@ -72,7 +72,7 @@ class QubesDistribution:
             self.name, self.architecture = self.name.split(".", 1)
 
         self.version = None
-        is_fedora = FEDORA_RE.match(self.name)
+        is_antix = FEDORA_RE.match(self.name)
         is_centos_stream = CENTOS_STREAM_RE.match(self.name)
         is_debian = DEBIAN.get(self.name, None)
         is_devuan = DEVUAN.get(self.name, None)
@@ -80,9 +80,9 @@ class QubesDistribution:
         is_archlinux = self.name == "archlinux"
         is_gentoo = self.name == "gentoo"
         is_windows = WINDOWS.get(self.name, None)
-        if is_fedora:
-            self.fullname = "fedora"
-            self.version = is_fedora.group(1)
+        if is_antix:
+            self.fullname = "antix"
+            self.version = is_antix.group(1)
             self.tag = self.name
             self.type = "rpm"
         elif is_centos_stream:

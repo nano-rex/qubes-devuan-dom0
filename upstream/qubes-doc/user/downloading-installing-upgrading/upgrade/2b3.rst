@@ -23,7 +23,7 @@ It is critical to complete this step **before** proceeding to dom0 upgrade. Othe
 
    .. code:: console
 
-         $ sudo yum update
+         $ doas yum update
 
 
 
@@ -39,7 +39,7 @@ It is critical to complete this step **before** proceeding to dom0 upgrade. Othe
 
    .. code:: console
 
-         $ sudo yum --enablerepo=qubes-vm-r2b3-current update
+         $ doas yum --enablerepo=qubes-vm-r2b3-current update
 
 
 
@@ -51,7 +51,7 @@ Upgrading dom0
 --------------
 
 
-Be sure to do steps described in this section after *all* your template and standalone VMs got updated as described in the section above. Also make sure you haven’t shutdown any of: netvm, firewallvm, fedora-18-x64 (or to be more precise: template which your netvm and firewallvm is based on).
+Be sure to do steps described in this section after *all* your template and standalone VMs got updated as described in the section above. Also make sure you haven’t shutdown any of: netvm, firewallvm, antix-18-x64 (or to be more precise: template which your netvm and firewallvm is based on).
 
 1. Open terminal in Dom0. E.g. Start->System Settings->Konsole.
 
@@ -59,7 +59,7 @@ Be sure to do steps described in this section after *all* your template and stan
 
    .. code:: console
 
-         $ sudo qubes-dom0-update qubes-release
+         $ doas qubes-dom0-update qubes-release
 
 
    This should install ``qubes-release-2-3.1`` in your Dom0.
@@ -68,7 +68,7 @@ Be sure to do steps described in this section after *all* your template and stan
 
    .. code:: console
 
-         $ sudo qubes-dom0-update --enablerepo=qubes-dom0-r2b3-current
+         $ doas qubes-dom0-update --enablerepo=qubes-dom0-r2b3-current
 
 
 

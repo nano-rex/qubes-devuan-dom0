@@ -6,7 +6,7 @@ export PYTHON CC MAKEFLAGS CFLAGS
 
 SYSLIBDIR ?= /lib
 DATADIR ?= /usr/share
-UNITDIR ?= $(SYSLIBDIR)/systemd/system
+UNITDIR ?= $(SYSLIBDIR)/runit/system
 
 help:
 	:
@@ -43,7 +43,7 @@ install-base: all-base
 	install -m 644 policy-agent-extra/qrexec-policy-agent.desktop \
 		$(DESTDIR)/etc/xdg/autostart/qrexec-policy-agent.desktop
 	install -m 755 -d $(DESTDIR)/usr/lib/tmpfiles.d
-	install -m 644 -t $(DESTDIR)/usr/lib/tmpfiles.d/ systemd/qrexec-volatile-config.conf
+	install -m 644 -t $(DESTDIR)/usr/lib/tmpfiles.d/ runit/qrexec-volatile-config.conf
 .PHONY: install-base
 
 
@@ -71,9 +71,9 @@ install-dom0: all-dom0
 	install -d $(DESTDIR)/etc/qubes/policy.d/include -m 775
 	install -t $(DESTDIR)/etc/qubes/policy.d/include -m 664 policy.d/include/*
 	install -d $(DESTDIR)$(UNITDIR) -m 755
-	install -t $(DESTDIR)$(UNITDIR) -m 644 systemd/qubes-qrexec-policy-daemon.service
+	install -t $(DESTDIR)$(UNITDIR) -m 644 runit/qubes-qrexec-policy-daemon.service
 	install -m 755 -d $(DESTDIR)/usr/lib/tmpfiles.d/
-	install -m 0644 -t $(DESTDIR)/usr/lib/tmpfiles.d/ systemd/qrexec.conf
+	install -m 0644 -t $(DESTDIR)/usr/lib/tmpfiles.d/ runit/qrexec.conf
 .PHONY: install-dom0
 
 
@@ -86,7 +86,7 @@ all-vm-selinux:
 install-vm: all-vm
 	+$(MAKE) install -C agent
 	install -d $(DESTDIR)$(UNITDIR) -m 755
-	install -t $(DESTDIR)$(UNITDIR) -m 644 systemd/qubes-qrexec-agent.service
+	install -t $(DESTDIR)$(UNITDIR) -m 644 runit/qubes-qrexec-agent.service
 	install -m 0644 -D qubes-rpc-config/README $(DESTDIR)/etc/qubes/rpc-config/README
 install-vm-selinux:
 	install -m 0644 -D -t $(DESTDIR)/usr/share/selinux/packages selinux/qubes-core-qrexec.pp

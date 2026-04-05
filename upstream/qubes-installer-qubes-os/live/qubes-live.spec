@@ -35,8 +35,8 @@ install -D -m 0644 lightdm-qubes-live.conf \
             $RPM_BUILD_ROOT/etc/lightdm/lightdm.conf.d/50-qubes-live.conf
 
 
-install -D -m 0644 default-appmenus-fedora \
-            $RPM_BUILD_ROOT/usr/share/qubes/live-default-appmenus-fedora
+install -D -m 0644 default-appmenus-antix \
+            $RPM_BUILD_ROOT/usr/share/qubes/live-default-appmenus-antix
 install -D -m 0644 default-appmenus-debian \
             $RPM_BUILD_ROOT/usr/share/qubes/live-default-appmenus-debian
 
@@ -68,7 +68,7 @@ if [ -n "$xen" ]; then
     extra_modules="affs befs coda cuse dlm gfs2 mptfc ncpfs nilfs2 ocfs2 ocfs2_dlm ocfs2_dlmfs ocfs2_nodemanager ocfs2_stack_o2cb ocfs2_stack_user ocfs2_stackglue sctp sysv ubifs ufs"
     mv /etc/dracut.conf.d/plymouth-missing-fonts.conf /tmp/plymouth-missing-fonts.conf.bak
     dracut --nomdadmconf --nolvmconf --xz \
-        --omit "network multipath modsign systemd crypt shutdown" \
+        --omit "network multipath modsign runit crypt shutdown" \
         --omit "fcoe fcoe-uefi nfs iscsi ifcfg" \
         --omit-drivers="${scsi_modules}" \
         --omit-drivers="${extra_modules}" \
@@ -80,7 +80,7 @@ fi
 /etc/rc.d/init.d/livesys
 /etc/rc.d/init.d/livesys-late
 /etc/lightdm/lightdm.conf.d/50-qubes-live.conf
-/usr/share/qubes/live-default-appmenus-fedora
+/usr/share/qubes/live-default-appmenus-antix
 /usr/share/qubes/live-default-appmenus-debian
 
 %changelog

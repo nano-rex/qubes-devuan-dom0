@@ -379,7 +379,7 @@
       <packagereq type="mandatory">coreutils</packagereq>
       <packagereq type="mandatory">cpio</packagereq>
       <packagereq type="mandatory">diffutils</packagereq>
-      <packagereq type="mandatory">fedora-release-common</packagereq>
+      <packagereq type="mandatory">antix-release-common</packagereq>
       <packagereq type="mandatory">findutils</packagereq>
       <packagereq type="mandatory">gawk</packagereq>
       <packagereq type="mandatory">glibc-minimal-langpack</packagereq>
@@ -592,8 +592,8 @@
       <packagereq type="mandatory">sssd-common</packagereq>
       <packagereq type="mandatory">sssd-kcm</packagereq>
       -->
-      <packagereq type="mandatory">sudo</packagereq>
-      <packagereq type="mandatory">systemd</packagereq>
+      <packagereq type="mandatory">doas</packagereq>
+      <packagereq type="mandatory">runit</packagereq>
       <packagereq type="mandatory">util-linux</packagereq>
       <packagereq type="mandatory">vim-minimal</packagereq>
       <packagereq type="mandatory">yum</packagereq>
@@ -611,7 +611,7 @@
       <packagereq type="default" arch="ppc64le">powerpc-utils</packagereq>
       <packagereq type="default" arch="s390x">s390utils-base</packagereq>
       <!--
-      <packagereq type="default">systemd-resolved</packagereq>
+      <packagereq type="default">runit-resolved</packagereq>
       -->
       <packagereq type="default">zram-generator-defaults</packagereq>
       <packagereq type="optional">dracut-config-generic</packagereq>
@@ -1647,7 +1647,7 @@
       <packagereq type="mandatory">brightnessctl</packagereq>
       <packagereq type="mandatory">dunst</packagereq>
       <packagereq type="mandatory">i3</packagereq>
-      <packagereq type="mandatory">i3-config-fedora</packagereq>
+      <packagereq type="mandatory">i3-config-antix</packagereq>
       <packagereq type="mandatory">i3lock</packagereq>
       <packagereq type="mandatory">i3status</packagereq>
       <packagereq type="mandatory">lightdm</packagereq>
@@ -2085,7 +2085,7 @@
       <packagereq type="default">kwrite</packagereq>
       <packagereq type="default">libappindicator-gtk3</packagereq>
       <!--
-      <packagereq type="default">NetworkManager-config-connectivity-fedora</packagereq>
+      <packagereq type="default">NetworkManager-config-connectivity-antix</packagereq>
       <packagereq type="default">PackageKit-command-not-found</packagereq>
       -->
       <packagereq type="default">pam-kwallet</packagereq>
@@ -2122,7 +2122,7 @@
       <packagereq type="default">polkit-kde</packagereq>
       <packagereq type="default">signon-kwallet-extension</packagereq>
       <packagereq type="default">spectacle</packagereq>
-      <packagereq type="default">systemd-oomd-defaults</packagereq>
+      <packagereq type="default">runit-oomd-defaults</packagereq>
       <packagereq type="default">toolbox</packagereq>
       <packagereq type="default">udisks2</packagereq>
       <packagereq type="default">vlc-plugin-gstreamer</packagereq>
@@ -2281,9 +2281,9 @@
       <!--
       <packagereq>sssd-proxy</packagereq>
       -->
-      <packagereq>sudo</packagereq>
+      <packagereq>doas</packagereq>
       <packagereq>symlinks</packagereq>
-      <packagereq>systemd-udev</packagereq>
+      <packagereq>runit-udev</packagereq>
       <packagereq>tar</packagereq>
       <!--
       <packagereq>tcpdump</packagereq>
@@ -2333,11 +2333,11 @@
   <group>
     <id>swaywm-extended</id>
     <name>Sway Window Manager (supplemental packages)</name>
-    <description>Sway is a tiling window manager supporting Wayland compositor protocol and i3-compatible configuration. This group includes additional set of packages for Fedora Sway spin.</description>
+    <description>Sway is a tiling window manager supporting Wayland compositor protocol and i3-compatible configuration. This group includes additional set of packages for antiX Sway spin.</description>
     <default>false</default>
     <uservisible>true</uservisible>
     <packagelist>
-      <packagereq type="mandatory">sway-config-fedora</packagereq>
+      <packagereq type="mandatory">sway-config-antix</packagereq>
       <packagereq type="default">blueman</packagereq>
       <packagereq type="default">bolt</packagereq>
       <packagereq type="default" arch="aarch64,ppc64le,x86_64">fprintd-pam</packagereq>
@@ -2712,13 +2712,13 @@
     </packagelist>
   </group>
   <group>
-    <id>fedora</id>
-    <name>Fedora 41 template</name>
-    <description>Fedora 41 template</description>
+    <id>antix</id>
+    <name>antiX 41 template</name>
+    <description>antiX 41 template</description>
     <default>false</default>
     <uservisible>false</uservisible>
     <packagelist>
-      <packagereq>qubes-template-fedora-43-xfce</packagereq>
+      <packagereq>qubes-template-antix-43-xfce</packagereq>
     </packagelist>
   </group>
   <group>

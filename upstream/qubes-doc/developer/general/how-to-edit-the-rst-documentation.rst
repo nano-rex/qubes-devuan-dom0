@@ -318,7 +318,7 @@ Creating a Python environment with venv
 
    .. code-block:: console
 
-      $ sudo apt install git python3-dev python3.11-venv
+      $ doas apt install git python3-dev python3.11-venv
       $ git clone https://github.com/QubesOS/qubes-doc.git
       $ cd qubes-doc
 
@@ -415,7 +415,7 @@ Creating a Python environment with poetry
 
    .. code-block:: console
 
-      $ sudo apt install git
+      $ doas apt install git
       $ git clone https://github.com/QubesOS/qubes-doc.git
       $ cd qubes-doc
 
@@ -500,7 +500,7 @@ An editor you can use is `ReText <https://github.com/retext-project/retext>`__ b
 
 .. code-block:: console
 
-   $ sudo apt install libxcb-cursor0
+   $ doas apt install libxcb-cursor0
    $ python3 -m venv .venv
    $ . .venv/bin/activate
    $ pip3 install ReText

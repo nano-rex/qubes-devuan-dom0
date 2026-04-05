@@ -40,7 +40,7 @@ if mountpoint -q /rw ; then
 # Example for overriding the whole CUPS configuration:
 #  rm -rf /etc/cups
 #  ln -s /rw/config/cups /etc/cups
-#  systemctl --no-block restart cups
+#  sv --no-block restart cups
 EOF
         chmod 755 /rw/config/rc.local
 

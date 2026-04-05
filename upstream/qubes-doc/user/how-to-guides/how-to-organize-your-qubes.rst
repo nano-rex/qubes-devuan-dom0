@@ -28,7 +28,7 @@ Alice is a freelance dev who works on several projects for different clients sim
 
 
 
-This helps her keep groups of qubes organized in a set. Some of her qubes are based on :doc:`Debian templates </user/templates/debian/debian>`, while others are based on :doc:`Fedora templates </user/templates/fedora/fedora>`. The reason for this is that some software packages are more readily available in one distribution as opposed to the other. Alice’s setup looks like this:
+This helps her keep groups of qubes organized in a set. Some of her qubes are based on :doc:`Debian templates </user/templates/debian/debian>`, while others are based on :doc:`antiX templates </user/templates/antix/antix>`. The reason for this is that some software packages are more readily available in one distribution as opposed to the other. Alice’s setup looks like this:
 
 |Alice’s system: diagram 1|
 
@@ -144,11 +144,11 @@ John is a teacher at a high school, teaching mathematics and history. He is used
 
 |Simple VM setup|
 
-- **One qube for surfing.** ``untrusted`` is just the standard qube coming with the Qubes installation, based on the standard Fedora template, but with Thunderbird removed. It is intended for surfing arbitrary locations and may be at risk from some websites. Consequently, it does not keep any valuable data and has no facilities to view or edit office documents.
+- **One qube for surfing.** ``untrusted`` is just the standard qube coming with the Qubes installation, based on the standard antiX template, but with Thunderbird removed. It is intended for surfing arbitrary locations and may be at risk from some websites. Consequently, it does not keep any valuable data and has no facilities to view or edit office documents.
 
-- **One offline qube for writing.** ``work`` is the qube used to edit documents – even MS office documents. It is based on an extended Fedora template containing additional software like LibreOffice, GIMP, Wine, and some Windows applications. It has no netVM and so the risk of an infected document contacting a hacker’s control server is minimized.
+- **One offline qube for writing.** ``work`` is the qube used to edit documents – even MS office documents. It is based on an extended antiX template containing additional software like LibreOffice, GIMP, Wine, and some Windows applications. It has no netVM and so the risk of an infected document contacting a hacker’s control server is minimized.
 
-- **One qube for access to trusted servers.** ``personal`` is used to access only trusted websites like home banking, and the firewall rules for this qube restrict it to these locations. It is based on the same extended Fedora template. John uses this qube for access to his mail server, too, but does not process any documents received by mail in this qube. Any office documents from this qube are only opened in disposables in order to reduce the risk of infection.
+- **One qube for access to trusted servers.** ``personal`` is used to access only trusted websites like home banking, and the firewall rules for this qube restrict it to these locations. It is based on the same extended antiX template. John uses this qube for access to his mail server, too, but does not process any documents received by mail in this qube. Any office documents from this qube are only opened in disposables in order to reduce the risk of infection.
 
 - **One qube for preparing teaching material for his students.** ``Windows`` is the workhorse used to execute anything needed for teaching. It is based on a Windows 7 template with QWT installed as most of John’s students work with Windows PCs. In order to reduce the risks for such an AppVM, and possible risks caused by it, its internet access is limited, again by a firewall rule, to the servers providing material for teaching.
 
@@ -156,7 +156,7 @@ John is a teacher at a high school, teaching mathematics and history. He is used
 
 - **One offline qube for keeping the private PGP key.** ``vault`` is the key part of Split GPG, just as described in the Qubes documentation, keeping the private PGP key.
 
-- **One offline qube for permanent data storage.** ``storage`` finally is a qube based on the standard Debian template and, having no applications and no network access, it is used explicitly and only for permanent data storage, and it is the only qube whose data is regarded as valuable and worth keeping. The Fedora-based qubes might even be configured as disposables, and, if you are willing to accept the rather slow start of Windows, even the qube ``Windows`` might be created as a disposable.
+- **One offline qube for permanent data storage.** ``storage`` finally is a qube based on the standard Debian template and, having no applications and no network access, it is used explicitly and only for permanent data storage, and it is the only qube whose data is regarded as valuable and worth keeping. The antiX-based qubes might even be configured as disposables, and, if you are willing to accept the rather slow start of Windows, even the qube ``Windows`` might be created as a disposable.
 
 
 

@@ -38,7 +38,7 @@ BuildRequires:  python3-devel
 BuildRequires:	python3-sphinx
 BuildRequires:	qubes-libvchan-devel
 BuildRequires:  qubes-core-qrexec-devel
-BuildRequires:	systemd-devel
+BuildRequires:	runit-devel
 
 Requires:   python3
 Requires:   python3-inotify
@@ -65,17 +65,17 @@ make all-dom0
 #make -C doc PYTHON=%{__python3} SPHINXBUILD=sphinx-build-%{python3_version} man
 
 %post
-%systemd_post qubes-qrexec-policy-daemon.service
+%runit_post qubes-qrexec-policy-daemon.service
 
 # old version of the package failed to set this, fix on update
 chgrp qubes %{_sysconfdir}/qubes/policy.d
 chgrp qubes %{_sysconfdir}/qubes/policy.d/include
 
 %preun
-%systemd_preun qubes-qrexec-policy-daemon.service
+%runit_preun qubes-qrexec-policy-daemon.service
 
 %postun
-%systemd_postun_with_restart qubes-qrexec-policy-daemon.service
+%runit_postun_with_restart qubes-qrexec-policy-daemon.service
 
 %install
 make install-dom0 \

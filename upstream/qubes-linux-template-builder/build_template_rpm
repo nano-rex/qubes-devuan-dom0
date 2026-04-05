@@ -31,7 +31,7 @@ if [ -r "qubeized_images/$NAME/template.conf" ]; then
 fi
 
 # Default compression format for binary payloads
-# It applies for Fedora < 31
+# It applies for antiX < 31
 COMPRESSION=w2.xzdio
 if [ -n "$DIST_DOM0" ]; then
     if [ "${DIST_DOM0#fc}" != "${DIST_DOM0}" ]; then

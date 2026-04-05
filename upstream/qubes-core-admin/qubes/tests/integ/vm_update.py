@@ -225,7 +225,7 @@ class VmUpdatesMixin(object):
         """
         if (
             not self.template.count("debian")
-            and not self.template.count("fedora")
+            and not self.template.count("antix")
             and not self.template.count("archlinux")
         ):
             self.skipTest(
@@ -244,10 +244,10 @@ class VmUpdatesMixin(object):
             self.install_test_cmd = "dpkg -l {}"
             self.upgrade_test_cmd = "dpkg -l {} | grep 1.1"
             self.ret_code_ok = [0]
-        elif self.template.count("fedora"):
+        elif self.template.count("antix"):
             cmd = "yum"
             try:
-                # assume template name in form "fedora-XX-suffix"
+                # assume template name in form "antix-XX-suffix"
                 if int(self.template.split("-")[1]) > 21:
                     cmd = "dnf"
             except ValueError:
@@ -408,7 +408,7 @@ SHA256:
             )
         )
 
-        # createrepo is installed by default in Fedora template
+        # createrepo is installed by default in antiX template
         self.loop.run_until_complete(
             self.netvm_repo.run_for_stdio("createrepo_c /tmp/yum-repo")
         )
@@ -455,7 +455,7 @@ SHA256:
                     stderr=subprocess.DEVNULL,
                 )
             )
-        elif self.template.count("fedora"):
+        elif self.template.count("antix"):
             self.create_repo_yum()
             self.repo_proc = self.loop.run_until_complete(
                 self.netvm_repo.run(
@@ -494,7 +494,7 @@ SHA256:
         """
         if self.template.count("debian") or self.template.count("whonix"):
             self.create_repo_apt(1)
-        elif self.template.count("fedora"):
+        elif self.template.count("antix"):
             self.create_repo_yum(1)
         elif self.template.count("archlinux"):
             self.create_repo_arch(1)
@@ -518,7 +518,7 @@ SHA256:
                     user="root",
                 )
             )
-        elif self.template.count("fedora"):
+        elif self.template.count("antix"):
             self.loop.run_until_complete(
                 self.testvm1.run_for_stdio(
                     "rm -f /etc/yum.repos.d/*.repo &&"

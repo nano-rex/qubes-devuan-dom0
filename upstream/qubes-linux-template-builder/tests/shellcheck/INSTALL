@@ -2,10 +2,10 @@
 
 # https://github.com/koalaman/shellcheck
 
-sudo yum install cabal-install
+doas yum install cabal-install
 
 # Let cabal update itself, incase your distro is outdated
-sudo cabal update
+doas cabal update
 cabel install cabal-install
 
 # Clone shellcheck and build
@@ -13,7 +13,7 @@ git clone https://github.com/koalaman/shellcheck.git
 cd shellcheck
 
 # With cabel installed, cd to source direstory and:
-sudo cabal install
+doas cabal install
 
 # Add cabal directory to bash path
 source='export PATH=$HOME/.cabal/bin:$PATH'

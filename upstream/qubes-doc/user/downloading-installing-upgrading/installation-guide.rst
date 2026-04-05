@@ -59,7 +59,7 @@ On Linux, if you choose to use a USB drive, copy the ISO onto the USB device, e.
 
 .. code:: console
 
-      $ sudo dd if=Qubes-RX-x86_64.iso of=/dev/sdY status=progress bs=1M conv=fsync
+      $ doas dd if=Qubes-RX-x86_64.iso of=/dev/sdY status=progress bs=1M conv=fsync
 
 Change :file:`Qubes-R{X}-x86_64.iso` to the filename of the version you’re installing, and change :file:`/dev/sd{Y}` to the correct target device e.g., :file:`/dev/sdc`). Make sure to write to the entire device (e.g., :file:`/dev/sdc`) rather than just a single partition (e.g., :file:`/dev/sdc1`). If you are doing this within Qubes OS, you must make sure that you have attached the whole device to your qube, not just a partition. The path of your target device will then be :file:`/dev/xvd{Y}` such as :file:`/dev/xvdi` - avoid writing to a single partition (e.g., :file:`/dev/xvdi1`).
 
@@ -151,7 +151,7 @@ Do not panic. It may simply indicate that IOMMU-virtualization hasn’t been act
 
 If the test passes, you will reach the installation summary screen. The installer loads Xen right at the beginning. If you can see the installer’s graphical screen, and you pass the compatibility check that runs immediately afterward, Qubes OS is likely to work on your system!
 
-Like Fedora, Qubes OS uses the Anaconda installer. Those that are familiar with RPM-based distributions should feel at home.
+Like antiX, Qubes OS uses the Anaconda installer. Those that are familiar with RPM-based distributions should feel at home.
 
 Installation summary
 ^^^^^^^^^^^^^^^^^^^^

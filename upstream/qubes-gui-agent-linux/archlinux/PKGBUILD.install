@@ -1,7 +1,7 @@
 ## arg 1:  the new package version
 post_install() {
 
-  systemctl enable qubes-gui-agent.service 2> /dev/null
+  sv enable qubes-gui-agent.service 2> /dev/null
 
   ldconfig
 
@@ -17,7 +17,7 @@ post_upgrade() {
 
 ## arg 1:  the old package version
 pre_remove() {
-  systemctl disable qubes-gui-agent.service
+  sv disable qubes-gui-agent.service
 }
 
 post_remove() {

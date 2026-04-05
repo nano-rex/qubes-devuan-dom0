@@ -49,15 +49,15 @@ package() {
         SBINDIR=/usr/bin \
         LIBDIR=/usr/lib \
         SYSLIBDIR=/usr/lib \
-        SYSTEM_DROPIN_DIR=/usr/lib/systemd/system \
-        USER_DROPIN_DIR=/usr/lib/systemd/user
+        SYSTEM_DROPIN_DIR=/usr/lib/runit/system \
+        USER_DROPIN_DIR=/usr/lib/runit/user
     make install-vm \
         DESTDIR="$pkgdir" \
         SBINDIR=/usr/bin \
         LIBDIR=/usr/lib \
         SYSLIBDIR=/usr/lib \
-        SYSTEM_DROPIN_DIR=/usr/lib/systemd/system \
-        USER_DROPIN_DIR=/usr/lib/systemd/user
+        SYSTEM_DROPIN_DIR=/usr/lib/runit/system \
+        USER_DROPIN_DIR=/usr/lib/runit/user
     make install-vim \
         DESTDIR="$pkgdir" \
         DATADIR=/usr/share

@@ -1,6 +1,6 @@
-# Base config based on Fedora's config (kernel-core-6.19.2-300.fc44.rpm)
+# Base config based on antiX's config (kernel-core-6.19.2-300.fc44.rpm)
 # Only modification is `yes '' | make oldconfig` to drop config settings which
-# depend on Fedora patches and adjust for the small version difference.
+# depend on antiX patches and adjust for the small version difference.
 CONFIG_CC_VERSION_TEXT="gcc (GCC) 15.2.1 20260123 (Red Hat 15.2.1-7)"
 CONFIG_CC_IS_GCC=y
 CONFIG_GCC_VERSION=150201
@@ -11161,7 +11161,7 @@ CONFIG_SECURITY_TOMOYO_MAX_ACCEPT_ENTRY=2048
 CONFIG_SECURITY_TOMOYO_MAX_AUDIT_LOG=1024
 # CONFIG_SECURITY_TOMOYO_OMIT_USERSPACE_LOADER is not set
 CONFIG_SECURITY_TOMOYO_POLICY_LOADER="/sbin/tomoyo-init"
-CONFIG_SECURITY_TOMOYO_ACTIVATION_TRIGGER="/usr/lib/systemd/systemd"
+CONFIG_SECURITY_TOMOYO_ACTIVATION_TRIGGER="/usr/lib/runit/runit"
 # CONFIG_SECURITY_TOMOYO_INSECURE_BUILTIN_SETTING is not set
 # CONFIG_SECURITY_APPARMOR is not set
 # CONFIG_SECURITY_LOADPIN is not set

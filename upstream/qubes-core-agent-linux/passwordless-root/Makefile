@@ -1,5 +1,5 @@
 SYSCONFDIR ?= /etc
-SUDOERSDIR = $(SYSCONFDIR)/sudoers.d
+SUDOERSDIR = $(SYSCONFDIR)/doasers.d
 POLKIT1DIR = $(SYSCONFDIR)/polkit-1
 PAMDIR = $(SYSCONFDIR)/pam.d
 PAMCONFIGSDIR = /usr/share/pam-configs/
@@ -9,9 +9,9 @@ PAMCONFIGSDIR = /usr/share/pam-configs/
 install:
 	install -d -m 0750 $(DESTDIR)$(SUDOERSDIR)
 	if [ -f /etc/redhat-release ] || [ -f /etc/debian_version ]; then \
-		exec install -D -m 0440 qubes.sudoers $(DESTDIR)$(SUDOERSDIR)/qubes; \
+		exec install -D -m 0440 qubes.doasers $(DESTDIR)$(SUDOERSDIR)/qubes; \
 	else \
-		sed -E '/^[^#]/s/\<(ROLE|TYPE)=[A-Za-z0-9_]+[[:space:]]+//g' qubes.sudoers | \
+		sed -E '/^[^#]/s/\<(ROLE|TYPE)=[A-Za-z0-9_]+[[:space:]]+//g' qubes.doasers | \
 		install -D -m 0440 /dev/stdin $(DESTDIR)$(SUDOERSDIR)/qubes; \
 	fi
 	install -d -m 0750 $(DESTDIR)$(POLKIT1DIR)/rules.d

@@ -77,7 +77,7 @@ domain_xml_template = """
   <devices>
     <disk type='block' device='disk'>
       <driver name='phy'/>
-      <source dev='/var/lib/qubes/vm-templates/fedora-25/root.img:/var/lib/qubes/vm-templates/fedora-25/root-cow.img'/>
+      <source dev='/var/lib/qubes/vm-templates/antix-25/root.img:/var/lib/qubes/vm-templates/antix-25/root-cow.img'/>
       <backingStore/>
       <target dev='xvda' bus='xen'/>
       <readonly/>

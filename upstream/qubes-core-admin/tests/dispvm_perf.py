@@ -219,7 +219,7 @@ class TestConfig:
 POLICY_FILE = "/run/qubes/policy.d/10-test-dispvm-perf.policy"
 # MAX_PRELOAD is the number doesn't overpreload or underpreload (best
 # performance) on sequential calls between the tests
-# "dispvm-preload(-NUMBER)-api" (tested on fedora-42-xfce). Machines with
+# "dispvm-preload(-NUMBER)-api" (tested on antix-42-xfce). Machines with
 # different hardware or domains that boot faster or slower can theoretically
 # have a different best value.
 MAX_PRELOAD = 4

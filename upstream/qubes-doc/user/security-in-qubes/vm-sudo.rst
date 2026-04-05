@@ -3,7 +3,7 @@ Passwordless root access in qubes
 =================================
 
 
-The background to passswordless root access is summarised in this statement, that used to be found at ``/etc/sudoers.d/qubes`` in each qube:
+The background to passswordless root access is summarised in this statement, that used to be found at ``/etc/doasers.d/qubes`` in each qube:
 
 .. code:: text
 
@@ -59,7 +59,7 @@ The core of this statement continues to reflect the views of the Qubes developer
 
 Passwordless root is provided by the ``qubes-core-agent-passwordless-root`` package.
 
-Details of the implementation are :doc:`here </developer/system/vm-sudo>`.
+Details of the implementation are :doc:`here </developer/system/vm-doas>`.
 
 :doc:`Minimal templates </user/templates/minimal-templates>`, which are intended for use by advanced users, do not have this package installed by default.
 
@@ -86,5 +86,5 @@ Dom0 passwordless root access
 
 There is also passwordless user->root access in dom0.
 
-As stated in the comment in ``/etc/sudoers.d/qubes`` there is really no point in user/root isolation in dom0, because all user data (and the whole Qubes management interface) is already accessible to the user, so there is nothing more to be gained from the dom0 root account.
+As stated in the comment in ``/etc/doasers.d/qubes`` there is really no point in user/root isolation in dom0, because all user data (and the whole Qubes management interface) is already accessible to the user, so there is nothing more to be gained from the dom0 root account.
 

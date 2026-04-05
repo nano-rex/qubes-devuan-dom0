@@ -19,7 +19,7 @@ By default, in Qubes R2, there is only one template, however users are free to c
 
 It is critical to complete this step **before** proceeding to dom0 upgrade. Otherwise you will most likely end with unusable system.
 
-Upgrade Fedora template:
+Upgrade antiX template:
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 
@@ -29,7 +29,7 @@ Upgrade Fedora template:
 
    .. code:: console
 
-         $ sudo yum install qubes-upgrade-vm
+         $ doas yum install qubes-upgrade-vm
 
 
 
@@ -37,7 +37,7 @@ Upgrade Fedora template:
 
    .. code:: console
 
-         $ sudo yum update
+         $ doas yum update
 
 
    You’ll need to accept “Qubes Release 3 Signing Key” - it is delivered by signed qubes-upgrade-vm package (verify that the message is about local file), so you don’t need to manually verify it.
@@ -56,8 +56,8 @@ Upgrade Debian template:
 
    .. code:: console
 
-         $ sudo cp /etc/apt/sources.list.d/qubes-r2.list /etc/apt/sources.list.d/qubes-r3-upgrade.list
-         $ sudo sed -i 's/r2/r3.0/' /etc/apt/sources.list.d/qubes-r3-upgrade.list
+         $ doas cp /etc/apt/sources.list.d/qubes-r2.list /etc/apt/sources.list.d/qubes-r3-upgrade.list
+         $ doas sed -i 's/r2/r3.0/' /etc/apt/sources.list.d/qubes-r3-upgrade.list
 
 
 
@@ -65,8 +65,8 @@ Upgrade Debian template:
 
    .. code:: console
 
-         $ sudo apt-get update
-         $ sudo apt-get dist-upgrade
+         $ doas apt-get update
+         $ doas apt-get dist-upgrade
 
 
    There will be some error messages during the process, but our tests does not revealed any negative consequences. Update of ``qubesdb-vm`` package will restart the service, which will fail (after 3min timeout), but you can ignore this problem for now. After completing the whole upgrade the service will be properly restarted.
@@ -87,7 +87,7 @@ Be sure to do steps described in this section after *all* your template and stan
 
    .. code:: console
 
-         $ sudo qubes-dom0-update qubes-release
+         $ doas qubes-dom0-update qubes-release
 
 
    This should install ``qubes-release-2-12`` in your Dom0.
@@ -96,7 +96,7 @@ Be sure to do steps described in this section after *all* your template and stan
 
    .. code:: console
 
-         $ sudo qubes-dom0-update --releasever=3.0
+         $ doas qubes-dom0-update --releasever=3.0
 
 
    After this step, until you reboot the system, most of the qvm-* tools will not work.
@@ -107,7 +107,7 @@ Be sure to do steps described in this section after *all* your template and stan
 
    .. code:: console
 
-         $ sudo systemctl enable xenconsoled.service xenstored.service
+         $ doas sv enable xenconsoled.service xenstored.service
 
 
 
@@ -121,11 +121,11 @@ Be sure to do steps described in this section after *all* your template and stan
 
 Please note that if you use Anti Evil Maid, then it won’t be able to unseal the passphrase this time, because the Xen, kernel, and initramfs binaries have changed. Once the system boots up again, you could reseal your Anti Evil Maid’s passphrase to the new configuration. Please consult Anti Evil Maid documentation for explanation on how to do that.
 
-Now, when you have dom0 upgraded, you can install new templates from Qubes R3.0 repositories. Especially Fedora 21 - default Qubes R3.0 template:
+Now, when you have dom0 upgraded, you can install new templates from Qubes R3.0 repositories. Especially antiX 21 - default Qubes R3.0 template:
 
 .. code:: console
 
-      $ sudo qubes-dom0-update qubes-template-fedora-21
+      $ doas qubes-dom0-update qubes-template-antix-21
 
 
 

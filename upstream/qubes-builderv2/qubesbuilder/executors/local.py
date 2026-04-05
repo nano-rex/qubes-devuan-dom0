@@ -83,11 +83,11 @@ class LocalExecutor(Executor):
         try:
             shutil.rmtree(self._temporary_dir)
         except PermissionError:
-            # retry with sudo
+            # retry with doas
             try:
                 subprocess.run(
                     [
-                        "sudo",
+                        "doas",
                         "--non-interactive",
                         "rm",
                         "-rf",

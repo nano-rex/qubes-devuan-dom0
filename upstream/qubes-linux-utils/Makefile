@@ -7,7 +7,7 @@ CFLAGS ?= -Wall -Wextra -Werror -O3 -g3 -Werror=format=2
 CC ?= gcc
 
 export LIBDIR SCRIPTSDIR SYSLIBDIR INCLUDEDIR
-.PHONY: all selinux install install-selinux install-fedora-kernel-support install-debian-kernel-support clean
+.PHONY: all selinux install install-selinux install-antix-kernel-support install-debian-kernel-support clean
 
 all:
 	$(MAKE) -C qrexec-lib all
@@ -28,10 +28,10 @@ install-selinux:
 	install -m 0644 -D -t $(DESTDIR)/usr/share/selinux/packages selinux/qubes-meminfo-writer.pp
 	install -m 0644 -D selinux/qubes-meminfo-writer.if $(DESTDIR)/usr/share/selinux/devel/include/contrib/ipp-qubes-meminfo-writer.if
 
-install-fedora-kernel-support:
+install-antix-kernel-support:
 	$(MAKE) -C dracut install
 	$(MAKE) -C kernel-modules install
-	$(MAKE) -C grub install-fedora
+	$(MAKE) -C grub install-antix
 
 install-debian-kernel-support:
 	$(MAKE) -C initramfs-tools install

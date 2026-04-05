@@ -73,14 +73,14 @@ Using the command line
 
    .. code:: console
 
-         $ sudo su
+         $ doas su
          $ echo -n "1" > /sys/bus/pci/devices/0000:03:00.0/remove
 
 
 
-3. In order to make this change persistent, create a file ``/etc/systemd/system/qubes-pre-netvm.service`` and add the following:
+3. In order to make this change persistent, create a file ``/etc/runit/system/qubes-pre-netvm.service`` and add the following:
 
-   .. code:: systemd
+   .. code:: runit
 
          [Unit]
          Description=Netvm fixup
@@ -95,7 +95,7 @@ Using the command line
          WantedBy=multi-user.target
 
 
-   Finally, run ``systemctl enable qubes-pre-netvm.service`` and it will now persist between reboots.
+   Finally, run ``sv enable qubes-pre-netvm.service`` and it will now persist between reboots.
 
 
 
@@ -143,7 +143,7 @@ Wireless card stops working after dom0 update
 ---------------------------------------------
 
 
-There have been many instances where a Wi-Fi card stops working after a dom0 update. If you run ``sudo dmesg`` in sys-net, you may see errors beginning with ``iwlwifi``. You can fix the problem by going to the sys-net VM’s settings and changing the VM kernel to the previous version.
+There have been many instances where a Wi-Fi card stops working after a dom0 update. If you run ``doas dmesg`` in sys-net, you may see errors beginning with ``iwlwifi``. You can fix the problem by going to the sys-net VM’s settings and changing the VM kernel to the previous version.
 
 Attached devices in Windows HVM stop working on suspend/resume
 --------------------------------------------------------------
@@ -163,4 +163,4 @@ Network adapter does not work
 
 You may have an adapter (wired, wireless), that is not compatible with open-source drivers shipped by Qubes. You may need to install a binary blob, which provides drivers, from the linux-firmware package.
 
-Open a terminal and run ``sudo dnf install linux-firmware`` in the template upon which your NetVM is based. You have to restart the NetVM after the template has been shut down.
+Open a terminal and run ``doas dnf install linux-firmware`` in the template upon which your NetVM is based. You have to restart the NetVM after the template has been shut down.

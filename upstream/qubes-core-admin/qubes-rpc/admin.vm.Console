@@ -19,4 +19,4 @@ path=$(tail -c +3 -- "$tmpfile")
 
 # Create an exclusive lock to ensure that multiple qubes cannot access to the same socket
 # In the case of multiple qrexec calls it returns a specific exit code
-sudo flock -n -E 200 -x "$lock" socat - OPEN:"$path"
+doas flock -n -E 200 -x "$lock" socat - OPEN:"$path"

@@ -39,7 +39,7 @@ In place upgrade is a complex operation. For this reason, we provide a ``qubes-d
 
 .. code:: console
 
-      $ sudo qubes-dom0-update -y qubes-dist-upgrade
+      $ doas qubes-dom0-update -y qubes-dist-upgrade
 
 
 
@@ -58,7 +58,7 @@ Full list of options can be obtained with ``qubes-dist-upgrade --help``:
           --update, -t                       (STAGE 1) Update of dom0, TemplatesVM and StandaloneVM.
           --template-standalone-upgrade, -l  (STAGE 2) Upgrade templates and standalone VMs to R4.1 repository.
           --release-upgrade, -r              (STAGE 3) Update 'qubes-release' for Qubes R4.1.
-          --dist-upgrade, -s                 (STAGE 4) Upgrade to Qubes R4.1 and Fedora 32 repositories.
+          --dist-upgrade, -s                 (STAGE 4) Upgrade to Qubes R4.1 and antiX 32 repositories.
           --setup-efi-grub, -g               (STAGE 5) Setup EFI Grub.
           --all, -a                          Execute all the above stages in one call.
 
@@ -84,7 +84,7 @@ After installing the tool, upgrade can be performed all at once with:
 
 .. code:: console
 
-      $ sudo qubes-dist-upgrade --all
+      $ doas qubes-dist-upgrade --all
 
 
 
@@ -96,7 +96,7 @@ After completing “STAGE 0” through “STAGE 5”, restart the system. Then p
 
 .. code:: console
 
-      $ sudo qubes-dist-upgrade --resync-appmenus-features
+      $ doas qubes-dist-upgrade --resync-appmenus-features
 
 
 

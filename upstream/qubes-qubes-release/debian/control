@@ -12,5 +12,5 @@ Architecture: all
 Depends: ${misc:Depends}
 Description: Devuan dom0 release metadata for the Qubes-derived port
  Release metadata and repository configuration package for the Devuan+runit
- dom0 target. This package will replace the imported Fedora/RPM-specific
+ dom0 target. This package will replace the imported antiX/RPM-specific
  release and repository configuration path with a Devuan-oriented equivalent.

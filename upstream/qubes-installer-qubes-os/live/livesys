@@ -145,7 +145,7 @@ if [ -n "$configdone" ]; then
   exit 0
 fi
 
-# add fedora user with no passwd
+# add antix user with no passwd
 action "Adding live user" useradd $USERADDARGS -c "Live System User" liveuser
 passwd -d liveuser > /dev/null
 usermod -aG wheel liveuser > /dev/null
@@ -155,29 +155,29 @@ usermod -aG qubes liveuser > /dev/null
 passwd -d root > /dev/null
 
 # turn off firstboot for livecd boots
-systemctl --no-reload disable firstboot-text.service 2> /dev/null || :
-systemctl --no-reload disable firstboot-graphical.service 2> /dev/null || :
-systemctl stop firstboot-text.service 2> /dev/null || :
-systemctl stop firstboot-graphical.service 2> /dev/null || :
+sv --no-reload disable firstboot-text.service 2> /dev/null || :
+sv --no-reload disable firstboot-graphical.service 2> /dev/null || :
+sv stop firstboot-text.service 2> /dev/null || :
+sv stop firstboot-graphical.service 2> /dev/null || :
 
 # don't use prelink on a running live image
 sed -i 's/PRELINKING=yes/PRELINKING=no/' /etc/sysconfig/prelink &>/dev/null || :
 
 # turn off mdmonitor by default
-systemctl --no-reload disable mdmonitor.service 2> /dev/null || :
-systemctl --no-reload disable mdmonitor-takeover.service 2> /dev/null || :
-systemctl stop mdmonitor.service 2> /dev/null || :
-systemctl stop mdmonitor-takeover.service 2> /dev/null || :
+sv --no-reload disable mdmonitor.service 2> /dev/null || :
+sv --no-reload disable mdmonitor-takeover.service 2> /dev/null || :
+sv stop mdmonitor.service 2> /dev/null || :
+sv stop mdmonitor-takeover.service 2> /dev/null || :
 
 # don't enable the gnome-settings-daemon packagekit plugin
 gsettings set org.gnome.software download-updates 'false' || :
 
 # don't start cron/at as they tend to spawn things which are
 # disk intensive that are painful on a live image
-systemctl --no-reload disable crond.service 2> /dev/null || :
-systemctl --no-reload disable atd.service 2> /dev/null || :
-systemctl stop crond.service 2> /dev/null || :
-systemctl stop atd.service 2> /dev/null || :
+sv --no-reload disable crond.service 2> /dev/null || :
+sv --no-reload disable atd.service 2> /dev/null || :
+sv stop crond.service 2> /dev/null || :
+sv stop atd.service 2> /dev/null || :
 
 # Don't sync the system clock when running live (RHBZ #1018162)
 sed -i 's/rtcsync//' /etc/chrony.conf

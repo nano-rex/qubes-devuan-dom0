@@ -2,12 +2,12 @@ checks:tests:
   after_script:
   - ci/codecov-wrapper
   before_script:
-  - sudo dnf install -y python3-pip python3-gobject-base ShellCheck
+  - doas dnf install -y python3-pip python3-gobject-base ShellCheck
       'pkgconfig(icu-uc)' sequoia-sqv
   - pip3 install --quiet -r ci/requirements.txt
   - git clone https://github.com/QubesOS/qubes-linux-utils ~/qubes-linux-utils
   - make -C ~/qubes-linux-utils/qrexec-lib all
-  - sudo make -C ~/qubes-linux-utils/qrexec-lib install
+  - doas make -C ~/qubes-linux-utils/qrexec-lib install
       LIBDIR=/usr/lib64 INCLUDEDIR=/usr/include
   script:
   - ./run-tests

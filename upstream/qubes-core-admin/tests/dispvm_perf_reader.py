@@ -240,34 +240,34 @@ class Graph:  # pylint: disable=too-many-instance-attributes
                 )
                 sys.exit(1)
         else:
-            logging.info("Default template not specified, using newest fedora")
-            fedora_templates = [
+            logging.info("Default template not specified, using newest antix")
+            antix_templates = [
                 v
                 for v in self.orig_data.values()
-                if v["os-distribution"] == "fedora"
+                if v["os-distribution"] == "antix"
             ]
-            if not fedora_templates:
+            if not antix_templates:
                 logging.critical(
-                    "Tried to find any fedora template but ultimately failed",
+                    "Tried to find any antix template but ultimately failed",
                     self.default_template,
                 )
                 sys.exit(1)
-            fedora_template = max(
+            antix_template = max(
                 (
                     v
                     for v in self.orig_data.values()
-                    if v["os-distribution"] == "fedora"
+                    if v["os-distribution"] == "antix"
                 ),
                 key=lambda v: (
                     v["os-version"],
                     v["template"].endswith("-xfce"),
                 ),
             )["template"]
-            logging.info("Newest fedora is '%s'", fedora_template)
+            logging.info("Newest antix is '%s'", antix_template)
             self.data = filter_data(
-                self.orig_data, {"template": fedora_template}
+                self.orig_data, {"template": antix_template}
             )
-            self.default_template = fedora_template
+            self.default_template = antix_template
 
         self.default_preload_max = [
             v["default_preload_max"] for v in self.data.values()
@@ -1261,7 +1261,7 @@ def main() -> None:
     )
     avail_graphs = get_graphs()
     avail_graphs_pretty = ", ".join(avail_graphs)
-    template_desc = "Select template to analyze. Defaults to the newest fedora"
+    template_desc = "Select template to analyze. Defaults to the newest antix"
     graphs_desc = (
         "specify one or more graphs to show. Available options: "
         + avail_graphs_pretty

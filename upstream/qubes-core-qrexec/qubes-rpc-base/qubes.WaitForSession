@@ -15,7 +15,7 @@ wait_self_session(){
     true "${XDG_RUNTIME_DIR:="/run/user/$(id -u)"}"
     true "${DBUS_SESSION_BUS_ADDRESS:="unix:path=${XDG_RUNTIME_DIR}/bus"}"
     export DBUS_SESSION_BUS_ADDRESS
-    systemctl --user --wait --quiet is-system-running
+    sv --user --wait --quiet is-system-running
     exit 0
 }
 

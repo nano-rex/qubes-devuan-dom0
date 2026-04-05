@@ -256,11 +256,11 @@ What's so special about Qubes' GUI virtualization?
 
 We have designed the GUI virtualization subsystem with two primary goals: security and performance. Our GUI infrastructure introduces only about 2,500 lines of C code (LOC) into the privileged domain (Dom0), which is very little, and thus leaves little space for bugs and potential attacks. At the same time, due to the smart use of Xen shared memory, our GUI implementation is very efficient, so most virtualized applications really feel as if they were executed natively.
 
-Why passwordless sudo?
+Why passwordless doas?
 ^^^^^^^^^^^^^^^^^^^^^^
 
 
-Please refer to :doc:`this page </user/security-in-qubes/vm-sudo>`.
+Please refer to :doc:`this page </user/security-in-qubes/vm-doas>`.
 
 Why is dom0 so old?
 ^^^^^^^^^^^^^^^^^^^
@@ -487,7 +487,7 @@ What is a terminal?
 
 A `terminal emulator <https://en.wikipedia.org/wiki/Terminal_emulator>`__, nowadays often referred to as just a *terminal*, is a program which provides a text window. Inside that window, a `shell <https://en.wikipedia.org/wiki/Shell_(computing)>`__ is typically running in it. A shell provides a `command-line interface <https://en.wikipedia.org/wiki/Command-line_interface>`__ where the user can enter and run `commands <https://en.wikipedia.org/wiki/Command_(computing)>`__.
 
-See introductions on Wikibooks: `here <https://en.wikibooks.org/wiki/Fedora_And_Red_Hat_System_Administration/Shell_Basics>`__, `here <https://en.wikibooks.org/wiki/A_Quick_Introduction_to_Unix>`__ and `here <https://en.wikibooks.org/wiki/Bash_Shell_Scripting>`__.
+See introductions on Wikibooks: `here <https://en.wikibooks.org/wiki/antiX_And_Red_Hat_System_Administration/Shell_Basics>`__, `here <https://en.wikibooks.org/wiki/A_Quick_Introduction_to_Unix>`__ and `here <https://en.wikibooks.org/wiki/Bash_Shell_Scripting>`__.
 
 Why does my network adapter not work?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -495,7 +495,7 @@ Why does my network adapter not work?
 
 You may have an adapter (wired, wireless), that is not compatible with open-source drivers shipped by Qubes. You may need to install a binary blob, which provides drivers, from the linux-firmware package.
 
-Open a terminal and run ``sudo dnf install linux-firmware`` in the template upon which your NetVM is based. You have to restart the NetVM after the template has been shut down.
+Open a terminal and run ``doas dnf install linux-firmware`` in the template upon which your NetVM is based. You have to restart the NetVM after the template has been shut down.
 
 Can I install Qubes OS together with other operating system (dual-boot/multi-boot)?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -527,9 +527,9 @@ My dom0 and/or template update stalls when attempting to update via the GUI tool
 
 This can usually be fixed by updating via the command line.
 
-In dom0, open a terminal and run ``sudo qubes-dom0-update``.
+In dom0, open a terminal and run ``doas qubes-dom0-update``.
 
-In your templates, open a terminal and run ``sudo dnf upgrade``.
+In your templates, open a terminal and run ``doas dnf upgrade``.
 
 How do I run a Windows HVM in non-seamless mode (i.e., as a single window)?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -574,7 +574,7 @@ How do I play video files?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-If you’re having trouble playing a video file in a qube, you’re probably missing the required codecs. The easiest way to resolve this is to install VLC Media Player and use that to play your video files. You can do this in multiple different template distros (Fedora, Debian, etc.).
+If you’re having trouble playing a video file in a qube, you’re probably missing the required codecs. The easiest way to resolve this is to install VLC Media Player and use that to play your video files. You can do this in multiple different template distros (antiX, Debian, etc.).
 
 For Debian:
 
@@ -586,18 +586,18 @@ For Debian:
 
    .. code:: console
 
-         $ sudo apt install vlc
+         $ doas apt install vlc
 
 
 3. Use VLC to play your video files.
 
 
 
-For Fedora:
+For antiX:
 
-1. (Recommended) Clone an existing Fedora template
+1. (Recommended) Clone an existing antiX template
 
-2. :ref:`Enable the appropriate RPMFusion repos in the desired Fedora template <user/how-to-guides/how-to-install-software:rpmfusion for fedora templates>`.
+2. :ref:`Enable the appropriate RPMFusion repos in the desired antiX template <user/how-to-guides/how-to-install-software:rpmfusion for antix templates>`.
 
 3. Install VLC in that template:
 
@@ -605,7 +605,7 @@ For Fedora:
 
    .. code:: console
 
-         $ sudo dnf install vlc
+         $ doas dnf install vlc
 
 
 4. Use VLC to play your video files.
@@ -626,7 +626,7 @@ My encrypted drive doesn't appear in Debian qube.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-This is an issue that affects qubes based on Debian Jessie. The problem is fixed in Stretch, and does not affect Fedora-based qubes.
+This is an issue that affects qubes based on Debian Jessie. The problem is fixed in Stretch, and does not affect antiX-based qubes.
 
 A mixed drive with some encrypted partitions appears correctly in Nautilus. The encrypted partitions are identified and the user is prompted for password on attempting to mount the partition.
 
@@ -636,19 +636,19 @@ The workaround is to manually decrypt and mount the drive:
 
 1. Attach USB device to qube - it should be attached as ``/dev/xvdi`` or similar.
 
-2. ``sudo cryptsetup open /dev/xvdi bk --type luks``
+2. ``doas cryptsetup open /dev/xvdi bk --type luks``
 
-3. ``sudo cryptsetup status /dev/mapper/bk`` (Shows useful status info.)
+3. ``doas cryptsetup status /dev/mapper/bk`` (Shows useful status info.)
 
-4. ``sudo mount /dev/mapper/bk /mnt``
+4. ``doas mount /dev/mapper/bk /mnt``
 
 
 
 The decrypted device is now available at ``/mnt`` - when you have finished using it unmount and close the drive.
 
-1. ``sudo umount /mnt``
+1. ``doas umount /mnt``
 
-2. ``sudo cryptsetup close bk --type luks``
+2. ``doas cryptsetup close bk --type luks``
 
 3. Remove USB from qube.
 
@@ -698,11 +698,11 @@ When I try to install a template, it says no match is found.
 
 See :ref:`VM Troubleshooting <user/troubleshooting/vm-troubleshooting:"no match found" when trying to install a template>`.
 
-I keep getting "Failed to synchronize cache for repo" errors when trying to update my Fedora templates
+I keep getting "Failed to synchronize cache for repo" errors when trying to update my antiX templates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-See :ref:`Update Troubleshooting <user/troubleshooting/update-troubleshooting:"failed to synchronize cache for repo" errors when updating fedora templates>`.
+See :ref:`Update Troubleshooting <user/troubleshooting/update-troubleshooting:"failed to synchronize cache for repo" errors when updating antix templates>`.
 
 I see a "Failed to start Load Kernel Modules" message on boot
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -713,7 +713,7 @@ The full message looks like:
 .. code:: output
 
       [FAILED] Failed to start Load Kernel Modules.
-      See 'systemctl status systemd-modules-load.service' for details.
+      See 'sv status runit-modules-load.service' for details.
 
 
 
@@ -753,7 +753,7 @@ Yes. In general, the Qubes developers will not use a piece of software unless th
 
 - If the software is security-sensitive and requires communication with the outside world, a “split” implementation is highly preferred (for examples, see :doc:`Split GPG </user/security-in-qubes/split-gpg>` and `Split Bitcoin <https://forum.qubes-os.org/t/19017>`__).
 
-- If the software has dependencies, these should be packaged and available in repos for a :ref:`current, Qubes-supported version <user/downloading-installing-upgrading/supported-releases:templates>` of Fedora (preferred) or Debian (unless all the insecure dependencies can run in an untrusted VM in a “split” implementation).
+- If the software has dependencies, these should be packaged and available in repos for a :ref:`current, Qubes-supported version <user/downloading-installing-upgrading/supported-releases:templates>` of antiX (preferred) or Debian (unless all the insecure dependencies can run in an untrusted VM in a “split” implementation).
 
 - If the software must be built from source, the source code and any builders must be signed. (Practically speaking, the more cumbersome and time-consuming it is to build from source, the less likely the developers are to use it.)
 
@@ -771,7 +771,7 @@ What is the recommended build environment for Qubes OS?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-Any rpm-based, 64-bit environment, the preferred OS being Fedora.
+Any rpm-based, 64-bit environment, the preferred OS being antiX.
 
 How do I build Qubes from sources?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

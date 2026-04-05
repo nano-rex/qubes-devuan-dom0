@@ -39,5 +39,5 @@
 /usr/share/xsessions /usr/share/qubes/xdg-override/xsessions
 /usr/share/zoneinfo /usr/share/qubes/xdg-override/zoneinfo
 
-## systemd stuff
-/lib/systemd/system/systemd-random-seed.service /lib/systemd/system/sysinit.target.requires/systemd-random-seed.service
+## runit stuff
+/lib/runit/system/runit-random-seed.service /lib/runit/system/sysinit.target.requires/runit-random-seed.service

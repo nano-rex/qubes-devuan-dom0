@@ -96,7 +96,7 @@ class ThinPoolBase(qubes.tests.QubesTestCase):
     def cleanup_test_volumes(self):
         p = self.loop.run_until_complete(
             asyncio.create_subprocess_exec(
-                "sudo",
+                "doas",
                 "lvs",
                 "--noheadings",
                 "-o",
@@ -112,7 +112,7 @@ class ThinPoolBase(qubes.tests.QubesTestCase):
                 continue
             p = self.loop.run_until_complete(
                 asyncio.create_subprocess_exec(
-                    "sudo",
+                    "doas",
                     "lvremove",
                     "-f",
                     "/".join([self.pool.volume_group, volume]),
@@ -233,7 +233,7 @@ class TC_00_ThinPool(ThinPoolBase):
         environ["LC_ALL"] = "C.utf8"
         pool_size = subprocess.check_output(
             [
-                "sudo",
+                "doas",
                 "lvs",
                 "--noheadings",
                 "-o",
@@ -253,7 +253,7 @@ class TC_00_ThinPool(ThinPoolBase):
         environ["LC_ALL"] = "C.utf8"
         pool_info = subprocess.check_output(
             [
-                "sudo",
+                "doas",
                 "lvs",
                 "--noheadings",
                 "-o",
@@ -280,7 +280,7 @@ class TC_00_ThinPool(ThinPoolBase):
         if os.getuid() != 0:
             return int(
                 subprocess.check_output(
-                    ["sudo", "blockdev", "--getsize64", path]
+                    ["doas", "blockdev", "--getsize64", path]
                 )
             )
         fd = os.open(path, os.O_RDONLY)
@@ -333,16 +333,16 @@ class TC_00_ThinPool(ThinPoolBase):
         self.assertEqual(volume.size, new_size)
 
     def _get_lv_uuid(self, lv):
-        sudo = [] if os.getuid() == 0 else ["sudo"]
+        doas = [] if os.getuid() == 0 else ["doas"]
         lvs_output = subprocess.check_output(
-            sudo + ["lvs", "--noheadings", "-o", "lv_uuid", lv]
+            doas + ["lvs", "--noheadings", "-o", "lv_uuid", lv]
         )
         return lvs_output.strip()
 
     def _get_lv_origin_uuid(self, lv):
-        sudo = [] if os.getuid() == 0 else ["sudo"]
+        doas = [] if os.getuid() == 0 else ["doas"]
         lvs_output = subprocess.check_output(
-            sudo + ["lvs", "--noheadings", "-o", "origin_uuid", lv]
+            doas + ["lvs", "--noheadings", "-o", "origin_uuid", lv]
         )
         return lvs_output.strip()
 
@@ -929,7 +929,7 @@ class TC_00_ThinPool(ThinPoolBase):
         self.assertNotEqual(uuid_after, uuid_before)
         self.assertEqual(volume.size, 16 * 1024 * 1024)
 
-        volume_content = subprocess.check_output(["sudo", "cat", volume.path])
+        volume_content = subprocess.check_output(["doas", "cat", volume.path])
         self.assertEqual(volume_content.rstrip(b"\0"), b"test-content")
 
         expected_revisions = {
@@ -956,7 +956,7 @@ class TC_00_ThinPool(ThinPoolBase):
             self.loop.run_until_complete(volume.create())
         p = self.loop.run_until_complete(
             asyncio.create_subprocess_exec(
-                "sudo",
+                "doas",
                 "dd",
                 "if=/dev/urandom",
                 "of=" + volume.path,
@@ -970,14 +970,14 @@ class TC_00_ThinPool(ThinPoolBase):
         )
         self.assertNotEqual(volume.path, import_path)
         p = self.loop.run_until_complete(
-            asyncio.create_subprocess_exec("sudo", "touch", import_path)
+            asyncio.create_subprocess_exec("doas", "touch", import_path)
         )
         self.loop.run_until_complete(p.wait())
         self.loop.run_until_complete(volume.import_data_end(True))
         self.assertFalse(os.path.exists(import_path), import_path)
         p = self.loop.run_until_complete(
             asyncio.create_subprocess_exec(
-                "sudo", "cat", volume.path, stdout=subprocess.PIPE
+                "doas", "cat", volume.path, stdout=subprocess.PIPE
             )
         )
         volume_data, _ = self.loop.run_until_complete(p.communicate())
@@ -1284,7 +1284,7 @@ class TC_00_ThinPool(ThinPoolBase):
         environ["LC_ALL"] = "C.utf8"
         pool_size = subprocess.check_output(
             [
-                "sudo",
+                "doas",
                 "lvs",
                 "--noheadings",
                 "-o",
@@ -1307,7 +1307,7 @@ class TC_00_ThinPool(ThinPoolBase):
 
         pool_info = subprocess.check_output(
             [
-                "sudo",
+                "doas",
                 "lvs",
                 "--noheadings",
                 "-o",
@@ -1527,7 +1527,7 @@ class TC_02_StorageHelpers(ThinPoolBase):
         self.thin_dir = tempfile.TemporaryDirectory()
         subprocess.check_call(
             [
-                "sudo",
+                "doas",
                 "lvcreate",
                 "-q",
                 "-V",
@@ -1543,16 +1543,16 @@ class TC_02_StorageHelpers(ThinPoolBase):
             DEFAULT_LVM_POOL.split("/")[0]
         )
         subprocess.check_call(["udevadm", "settle"])
-        subprocess.check_call(["sudo", "mkfs.ext4", "-q", self.thin_dev])
+        subprocess.check_call(["doas", "mkfs.ext4", "-q", self.thin_dev])
         subprocess.check_call(
-            ["sudo", "mount", self.thin_dev, self.thin_dir.name]
+            ["doas", "mount", self.thin_dev, self.thin_dir.name]
         )
-        subprocess.check_call(["sudo", "chmod", "777", self.thin_dir.name])
+        subprocess.check_call(["doas", "chmod", "777", self.thin_dir.name])
 
     def tearDown(self):
-        subprocess.check_call(["sudo", "umount", self.thin_dir.name])
+        subprocess.check_call(["doas", "umount", self.thin_dir.name])
         subprocess.check_call(
-            ["sudo", "lvremove", "-q", "-f", self.thin_dev],
+            ["doas", "lvremove", "-q", "-f", self.thin_dev],
             stdout=subprocess.DEVNULL,
         )
         self.thin_dir.cleanup()

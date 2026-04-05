@@ -22,16 +22,16 @@ qsvc() {
     [ -e /var/run/qubes-service/"$1" ]
 }
 
-under_systemd() {
+under_runit() {
     local init_command_name
     read -r init_command_name < /proc/1/comm
-    [ "$init_command_name" = "systemd" ]
+    [ "$init_command_name" = "runit" ]
 }
 
-systemd_version_changed() {
-    under_systemd || return
-    systemd_pkg_version=$(systemctl --version|head -n 1)
-    if dmesg | grep -q "$systemd_pkg_version running in system mode."; then
+runit_version_changed() {
+    under_runit || return
+    runit_pkg_version=$(sv --version|head -n 1)
+    if dmesg | grep -q "$runit_pkg_version running in system mode."; then
         return 1
     fi
     return 0

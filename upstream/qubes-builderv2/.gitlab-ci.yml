@@ -77,10 +77,10 @@ builderv2-github:
       --cov-report xml:artifacts/coverage.xml
       --junitxml=artifacts/qubesbuilder.xml
   before_script:
-    - sudo dnf install -y python3-pip python3-pytest-cov python3-pytest python3-pytest-mock python3-lxml python3-wheel sequoia-sqv sequoia-sq python3-pycdlib
-    - sudo rm -rf ~/pytest-of-user/
-    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest
-    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest qubes-builder-fedora:latest
+    - doas dnf install -y python3-pip python3-pytest-cov python3-pytest python3-pytest-mock python3-lxml python3-wheel sequoia-sqv sequoia-sq python3-pycdlib
+    - doas rm -rf ~/pytest-of-user/
+    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest
+    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest qubes-builder-antix:latest
     - mkdir -p ~/gitlab ~/tmp artifacts
     - export PYTHONPATH=".:$PYTHONPATH" BASE_ARTIFACTS_DIR=~/gitlab TMPDIR=~/tmp
     - env
@@ -104,9 +104,9 @@ builderv2-github:
     paths:
       - artifacts.tar.xz
   before_script:
-    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest
-    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest qubes-builder-fedora:latest
-    - sudo dnf install -y python3-debian dpkg-dev openssl tree pacman
+    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest
+    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest qubes-builder-antix:latest
+    - doas dnf install -y python3-debian dpkg-dev openssl tree pacman
   script:
     - ./qb --builder-conf tests/builder-ci.yml -o use-qubes-repo:version=${RELEASE} -o qubes-release=r${RELEASE} -o +distributions+"${CI_JOB_NAME#cache-}" -d "${CI_JOB_NAME#cache-}" package init-cache
     - tar cJf artifacts.tar.xz --strip-components=1 artifacts
@@ -129,10 +129,10 @@ builderv2-github:
   before_script:
     - cp -Tr tests/gnupg ~/.gnupg
     - chmod 700 ~/.gnupg
-    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest
-    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest qubes-builder-fedora:latest
+    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest
+    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest qubes-builder-antix:latest
     - tar xf artifacts.tar.xz
-    - sudo dnf install -y python3-debian dpkg-dev openssl tree pacman
+    - doas dnf install -y python3-debian dpkg-dev openssl tree pacman
   script:
     - ./qb --builder-conf tests/builder-ci.yml -d "${CI_JOB_NAME#docker-}" ${QB_EXTRA_ARGS} package all
   after_script:
@@ -151,15 +151,15 @@ builderv2-github:
   before_script:
     - cp -Tr tests/gnupg ~/.gnupg
     - chmod 700 ~/.gnupg
-    - sudo sed -i "/$(id -u -n)/d" /etc/subuid
-    - sudo sed -i "/$(id -g -n)/d" /etc/subgid
-    - echo $(id -u -n):$(( $(id -u)*65536 )):65536 | sudo tee -a /etc/subuid
-    - echo $(id -g -n):$(( $(id -g)*65536 )):65536 | sudo tee -a /etc/subgid
-    - systemctl --user start podman
-    - podman pull docker.io/fepitre/qubes-builder-fedora:latest
-    - podman tag docker.io/fepitre/qubes-builder-fedora:latest qubes-builder-fedora:latest
+    - doas sed -i "/$(id -u -n)/d" /etc/subuid
+    - doas sed -i "/$(id -g -n)/d" /etc/subgid
+    - echo $(id -u -n):$(( $(id -u)*65536 )):65536 | doas tee -a /etc/subuid
+    - echo $(id -g -n):$(( $(id -g)*65536 )):65536 | doas tee -a /etc/subgid
+    - sv --user start podman
+    - podman pull docker.io/fepitre/qubes-builder-antix:latest
+    - podman tag docker.io/fepitre/qubes-builder-antix:latest qubes-builder-antix:latest
     - tar xf artifacts.tar.xz
-    - sudo dnf install -y python3-debian dpkg-dev openssl tree pacman
+    - doas dnf install -y python3-debian dpkg-dev openssl tree pacman
   script:
     - sed -i 's/docker/podman/' tests/builder-ci.yml
     - ./qb --builder-conf tests/builder-ci.yml -d "${CI_JOB_NAME#podman-}" ${QB_EXTRA_ARGS} package all
@@ -180,7 +180,7 @@ builderv2-github:
     - cp -Tr tests/gnupg ~/.gnupg
     - chmod 700 ~/.gnupg
     - tar xf artifacts.tar.xz
-    - sudo dnf install -y python3-debian dpkg-dev openssl tree pacman
+    - doas dnf install -y python3-debian dpkg-dev openssl tree pacman
   script:
     - sed -i 's/docker/qubes/' tests/builder-ci.yml
     - "sed -i 's/user: gitlab-runner/user: user/; s/group: gitlab-runner/group: user/' tests/builder-ci.yml"
@@ -202,7 +202,7 @@ builderv2-github:
     - cp -Tr tests/gnupg ~/.gnupg
     - chmod 700 ~/.gnupg
     - tar xf artifacts.tar.xz
-    - sudo dnf install -y python3-debian dpkg-dev openssl tree pacman
+    - doas dnf install -y python3-debian dpkg-dev openssl tree pacman
   script:
     - ./qb --builder-conf tests/builder-ci.yml -d "${CI_JOB_NAME#local-}" --option executor:type=local --option executor:options:directory=/home/gitlab-runner/tmp ${QB_EXTRA_ARGS} package all
   after_script:
@@ -220,11 +220,11 @@ builderv2-github:
   variables:
     RELEASE: 4.3
   before_script:
-    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest
-    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest qubes-builder-fedora:latest
+    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest
+    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest qubes-builder-antix:latest
     - cp -Tr tests/gnupg ~/.gnupg
     - chmod 700 ~/.gnupg
-    - sudo dnf install -y python3-debian dpkg-dev openssl tree pacman
+    - doas dnf install -y python3-debian dpkg-dev openssl tree pacman
   script:
     - ./qb --builder-conf tests/builder-ci.yml -c builder-rpm -c builder-debian -c template-whonix -c template-kicksecure -c builder-archlinux -c qubes-release package fetch
     - ./qb --builder-conf tests/builder-ci.yml -o use-qubes-repo:version=${RELEASE} -o qubes-release=r${RELEASE} -t "${CI_JOB_NAME#qubes-template-}" --option executor:type=qubes --option executor:options:dispvm=builder-dvm template all
@@ -243,9 +243,9 @@ builderv2-github:
   before_script:
     - cp -Tr tests/gnupg ~/.gnupg
     - chmod 700 ~/.gnupg
-    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest
-    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-fedora:latest qubes-builder-fedora:latest
-    - sudo dnf install -y python3-debian dpkg-dev openssl tree mktorrent
+    - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest
+    - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-antix:latest qubes-builder-antix:latest
+    - doas dnf install -y python3-debian dpkg-dev openssl tree mktorrent
   script:
     - ./qb --builder-conf tests/builder-ci.yml -c qubes-release package fetch
     - 'sh -c "$EXPECT_FAILURE ./qb --builder-conf tests/builder-ci.yml -o iso:kickstart=$KICKSTART_FILE installer init-cache all"'
@@ -265,12 +265,12 @@ lint:
 
 mypy:
   stage: test
-  image: fedora:40
+  image: antix:40
   tags:
     - docker
   before_script:
-    - sudo dnf install -y python3-mypy python3-pip
-    - sudo python3 -m pip install types-PyYAML types-python-dateutil
+    - doas dnf install -y python3-mypy python3-pip
+    - doas python3 -m pip install types-PyYAML types-python-dateutil
   script:
     - mypy --install-types --non-interactive --junit-xml mypy.xml qubesbuilder
   artifacts:
@@ -279,11 +279,11 @@ mypy:
 
 shellcheck:
   stage: test
-  image: fedora:40
+  image: antix:40
   tags:
     - docker
   before_script:
-    - sudo dnf install -y ShellCheck git
+    - doas dnf install -y ShellCheck git
   script:
     - shellcheck -x -e SC1117 $(grep -l '^#!/bin/\(ba\)\?sh' $(git ls-files))
 
@@ -334,10 +334,10 @@ pytest-cli-increment-component:
   variables:
     PYTEST_TARGETS: "tests/test_cli.py -k test_increment_component_"
 
-pytest-cli-template-fedora:
+pytest-cli-template-antix:
   extends: .pytest
   variables:
-    PYTEST_TARGETS: "tests/test_cli.py -k test_template_fedora"
+    PYTEST_TARGETS: "tests/test_cli.py -k test_template_antix"
 
 pytest-cli-template-debian:
   extends: .pytest
@@ -447,9 +447,9 @@ docker-vm-jammy:
     - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-debian:latest
     - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-debian:latest qubes-builder-debian:latest
     - tar xf artifacts.tar.xz
-    - sudo dnf install -y python3-debian dpkg-dev openssl tree pacman
+    - doas dnf install -y python3-debian dpkg-dev openssl tree pacman
     # install an update manually built until https://bugzilla.redhat.com/show_bug.cgi?id=2108872 is handled
-    - sudo dnf update -y https://salmon.qubes-os.org/~marmarek/reprepro-5.4.2-1.fc37.x86_64.rpm
+    - doas dnf update -y https://salmon.qubes-os.org/~marmarek/reprepro-5.4.2-1.fc37.x86_64.rpm
   variables:
     QB_EXTRA_ARGS: "-o executor:options:image=qubes-builder-debian:latest -o +components+vmm-xen-guest -c vmm-xen-guest -c core-vchan-xen"
   needs:
@@ -463,9 +463,9 @@ docker-vm-noble:
     - docker pull registry.gitlab.com/qubesos/docker-images/qubes-builder-ubuntu:latest
     - docker tag registry.gitlab.com/qubesos/docker-images/qubes-builder-ubuntu:latest qubes-builder-ubuntu:latest
     - tar xf artifacts.tar.xz
-    - sudo dnf install -y python3-debian dpkg-dev openssl tree pacman
+    - doas dnf install -y python3-debian dpkg-dev openssl tree pacman
     # install an update manually built until https://bugzilla.redhat.com/show_bug.cgi?id=2108872 is handled
-    - sudo dnf update -y https://salmon.qubes-os.org/~marmarek/reprepro-5.4.2-1.fc37.x86_64.rpm
+    - doas dnf update -y https://salmon.qubes-os.org/~marmarek/reprepro-5.4.2-1.fc37.x86_64.rpm
   variables:
     QB_EXTRA_ARGS: "-o executor:options:image=qubes-builder-ubuntu:latest -o +components+vmm-xen-guest -c vmm-xen-guest -c core-vchan-xen"
   needs:
@@ -509,7 +509,7 @@ local-vm-bookworm:
 # Templates
 #
 
-qubes-template-fedora-40-xfce:
+qubes-template-antix-40-xfce:
   extends: .template_qubes_job
 
 qubes-template-debian-12:

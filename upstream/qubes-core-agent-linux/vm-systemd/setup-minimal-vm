@@ -28,8 +28,8 @@ is_minimal_usbvm() {
 
 setup_minimal_netvm() {
 	if [ "$(id -u)" = "0" ]; then
-		systemd-sysctl /etc/sysctl.d/82-qubes-minimal-sys-net.conf.optional
-		systemctl --global --runtime mask gvfs-daemon.service
+		runit-sysctl /etc/sysctl.d/82-qubes-minimal-sys-net.conf.optional
+		sv --global --runtime mask gvfs-daemon.service
 	fi
 }
 

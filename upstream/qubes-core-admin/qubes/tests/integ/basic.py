@@ -190,19 +190,19 @@ class TC_00_Basic(qubes.tests.SystemTestCase):
         vm.autostart = True
         self.assertTrue(
             os.path.exists(
-                "/etc/systemd/system/multi-user.target.wants/"
+                "/etc/runit/system/multi-user.target.wants/"
                 "qubes-vm@{}.service".format(vm.name)
             ),
-            "systemd service not enabled by autostart=True",
+            "runit service not enabled by autostart=True",
         )
         del self.app.domains[vm]
         self.loop.run_until_complete(vm.remove_from_disk())
         self.assertFalse(
             os.path.exists(
-                "/etc/systemd/system/multi-user.target.wants/"
+                "/etc/runit/system/multi-user.target.wants/"
                 "qubes-vm@{}.service".format(vm.name)
             ),
-            "systemd service not disabled on domain remove",
+            "runit service not disabled on domain remove",
         )
 
     def _test_200_on_domain_start(self, vm, event, **_kwargs):
@@ -374,7 +374,7 @@ class TC_00_Basic(qubes.tests.SystemTestCase):
         self.loop.run_until_complete(self.vm.create_on_disk())
         self.loop.run_until_complete(self.vm.start())
         p = self.loop.run_until_complete(
-            asyncio.create_subprocess_exec("systemctl", "restart", "virtxend")
+            asyncio.create_subprocess_exec("sv", "restart", "virtxend")
         )
         self.loop.run_until_complete(p.communicate())
         # check if events still works
@@ -394,7 +394,7 @@ class TC_00_Basic(qubes.tests.SystemTestCase):
         # make sure libvirt object is cached
         self.app.domains[0].libvirt_domain.isActive()
         p = self.loop.run_until_complete(
-            asyncio.create_subprocess_exec("systemctl", "restart", "virtxend")
+            asyncio.create_subprocess_exec("sv", "restart", "virtxend")
         )
         self.loop.run_until_complete(p.communicate())
         # trigger reconnect

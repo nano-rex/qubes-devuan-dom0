@@ -159,15 +159,15 @@ EOF
 ############################
 # FIXME: add user units support to is_static()/is_masked()/mask()/unmask() functions
 is_static() {
-    [ -f "/usr/lib/systemd/system/$1" ] && ! grep -q '^[[].nstall]' "/usr/lib/systemd/system/$1"
+    [ -f "/usr/lib/runit/system/$1" ] && ! grep -q '^[[].nstall]' "/usr/lib/runit/system/$1"
 }
 
 is_masked() {
-    if [ ! -L /etc/systemd/system/"$1" ]
+    if [ ! -L /etc/runit/system/"$1" ]
     then
         return 1
     fi
-    target=$(readlink /etc/systemd/system/"$1" 2>/dev/null) || :
+    target=$(readlink /etc/runit/system/"$1" 2>/dev/null) || :
     if [ "$target" = "/dev/null" ]
     then
         return 0
@@ -176,7 +176,7 @@ is_masked() {
 }
 
 mask() {
-    ln -sf /dev/null /etc/systemd/system/"$1"
+    ln -sf /dev/null /etc/runit/system/"$1"
 }
 
 unmask() {
@@ -184,7 +184,7 @@ unmask() {
     then
         return 0
     fi
-    rm -f /etc/systemd/system/"$1"
+    rm -f /etc/runit/system/"$1"
 }
 
 preset_units() {
@@ -216,9 +216,9 @@ preset_units() {
                     # We masked this static unit before, now we unmask it.
                     unmask "$unit_name"
                 fi
-                systemctl --no-reload "${extra_opts[@]}" preset "$unit_name" >/dev/null 2>&1 || :
+                sv --no-reload "${extra_opts[@]}" preset "$unit_name" >/dev/null 2>&1 || :
             else
-                systemctl --no-reload "${extra_opts[@]}" preset "$unit_name" >/dev/null 2>&1 || :
+                sv --no-reload "${extra_opts[@]}" preset "$unit_name" >/dev/null 2>&1 || :
             fi
         fi
     done < "$1"
@@ -232,27 +232,27 @@ restore_units() {
         if is_static "$unit_name" && is_masked "$unit_name"
         then
             # If the unit had been masked by us, we must unmask it here.
-            # Otherwise systemctl preset will fail badly.
+            # Otherwise sv preset will fail badly.
             unmask "$unit_name"
         fi
-        systemctl --no-reload "${extra_opts[@]}" preset "$unit_name" >/dev/null 2>&1 || :
+        sv --no-reload "${extra_opts[@]}" preset "$unit_name" >/dev/null 2>&1 || :
     done
 }
 
-configure_systemd() {
+configure_runit() {
     if [ "$1" -eq 1 ]
     then
-        preset_units /usr/lib/systemd/system-preset/$qubes_preset_file initial
+        preset_units /usr/lib/runit/system-preset/$qubes_preset_file initial
         changed=true
     else
-        preset_units /usr/lib/systemd/system-preset/$qubes_preset_file upgrade
+        preset_units /usr/lib/runit/system-preset/$qubes_preset_file upgrade
         changed=true
         # Upgrade path - now qubes-iptables is used instead
         for svc in iptables ip6tables
         do
             if [ -f "$svc".service ]
             then
-                systemctl --no-reload preset "$svc".service
+                sv --no-reload preset "$svc".service
                 changed=true
             fi
         done
@@ -265,29 +265,29 @@ configure_systemd() {
         # FIXME: this ought to be done via kernel command line.
         # The fewer deviations of the template from the seed
         # image, the better.
-        rm -f /etc/systemd/system/default.target
-        ln -s /lib/systemd/system/multi-user.target /etc/systemd/system/default.target
+        rm -f /etc/runit/system/default.target
+        ln -s /lib/runit/system/multi-user.target /etc/runit/system/default.target
         changed=true
     fi
 
     # remove old symlinks
-    if [ -L /etc/systemd/system/sysinit.target.wants/qubes-random-seed.service ]
+    if [ -L /etc/runit/system/sysinit.target.wants/qubes-random-seed.service ]
     then
-        rm -f /etc/systemd/system/sysinit.target.wants/qubes-random-seed.service
+        rm -f /etc/runit/system/sysinit.target.wants/qubes-random-seed.service
         changed=true
     fi
-    if [ -L /etc/systemd/system/multi-user.target.wants/qubes-mount-home.service ]
+    if [ -L /etc/runit/system/multi-user.target.wants/qubes-mount-home.service ]
     then
-        rm -f /etc/systemd/system/multi-user.target.wants/qubes-mount-home.service
+        rm -f /etc/runit/system/multi-user.target.wants/qubes-mount-home.service
         changed=true
     fi
 
     # fix / ro mounted
-    ln -sf /usr/lib/systemd/system/systemd-remount-fs.service /etc/systemd/system/sysinit.target.wants/
+    ln -sf /usr/lib/runit/system/runit-remount-fs.service /etc/runit/system/sysinit.target.wants/
 
     if [ "x$changed" != "x" ]
     then
-        systemctl daemon-reload
+        sv daemon-reload
     fi
 }
 
@@ -346,10 +346,10 @@ update_finalize() {
     /usr/lib/qubes/update-proxy-configs
 
     # Archlinux specific: ensure tty1 is enabled
-    rm -f /etc/systemd/system/getty.target.wants/getty@tty*.service
-    systemctl enable getty\@tty1.service
+    rm -f /etc/runit/system/getty.target.wants/getty@tty*.service
+    sv enable getty\@tty1.service
 
-    systemctl daemon-reload
+    sv daemon-reload
 }
 
 ## arg 1:  the new package version
@@ -386,7 +386,7 @@ post_install() {
     configure_notification-daemon
     configure_selinux
 
-    configure_systemd 0
+    configure_runit 0
 
     update_finalize
 }
@@ -399,7 +399,7 @@ post_upgrade() {
     configure_notification-daemon
     configure_selinux
 
-    configure_systemd 1
+    configure_runit 1
 
 
     update_finalize
@@ -425,7 +425,7 @@ pre_remove() {
         # Save the preset file to later use it to re-preset services there
         # once the Qubes OS preset file is removed.
         mkdir -p /run/qubes-uninstall
-        cp -f /usr/lib/systemd/system-preset/$qubes_preset_file /run/qubes-uninstall/
+        cp -f /usr/lib/runit/system-preset/$qubes_preset_file /run/qubes-uninstall/
     fi
 }
 
@@ -444,7 +444,7 @@ post_remove() {
 
     if [ "x$changed" != "x" ]
     then
-        systemctl daemon-reload
+        sv daemon-reload
     fi
 
 
@@ -455,6 +455,6 @@ post_remove() {
     rm -rf /var/lib/qubes/xdg
 
     for srv in qubes-sysinit qubes-misc-post qubes-mount-dirs qubes-qrexec-agent; do
-        systemctl disable $srv.service
+        sv disable $srv.service
     done
 }

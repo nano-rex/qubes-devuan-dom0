@@ -69,7 +69,7 @@ import qubes.vm.templatevm
 
 XMLPATH = "/var/lib/qubes/qubes-test.xml"
 CLASS_XMLPATH = "/var/lib/qubes/qubes-class-test.xml"
-TEMPLATE = "fedora-23"
+TEMPLATE = "antix-23"
 VMPREFIX = "test-inst-"
 CLSVMPREFIX = "test-cls-"
 
@@ -964,7 +964,7 @@ class SystemTestCase(QubesTestCase):
         await vm.start()
         try:
             await vm.run_for_stdio(
-                "systemctl is-system-running --wait", user="root"
+                "sv is-system-running --wait", user="root"
             )
         except subprocess.CalledProcessError:
             # don't fail the whole test if some service fails to start,
@@ -978,7 +978,7 @@ class SystemTestCase(QubesTestCase):
             input=b"DisableNetwork 0\n",
         )
         await vm.run_for_stdio(
-            "systemctl restart tor@default.service", user="root"
+            "sv restart tor@default.service", user="root"
         )
         try:
             await vm.run_for_stdio("pkill -f setup-wizard-dist", user="root")
@@ -1105,7 +1105,7 @@ class SystemTestCase(QubesTestCase):
             if ("/vm-" + prefix) not in volumes:
                 return
             subprocess.check_call(
-                ["sudo", "lvremove", "-f"]
+                ["doas", "lvremove", "-f"]
                 + [
                     vol.strip()
                     for vol in volumes.splitlines()
@@ -1452,20 +1452,20 @@ class SystemTestCase(QubesTestCase):
         assert p.returncode == 0, "sfdisk failed"
         # TODO: check if root_img is really file, not already block device
         p = subprocess.Popen(
-            ["sudo", "losetup", "-f", "-P", "--show", vm.storage.root_img],
+            ["doas", "losetup", "-f", "-P", "--show", vm.storage.root_img],
             stdout=subprocess.PIPE,
         )
         (loopdev, _) = p.communicate()
         loopdev = loopdev.strip()
         looppart = loopdev + "p1"
         assert p.returncode == 0, "losetup failed"
-        subprocess.check_call(["sudo", "mkfs.ext2", "-q", "-F", looppart])
+        subprocess.check_call(["doas", "mkfs.ext2", "-q", "-F", looppart])
         mountpoint = tempfile.mkdtemp()
-        subprocess.check_call(["sudo", "mount", looppart, mountpoint])
+        subprocess.check_call(["doas", "mount", looppart, mountpoint])
         try:
             subprocess.check_call(
                 [
-                    "sudo",
+                    "doas",
                     "grub2-install",
                     "--target",
                     "i386-pc",
@@ -1479,7 +1479,7 @@ class SystemTestCase(QubesTestCase):
             )
             grub_cfg = "{}/grub2/grub.cfg".format(mountpoint)
             subprocess.check_call(
-                ["sudo", "chown", "-R", os.getlogin(), mountpoint]
+                ["doas", "chown", "-R", os.getlogin(), mountpoint]
             )
             with open(grub_cfg, "w") as f:
                 f.write(
@@ -1517,9 +1517,9 @@ class SystemTestCase(QubesTestCase):
                 stderr=subprocess.DEVNULL,
             )
         finally:
-            subprocess.check_call(["sudo", "umount", mountpoint])
+            subprocess.check_call(["doas", "umount", mountpoint])
             shutil.rmtree(mountpoint)
-            subprocess.check_call(["sudo", "losetup", "-d", loopdev])
+            subprocess.check_call(["doas", "losetup", "-d", loopdev])
 
     def create_bootable_iso(self):
         """Create simple bootable ISO image.
@@ -1576,14 +1576,14 @@ class SystemTestCase(QubesTestCase):
                 efiboot_img = os.path.join(tmp_dir, "os/images/efiboot.img")
                 subprocess.check_call(
                     [
-                        "sudo",
+                        "doas",
                         "mkefiboot",
                         "--label=ANACONDA",
                         os.path.join(tmp_dir, "os/EFI/BOOT"),
                         efiboot_img,
                     ]
                 )
-                subprocess.check_call(["sudo", "chmod", "-R", "go+rX", tmp_dir])
+                subprocess.check_call(["doas", "chmod", "-R", "go+rX", tmp_dir])
                 subprocess.check_call(
                     [
                         "xorrisofs",

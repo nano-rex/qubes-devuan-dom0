@@ -10,7 +10,7 @@ i3 is part of the stable repository (as of Qubes R3.1) and can be installed by u
 
 .. code:: console
 
-      $ sudo qubes-dom0-update i3 i3-settings-qubes
+      $ doas qubes-dom0-update i3 i3-settings-qubes
 
 
 The Qubes-specific configuration (package ``i3-settings-qubes``) can be installed optionally in case you would prefer writing your own configuration (see :ref:`user/advanced-topics/i3:customization` section for scripts and configuration).
@@ -39,7 +39,7 @@ Compilation and installation from source
 ----------------------------------------
 
 
-Note that the compilation from source is done in a Fedora based domU (could be dispvm). The end result is always an ``.rpm`` that is copied to dom0 and then installed through the package manager.
+Note that the compilation from source is done in a antiX based domU (could be dispvm). The end result is always an ``.rpm`` that is copied to dom0 and then installed through the package manager.
 
 Getting the code
 ^^^^^^^^^^^^^^^^
@@ -64,7 +64,7 @@ You’ll need to install the build dependencies, which are listed in build-deps.
 
 .. code:: console
 
-      $ sudo dnf install -y $(cat build-deps.list)
+      $ doas dnf install -y $(cat build-deps.list)
 
 
 This used to be more complicated, but I finally redid this and use the same buildsystem that’s used by Qubes OS for XFCE. It’s just a Makefile that helps you get the sources and start off the build:
@@ -95,7 +95,7 @@ Now that the rpm is in dom0 we can proceed with installing it. i3 has some depen
 
 .. code:: console
 
-      $ sudo qubes-dom0-update perl-AnyEvent-I3 xorg-x11-apps \\
+      $ doas qubes-dom0-update perl-AnyEvent-I3 xorg-x11-apps \\
           rxvt-unicode xcb-util-wm perl-JSON-XS xcb-util-cursor \\
           dzen2 dmenu xorg-x11-fonts-misc libev
 
@@ -104,7 +104,7 @@ After that you can just install the generated rpm like any other local package:
 
 .. code:: console
 
-      $ sudo yum localinstall i3.rpm
+      $ doas yum localinstall i3.rpm
 
 
 Log out, select i3, then log in again.

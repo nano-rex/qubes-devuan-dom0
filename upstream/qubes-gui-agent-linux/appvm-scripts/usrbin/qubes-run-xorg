@@ -24,7 +24,7 @@
 # shellcheck disable=SC1091
 . /usr/lib/qubes/init/functions
 
-## This script is triggered by qubes-gui-agent systemd service.
+## This script is triggered by qubes-gui-agent runit service.
 
 #expects W, H, MEM and DEPTH env vars to be set by invoker, but use default
 # values if they aren't

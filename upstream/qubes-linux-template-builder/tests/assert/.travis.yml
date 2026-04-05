@@ -1,4 +1,4 @@
 language: bash
 script: bash tests.sh
 before_install:
-    - sudo apt-get install bc
+    - doas apt-get install bc

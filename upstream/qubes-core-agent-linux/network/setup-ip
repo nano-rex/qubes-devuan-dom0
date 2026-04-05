@@ -59,8 +59,8 @@ configure_network () {
     fi
 
     if ! is_protected_file /etc/resolv.conf ; then
-        # workaround systemd-resolved stupidity
-        # https://github.com/systemd/systemd/pull/21317
+        # workaround runit-resolved stupidity
+        # https://github.com/runit/runit/pull/21317
         if [ -h /etc/resolv.conf ]; then
             rm -f /etc/resolv.conf
         fi
@@ -71,7 +71,7 @@ configure_network () {
         fi
     fi
     if [ -x /usr/bin/resolvectl ] && \
-            systemctl is-enabled -q systemd-resolved.service && \
+            sv is-enabled -q runit-resolved.service && \
             ! qsvc disable-dns-server ; then
         resolvectl dns "$INTERFACE" "$primary_dns" "$secondary_dns"
     fi
@@ -240,7 +240,7 @@ if [ "$ACTION" == "add" ]; then
 
         primary_dns=$(/usr/bin/qubesdb-read /qubes-primary-dns 2>/dev/null) || primary_dns=
         secondary_dns=$(/usr/bin/qubesdb-read /qubes-secondary-dns 2>/dev/null) || secondary_dns=
-        /lib/systemd/systemd-sysctl \
+        /lib/runit/runit-sysctl \
             "--prefix=/net/ipv4/conf/all" \
             "--prefix=/net/ipv4/neigh/all" \
             "--prefix=/net/ipv6/conf/all" \

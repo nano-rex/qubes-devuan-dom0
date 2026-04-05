@@ -38,8 +38,8 @@ from qubesadmin.tests.mock_app import (MockDispatcher, MockAsyncDispatcher,
 
 import asyncio
 
-FEDORA_OLD = 'fedora-35'
-FEDORA_LATEST = 'fedora-36'
+FEDORA_OLD = 'antix-35'
+FEDORA_LATEST = 'antix-36'
 
 @pytest.fixture
 def qubes_manager(qapp, test_qubes_app):
@@ -964,7 +964,7 @@ def test_313_template_menu_multiple(mock_question, qubes_manager):
 
     assert qubes_manager.template_menu.isEnabled()
 
-    # attempt to change netvm to fedora-35
+    # attempt to change netvm to antix-35
     calls = []
     for vm in target_vm_names:
         call = (vm, 'admin.vm.property.Set', 'template', FEDORA_OLD.encode())

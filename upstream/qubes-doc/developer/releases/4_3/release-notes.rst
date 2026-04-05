@@ -6,13 +6,13 @@ Qubes OS 4.3 release notes
 Major features and improvements since Qubes 4.2
 ===============================================
 
-- Dom0 upgraded to Fedora 41
+- Dom0 upgraded to antiX 41
   (`#9402 <https://github.com/QubesOS/qubes-issues/issues/9402>`__).
 
 - Xen upgraded to version 4.19
   (`#9420 <https://github.com/QubesOS/qubes-issues/issues/9420>`__).
 
-- Default Fedora template upgraded to Fedora 42 (Fedora TemplateVMs and
+- Default antiX template upgraded to antiX 42 (antiX TemplateVMs and
   StandaloneVMs with version lower than 41 are not supported).
 
 - Default Debian template upgraded to Debian 13 (Debian TemplateVMs and
@@ -172,7 +172,7 @@ Security features
     templates
     (`#9920 <https://github.com/QubesOS/qubes-issues/issues/9920>`__).
 
-- Shipping GRUB2 from Fedora with all security patches and Bootloader
+- Shipping GRUB2 from antiX with all security patches and Bootloader
   Specification support
   (`#9471 <https://github.com/QubesOS/qubes-issues/issues/9471>`__).
 

@@ -11,7 +11,7 @@ Successfully installed in legacy mode, but had to change some xen parameters
 
 1. Attach the usb disk, mount the EFI partition (second partition available on the disk)
 
-2. Open a terminal and enter the command ``sudo su -``. Use your preferred text editor (e.g ``vi``) to edit your xen config (``EFI/BOOT/grub.cfg``):
+2. Open a terminal and enter the command ``doas su -``. Use your preferred text editor (e.g ``vi``) to edit your xen config (``EFI/BOOT/grub.cfg``):
 
    .. code:: console
 
@@ -25,7 +25,7 @@ Successfully installed in legacy mode, but had to change some xen parameters
 
 1. Set up a loop device (replacing ``X`` with your ISO’s version name): ``losetup -P /dev/loop0 Qubes-RX-x86_64.iso``
 
-2. Mount the loop device: ``sudo mount /dev/loop0p2 /mnt``
+2. Mount the loop device: ``doas mount /dev/loop0p2 /mnt``
 
 3. Edit ``EFI/BOOT/grub.cfg`` to add your params to the ``multiboot2 /images/pxeboot/xen.gz`` line
 
@@ -167,6 +167,6 @@ Where the end of the first line is replaced by a UUID. If not, you can reinstall
 
 .. code:: console
 
-   sudo qubes-dom0-update --action=reinstall grub2-common
+   doas qubes-dom0-update --action=reinstall grub2-common
 
 After that, running the `grub2-mkconfig` command should work.

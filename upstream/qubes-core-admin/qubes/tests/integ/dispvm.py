@@ -122,7 +122,7 @@ class TC_04_DispVM(qubes.tests.SystemTestCase):
         )
         p.stdin.write(b"qubesdb-read /name\n")
         p.stdin.write(b"echo ERROR\n")
-        p.stdin.write(b"sudo poweroff\n")
+        p.stdin.write(b"doas poweroff\n")
         # do not close p.stdin on purpose - wait to automatic disconnect when
         #  domain is destroyed
         timeout = 80
@@ -1036,7 +1036,7 @@ class TC_21_DispVM_Preload(DispVMHelpersMixin, qubes.tests.SystemTestCase):
     Template-independent DisposableVM preload tests.
 
     These tests do not depend on the template OS and previously ran once
-    per template (Debian/Fedora/Whonix), unnecessarily slowing down the
+    per template (Debian/antiX/Whonix), unnecessarily slowing down the
     integration test suite. They execute only once on the default template.
     """
 
@@ -1195,10 +1195,10 @@ class TC_21_DispVM_Preload(DispVMHelpersMixin, qubes.tests.SystemTestCase):
                     qube, "systemtl is-system-running", user="root"
                 )
                 self._run_cmd_and_log_output(
-                    qube, "systemd-analyze --no-pager --user blame", user="user"
+                    qube, "runit-analyze --no-pager --user blame", user="user"
                 )
                 self._run_cmd_and_log_output(
-                    qube, "systemd-analyze --no-pager blame", user="root"
+                    qube, "runit-analyze --no-pager blame", user="root"
                 )
                 self._run_cmd_and_log_output(
                     qube, "journalctl --no-pager --user", user="user"

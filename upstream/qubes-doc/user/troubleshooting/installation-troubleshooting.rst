@@ -33,7 +33,7 @@ This error message is related to the faulty creation of the USB installation med
 
 .. code:: console
 
-      $ sudo dd if=Qubes-RX-x86_64.iso of=/dev/sdY status=progress bs=1048576 && sync
+      $ doas dd if=Qubes-RX-x86_64.iso of=/dev/sdY status=progress bs=1048576 && sync
 
 
 
@@ -125,7 +125,7 @@ Here are the steps to fix this. Note that this allows sys-net and sys-usb to tak
 
 2. Add ``qubes.enable_insecure_pv_passthrough`` to ``GRUB_CMDLINE_LINUX`` in ``/etc/default/grub``
 
-3. Run ``sudo grub-mkconfig -o /boot/grub2/grub.cfg``
+3. Run ``doas grub-mkconfig -o /boot/grub2/grub.cfg``
 
 4. Reboot
 

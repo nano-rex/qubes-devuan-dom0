@@ -15,7 +15,7 @@ export PIPEWIRE_MODULES=/usr/lib/$(DEB_HOST_MULTIARCH)/pipewire-0.3
 PA_VER=$(shell pkg-config --modversion libpulse | cut -d "-" -f 1 || echo 0.0)
 
 %:
-	dh $@ --with systemd,xsf
+	dh $@ --with runit,xsf
 
 override_dh_auto_build:
 	make appvm
@@ -23,8 +23,8 @@ override_dh_auto_build:
 override_dh_auto_install:
 	make install-debian
 
-override_dh_systemd_start:
-	dh_systemd_start --no-restart-after-upgrade --no-restart-on-upgrade
+override_dh_runit_start:
+	dh_runit_start --no-restart-after-upgrade --no-restart-on-upgrade
 
 override_dh_install:
 	dh_install
@@ -32,8 +32,8 @@ override_dh_install:
 override_dh_missing:
 	dh_missing --fail-missing
 
-override_dh_installsystemduser:
-	dh_installsystemduser pipewire.socket pipewire-pulse.socket pipewire.service pipewire-pulse.service wireplumber.service
+override_dh_installrunituser:
+	dh_installrunituser pipewire.socket pipewire-pulse.socket pipewire.service pipewire-pulse.service wireplumber.service
 
 override_dh_gencontrol:
 	echo "pulse:Depends=pulseaudio (>= $(PA_VER)), pulseaudio (<< $(PA_VER).1)" >> debian/pulseaudio-qubes.substvars

@@ -64,7 +64,7 @@ After launching a VM console using ``qvm-console-dispvm``, you may look at the `
 
 .. code:: console
 
-      $ systemctl status -l qubes-gui-agent
+      $ sv status -l qubes-gui-agent
 
 
 

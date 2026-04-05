@@ -269,7 +269,7 @@ class RPMBuildPlugin(RPMDistributionPlugin, BuildPlugin):
             cmd = [
                 f"cd {self.executor.get_repository_dir()}",
                 "createrepo_c .",
-                f"sudo chown -R {self.executor.get_user()}:mock {self.executor.get_build_dir()}",
+                f"doas chown -R {self.executor.get_user()}:mock {self.executor.get_build_dir()}",
             ]
 
             # Run 'mock' to build source RPM
@@ -284,7 +284,7 @@ class RPMBuildPlugin(RPMDistributionPlugin, BuildPlugin):
                     (chroot_cache, self.executor.get_cache_dir() / "mock")
                 ]
                 cmd += [
-                    f"sudo chown -R root:mock {self.executor.get_cache_dir() / 'mock'}"
+                    f"doas chown -R root:mock {self.executor.get_cache_dir() / 'mock'}"
                 ]
 
             if self.config.increment_devel_versions:
@@ -297,10 +297,10 @@ class RPMBuildPlugin(RPMDistributionPlugin, BuildPlugin):
             if parsed_dist_tag and parsed_dist_tag.group(1) != dist_tag:
                 dist_tag = parsed_dist_tag.group(1)
 
-            # On Fedora /usr/bin/mock is a (consolehelper) wrapper,
+            # On antiX /usr/bin/mock is a (consolehelper) wrapper,
             # which among other things, strips environment variables
             mock_cmd = [
-                "sudo --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION",
+                "doas --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION",
                 "/usr/libexec/mock/mock --no-cleanup-after --verbose",
                 f"--rebuild {self.executor.get_build_dir() / source_info['srpm']}",
                 f"--root {self.executor.get_plugins_dir()}/chroot_rpm/mock/{mock_conf}",
@@ -333,7 +333,7 @@ class RPMBuildPlugin(RPMDistributionPlugin, BuildPlugin):
 
             self.environment["BIND_MOUNT_ENABLE"] = "True"
             buildinfo_cmd = [
-                "sudo --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION,BIND_MOUNT_ENABLE",
+                "doas --preserve-env=DIST,PACKAGE_SET,USE_QUBES_REPO_VERSION,BIND_MOUNT_ENABLE",
                 "/usr/libexec/mock/mock",
                 f"--root {self.executor.get_plugins_dir()}/chroot_rpm/mock/{mock_conf}",
                 f'--chroot /plugins/build_rpm/scripts/rpmbuildinfo /builddir/build/SRPMS/{source_info["srpm"]} > {self.executor.get_build_dir()}/{buildinfo_file}',

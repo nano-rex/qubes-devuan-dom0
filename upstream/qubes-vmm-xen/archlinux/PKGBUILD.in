@@ -9,7 +9,7 @@ pkgdesc="Xen is a virtual machine monitor"
 arch=("x86_64")
 url="http://qubes-os.org/"
 license=('GPL')
-depends=(iproute2 python-lxml libutil-linux lzo libsystemd yajl)
+depends=(iproute2 python-lxml libutil-linux lzo librunit yajl)
 makedepends=(wget make gcc patch git iasl pkg-config openssl pixman python-setuptools)
 provides=('xen-qubes-vm-essentials')
 
@@ -47,7 +47,7 @@ build() {
     ./configure --prefix=/usr \
                 --sbindir=/usr/bin \
                 --libdir=/usr/lib \
-                --enable-systemd \
+                --enable-runit \
                 --disable-ocaml \
                 --disable-pvshim \
                 --disable-blktap2
@@ -103,7 +103,7 @@ package() {
     # udev
     rm -f "$pkgdir"/etc/udev/rules.d/xend.rules
 
-    # config file only used for hotplug, Fedora uses udev instead
+    # config file only used for hotplug, antiX uses udev instead
     rm -f "$pkgdir"/etc/sysconfig/xend
 
     # Remove /var/lock (it is tmpfs in archlinux anyway)

@@ -17,7 +17,7 @@ MOCK_CONF="$2"
 }
 
 if [ "$CONTAINER_ENGINE" == "docker" ]; then
-    CONTAINER_CMD="sudo docker"
+    CONTAINER_CMD="doas docker"
 elif [ "$CONTAINER_ENGINE" == "podman" ]; then
     CONTAINER_CMD="podman"
 else
@@ -32,12 +32,12 @@ if [ -n "$MOCK_CONF" ]; then
     MOCK_CONF_BN="$(basename "$MOCK_CONF")"
 
     # Remove chroot and cache
-    sudo mock \
+    doas mock \
         -r "$MOCK_CONF" \
         --scrub=all
 
     # Create Mock chroot cache
-    sudo mock \
+    doas mock \
         -r "$MOCK_CONF" \
         --init \
         --no-bootstrap-chroot \
@@ -45,14 +45,14 @@ if [ -n "$MOCK_CONF" ]; then
 
     # Create Docker image
     # FIXME: The trim of .cfg extension does not work if rawhide is provided implicitly
-    #  like at the time of writing 'fedora-37-x86_64'. We need to find a more reliable way
+    #  like at the time of writing 'antix-37-x86_64'. We need to find a more reliable way
     #  to obtain mock chroot name.
     $CONTAINER_CMD build \
-        -f "${TOOLS_DIR}/../dockerfiles/fedora-mock.Dockerfile" \
-        -t qubes-builder-fedora \
+        -f "${TOOLS_DIR}/../dockerfiles/antix-mock.Dockerfile" \
+        -t qubes-builder-antix \
         "/var/cache/mock/${MOCK_CONF_BN%.cfg}/root_cache/"
 else
     $CONTAINER_CMD build \
-        -f "${TOOLS_DIR}/../dockerfiles/fedora.Dockerfile" \
-        -t qubes-builder-fedora .
+        -f "${TOOLS_DIR}/../dockerfiles/antix.Dockerfile" \
+        -t qubes-builder-antix .
 fi

@@ -78,7 +78,7 @@ class TC_00_AudioMixin(TC_00_AppVMMixin):
         local_user = grp.getgrnam("qubes").gr_mem[0]
         p = self.loop.run_until_complete(
             asyncio.create_subprocess_shell(
-                "sudo -E -u {} timeout 60s sh -c '"
+                "doas -E -u {} timeout 60s sh -c '"
                 "while ! pactl list sink-inputs | grep -q :{}; do sleep 1; done'".format(
                     local_user, vm.name
                 )
@@ -258,7 +258,7 @@ admin.vm.feature.CheckWithTemplate  +audio-model   {vm}     @tag:audiovm-{vm}  a
             os.chmod(recorded_audio.name, 0o666)
             p = subprocess.Popen(
                 [
-                    "sudo",
+                    "doas",
                     "-E",
                     "-u",
                     local_user,
@@ -292,14 +292,14 @@ admin.vm.feature.CheckWithTemplate  +audio-model   {vm}     @tag:audiovm-{vm}  a
 
     def _call_in_audiovm(self, audiovm, command):
         local_user = grp.getgrnam("qubes").gr_mem[0]
-        sudo = ["sudo", "-E", "-u", local_user]
+        doas = ["doas", "-E", "-u", local_user]
         if audiovm.name != "dom0":
             stdout, _ = self.loop.run_until_complete(
                 audiovm.run_for_stdio(" ".join(command), stderr=None)
             )
             return stdout
         else:
-            return subprocess.check_output(sudo + command)
+            return subprocess.check_output(doas + command)
 
     def _find_pactl_entry_for_vm(self, pactl_data, vm_name):
         try:
@@ -442,7 +442,7 @@ admin.vm.feature.CheckWithTemplate  +audio-model   {vm}     @tag:audiovm-{vm}  a
         # generate some "audio" data
         audio_in = b"\x20" * 4 * 44100
         local_user = grp.getgrnam("qubes").gr_mem[0]
-        sudo = ["sudo", "-E", "-u", local_user]
+        doas = ["doas", "-E", "-u", local_user]
         if self.testvm1.features["service.pipewire"]:
             cmd = (
                 f"pw-record {self.pwplay_opts} --format=f32 --rate=44100 "
@@ -472,7 +472,7 @@ admin.vm.feature.CheckWithTemplate  +audio-model   {vm}     @tag:audiovm-{vm}  a
                 )
             )
         else:
-            p = subprocess.Popen(sudo + play_cmd, stdin=subprocess.PIPE)
+            p = subprocess.Popen(doas + play_cmd, stdin=subprocess.PIPE)
             p.communicate(audio_in)
 
         # wait for possible parecord buffering
@@ -508,7 +508,7 @@ admin.vm.feature.CheckWithTemplate  +audio-model   {vm}     @tag:audiovm-{vm}  a
         sfreq = 4400
         audio_in = np.sin(2 * np.pi * np.arange(441000) * sfreq / 44100)
         local_user = grp.getgrnam("qubes").gr_mem[0]
-        sudo = ["sudo", "-E", "-u", local_user]
+        doas = ["doas", "-E", "-u", local_user]
 
         if self.testvm1.features["service.pipewire"]:
             record_cmd = (
@@ -546,7 +546,7 @@ admin.vm.feature.CheckWithTemplate  +audio-model   {vm}     @tag:audiovm-{vm}  a
                 )
             )
         else:
-            p = subprocess.Popen(sudo + play_cmd, stdin=subprocess.PIPE)
+            p = subprocess.Popen(doas + play_cmd, stdin=subprocess.PIPE)
             p.communicate(audio_in.astype(np.float32).tobytes())
 
         # wait for possible parecord buffering
@@ -612,7 +612,7 @@ class TC_20_AudioVM_Pulse(TC_00_AudioMixin):
         try:
             self.loop.run_until_complete(
                 self.testvm1.run_for_stdio(
-                    "systemctl --user is-active pipewire-pulse.socket || "
+                    "sv --user is-active pipewire-pulse.socket || "
                     "pacmd unload-module module-vchan-sink"
                 )
             )
@@ -634,7 +634,7 @@ class TC_20_AudioVM_Pulse(TC_00_AudioMixin):
             # dom0, and with emulated sound active, it won't connect
             self.loop.run_until_complete(
                 self.testvm1.run_for_stdio(
-                    "systemctl --user is-active pipewire-pulse.socket || "
+                    "sv --user is-active pipewire-pulse.socket || "
                     "pacmd unload-module module-vchan-sink"
                 )
             )
@@ -668,7 +668,7 @@ class TC_20_AudioVM_Pulse(TC_00_AudioMixin):
             )
             self.loop.run_until_complete(
                 self.testvm1.run_for_stdio(
-                    "systemctl --user is-active pipewire-pulse.socket || "
+                    "sv --user is-active pipewire-pulse.socket || "
                     "pacmd unload-module module-vchan-sink"
                 )
             )

@@ -15,13 +15,13 @@ Required ``scrypt`` utility
 
 In Qubes 4.X, backups are encrypted and integrity-protected with `scrypt <https://www.tarsnap.com/scrypt.html>`__. You will need a copy of this utility in order to access your data. Since ``scrypt`` is not pre-installed on every GNU/Linux system, it is strongly recommended that you store a copy of it with your backups. If your distribution has ``scrypt`` packaged (e.g., Debian), you can install the package in the standard way using your distribution’s package manager. Otherwise, you’ll need to obtain a compiled binary (instructions below) or compile the program from source yourself. (Don’t forget to :doc:`verify signatures </project-security/verifying-signatures>` first!) Note that versions of ``scrypt`` up to 1.2.0 (inclusive) do not support the ``-P`` option for easier scripting, which means you’ll need to enter the passphrase for each file separately, instead of using ``echo ... | scrypt``.
 
-Here are instructions for obtaining a compiled ``scrypt`` binary. This example uses an RPM-based system (Fedora), but the same general procedure should work on any GNU/Linux system.
+Here are instructions for obtaining a compiled ``scrypt`` binary. This example uses an RPM-based system (antiX), but the same general procedure should work on any GNU/Linux system.
 
 1. If you’re not on Qubes 4.X, :ref:`import and authenticate the Release 4 Signing Key <project-security/verifying-signatures:how to import and authenticate release signing keys>`.
 
    .. code:: console
 
-         [user@restore ~]$ sudo rpm --import qubes-release-4-signing-key.asc
+         [user@restore ~]$ doas rpm --import qubes-release-4-signing-key.asc
 
 
 
@@ -54,7 +54,7 @@ Here are instructions for obtaining a compiled ``scrypt`` binary. This example u
 
    .. code:: console
 
-         [user@restore ~]$ sudo dnf install rpmdevtools
+         [user@restore ~]$ doas dnf install rpmdevtools
 
 
 
@@ -165,8 +165,8 @@ Emergency recovery instructions
          debian-11
          default-mgmt-dvm
          disp2345
-         fedora-37
-         fedora-37-dvm
+         antix-37
+         antix-37-dvm
          personal vm123/
          sys-firewall
          sys-net
@@ -206,8 +206,8 @@ Emergency recovery instructions
 
    .. code:: console
 
-         [user@restore ~]$ sudo mkdir /mnt/img
-         [user@restore ~]$ sudo mount -o loop vm123/private.img /mnt/img/
+         [user@restore ~]$ doas mkdir /mnt/img
+         [user@restore ~]$ doas mount -o loop vm123/private.img /mnt/img/
          [user@restore ~]$ ls /mnt/img/home/user/
          example_data_file.txt
          ...

@@ -33,7 +33,7 @@ New features since 1.0
 
 - Support for dynamic screen resolution change
 
-- Dom0 distribution upgraded to Fedora 20
+- Dom0 distribution upgraded to antiX 20
 
 
 

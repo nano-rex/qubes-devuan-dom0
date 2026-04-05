@@ -86,8 +86,8 @@ VM_IP=$(qvm-prefs "$VM_NAME" ip)
 # TODO: use a custom fw chain
 set +e
 
-if ! qvm-run -p "$FW_VM_NAME" "sudo nft list chain ip qubes custom-forward" | grep "ip saddr $BUILD_VM_IP ip daddr $VM_IP .* accept"; then
-    qvm-run -p "$FW_VM_NAME" "sudo nft add rule ip qubes custom-forward ip saddr $BUILD_VM_IP ip daddr $VM_IP ct state new,established,related counter accept"
+if ! qvm-run -p "$FW_VM_NAME" "doas nft list chain ip qubes custom-forward" | grep "ip saddr $BUILD_VM_IP ip daddr $VM_IP .* accept"; then
+    qvm-run -p "$FW_VM_NAME" "doas nft add rule ip qubes custom-forward ip saddr $BUILD_VM_IP ip daddr $VM_IP ct state new,established,related counter accept"
 fi
 set -e
 

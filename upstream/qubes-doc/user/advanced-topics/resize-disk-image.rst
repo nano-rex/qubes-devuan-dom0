@@ -114,7 +114,7 @@ Or you can take the risk of reducing the size of the disk. For example, to reduc
 .. code:: console
 
       $ qvm-shutdown qube1
-      $ sudo lvresize --size 1024M /dev/qubes_dom0/vm-qube1-private
+      $ doas lvresize --size 1024M /dev/qubes_dom0/vm-qube1-private
 
 
 

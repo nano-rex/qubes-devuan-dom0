@@ -23,7 +23,7 @@ BuildRequires:	python%{python3_pkgversion}-PyQt6-devel
 BuildRequires:	python%{python3_pkgversion}-devel
 BuildRequires:	python%{python3_pkgversion}-setuptools
 BuildRequires:	make
-%if 0%{?fedora} >= 33 || 0%{?rhel} >= 7
+%if 0%{?antix} >= 33 || 0%{?rhel} >= 7
 BuildRequires:  qt6-qtbase-devel
 %else
 BuildRequires:  qt6-devel

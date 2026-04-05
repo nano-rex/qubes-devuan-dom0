@@ -26,7 +26,7 @@ AwesomeWM can be installed with the standard dom0 installation mechanisms.
 
 .. code:: console
 
-      $ sudo qubes-dom0-update awesome
+      $ doas qubes-dom0-update awesome
 
 
 That’s it. After logging out, you can select AwesomeWM in the login manager.
@@ -44,4 +44,4 @@ To :doc:`contribute code </introduction/contributing>` you may clone the Awesome
 
 For build instructions please check the repository *README*.
 
-The repository attempts to follow the upstream Fedora repository.
+The repository attempts to follow the upstream antiX repository.

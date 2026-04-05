@@ -23,7 +23,7 @@ if elementIn "${DIST}" bullseye bookworm trixie; then
     CHROOT_ARCHIVE="${ARTIFACTS_DIR}/cache/chroot/${DIST}/pbuilder/base.tgz"
 elif [[ "${DIST}" =~ fc[1-9]+ ]]; then
     # FIXME: fragile method to determine mock directory name
-    CHROOT_ARCHIVE="${ARTIFACTS_DIR}/cache/chroot/${DIST}/mock/fedora-${DIST#fc-}-x86_64/root_cache/cache.tar.gz"
+    CHROOT_ARCHIVE="${ARTIFACTS_DIR}/cache/chroot/${DIST}/mock/antix-${DIST#fc-}-x86_64/root_cache/cache.tar.gz"
 else
     echo "ERROR: unsupported distribution '${DIST}'."
     exit 1

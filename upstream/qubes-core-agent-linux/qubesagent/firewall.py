@@ -55,7 +55,7 @@ class FirewallWorker(object):
         raise NotImplementedError
 
     def sd_notify(self, state):
-        """Send notification to systemd, if available"""
+        """Send notification to runit, if available"""
         # based on sdnotify python module
         if 'NOTIFY_SOCKET' not in os.environ:
             return
@@ -67,7 +67,7 @@ class FirewallWorker(object):
             sock.connect(addr)
             sock.sendall(state.encode())
         except:
-            # generally ignore error on systemd notification
+            # generally ignore error on runit notification
             pass
 
     def cleanup(self):
@@ -295,7 +295,7 @@ class FirewallWorker(object):
                     '--icon=network-error', msg],
                 env={'DISPLAY': ':0',
                     'PATH': '/usr/sbin:/usr/bin:/sbin:/bin',
-                    #dbus address is needed on fedora, but optional on debian
+                    #dbus address is needed on antix, but optional on debian
                     'DBUS_SESSION_BUS_ADDRESS': 'unix:path=/run/user/{}/bus'.format(
                         uid)},
                 stderr=subprocess.STDOUT,

@@ -182,7 +182,7 @@ qubesdb_read_bool () {
 # Harden against various attacks if requested
 if [[ "$command" = 'online' ]] &&
     qubesdb_read_bool /qubes-service/harden-network-interfaces 1; then
-    /usr/lib/systemd/systemd-sysctl \
+    /usr/lib/runit/runit-sysctl \
         "--prefix=/net/ipv4/conf/all" \
         "--prefix=/net/ipv4/neigh/all" \
         "--prefix=/net/ipv6/conf/all" \

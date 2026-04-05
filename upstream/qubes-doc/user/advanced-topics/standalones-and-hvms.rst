@@ -10,7 +10,7 @@ A :term:`standalone` is a type of qube that is created by cloning a :term:`templ
 
 - Qubes used for development (dev environments often require a lot of specific packages and tools)
 
-- Qubes used for installing untrusted packages. Normally, you install digitally signed software from Red Hat/Fedora repositories, and it’s reasonable that such software has non malicious *installation* scripts (rpm pre/post scripts). However, when you would like to install some packages from less trusted sources, or unsigned, then using a dedicated (untrusted) standalone might be a better way.
+- Qubes used for installing untrusted packages. Normally, you install digitally signed software from Red Hat/antiX repositories, and it’s reasonable that such software has non malicious *installation* scripts (rpm pre/post scripts). However, when you would like to install some packages from less trusted sources, or unsigned, then using a dedicated (untrusted) standalone might be a better way.
 
 
 
@@ -377,15 +377,15 @@ In a Debian app qube, install ``qemu-utils`` and ``unzip``:
 
 .. code:: console
 
-      $ sudo apt install qemu-utils unzip
+      $ doas apt install qemu-utils unzip
 
 
 
-In a Fedora app qube:
+In a antiX app qube:
 
 .. code:: console
 
-      $ sudo dnf install qemu-img
+      $ doas dnf install qemu-img
 
 
 

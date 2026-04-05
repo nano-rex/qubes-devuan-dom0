@@ -18,7 +18,7 @@ By default, VMs kernels are provided by dom0. (See :ref:`here <user/advanced-top
 
 
 
-*Note*: In the examples below, although the specific version numbers might be old, the commands have been verified on R3.2 and R4.0 with debian-9 and fedora-26 templates.
+*Note*: In the examples below, although the specific version numbers might be old, the commands have been verified on R3.2 and R4.0 with debian-9 and antix-26 templates.
 
 To select which kernel a given VM will use, you can either use Qubes Manager (VM settings, advanced tab), or the ``qvm-prefs`` tool:
 
@@ -81,8 +81,8 @@ To check available versions in the ``qubes-dom0-current-testing`` repository:
       [root@dom0 ~]# qubes-dom0-update --enablerepo=qubes-dom0-current-testing --action=list kernel-latest kernel
       Using sys-whonix as UpdateVM for Dom0
       Updating package lists. This may take a while...
-      Fedora 37 - x86_64                              3.1 kB/s | 5.1 kB     00:01    
-      Fedora 37 - x86_64 - Updates                    3.2 kB/s | 5.0 kB     00:01                    
+      antiX 37 - x86_64                              3.1 kB/s | 5.1 kB     00:01    
+      antiX 37 - x86_64 - Updates                    3.2 kB/s | 5.0 kB     00:01                    
       Qubes Host Repository (updates)                 2.4 kB/s | 2.7 kB     00:01                    
       Qubes Host Repository (updates-testing)         3.1 kB/s | 2.8 kB     00:00                    
       Installed Packages                                                                             
@@ -104,8 +104,8 @@ Installing a new version from ``qubes-dom0-current-testing`` repository:
       [root@dom0 ~]# qubes-dom0-update --enablerepo=qubes-dom0-current-testing kernel
       Using sys-whonix as UpdateVM for Dom0
       Downloading packages. This may take a while...
-      Fedora 37 - x86_64                              1.8 kB/s | 5.1 kB     00:02    
-      Fedora 37 - x86_64 - Updates                    3.5 kB/s | 5.0 kB     00:01                    
+      antiX 37 - x86_64                              1.8 kB/s | 5.1 kB     00:02    
+      antiX 37 - x86_64 - Updates                    3.5 kB/s | 5.0 kB     00:01                    
       Qubes Host Repository (updates)                 2.1 kB/s | 2.7 kB     00:01                    
       Qubes Host Repository (updates-testing)         2.2 kB/s | 2.8 kB     00:01                    
       Last metadata expiration check: 0:00:01 ago on Fri Dec 26 21:49:54 2025.                       
@@ -202,17 +202,17 @@ Installing different VM kernel based on dom0 kernel
 
 It is possible to package a kernel installed in dom0 as a VM kernel. This makes it possible to use a VM kernel which is not packaged by the Qubes team. This includes:
 
-- using a Fedora kernel package
+- using a antiX kernel package
 
 - using a manually compiled kernel
 
 
 
-To prepare such a VM kernel, you need to install the ``qubes-kernel-vm-support`` package in dom0 and also have matching kernel headers installed (``kernel-devel`` package in the case of a Fedora kernel package). You can install requirements using ``qubes-dom0-update``:
+To prepare such a VM kernel, you need to install the ``qubes-kernel-vm-support`` package in dom0 and also have matching kernel headers installed (``kernel-devel`` package in the case of a antiX kernel package). You can install requirements using ``qubes-dom0-update``:
 
 .. code:: console
 
-      [user@dom0 ~]$ sudo qubes-dom0-update qubes-kernel-vm-support kernel-devel
+      [user@dom0 ~]$ doas qubes-dom0-update qubes-kernel-vm-support kernel-devel
       Using sys-firewall as UpdateVM to download updates for Dom0; this may take some time...
       Running command on VM: 'sys-firewall'...
       Loaded plugins: langpacks, post-transaction-actions, yum-qubes-hooks
@@ -256,7 +256,7 @@ Then you can call the ``qubes-prepare-vm-kernel`` tool to actually package the k
 
 .. code:: console
 
-      [user@dom0 ~]$ sudo qubes-prepare-vm-kernel 4.1.9-6.pvops.qubes.x86_64 4.1.qubes
+      [user@dom0 ~]$ doas qubes-prepare-vm-kernel 4.1.9-6.pvops.qubes.x86_64 4.1.qubes
       --> Building files for 4.1.9-6.pvops.qubes.x86_64 in /var/lib/qubes/vm-kernels/4.1.qubes
       ---> Recompiling kernel module (u2mfn)
       ---> Generating modules.img
@@ -287,7 +287,7 @@ Using kernel installed in the VM
 --------------------------------
 
 
-Non-minimal debian and fedora templates already have grub and related tools preinstalled so if you want to use one of the distribution kernels, all you need to do is clone either template to a new one, then:
+Non-minimal debian and antix templates already have grub and related tools preinstalled so if you want to use one of the distribution kernels, all you need to do is clone either template to a new one, then:
 
 .. code:: console
 
@@ -303,17 +303,17 @@ Depending on vm and kernel you're running, you may also want to disable memory b
       [user@dom0 ~]$ qvm-prefs <clonedtemplatename> memory 2000
 
 
-Installing kernel in Fedora VM
+Installing kernel in antiX VM
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Fedora distribution kernel
+antiX distribution kernel
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Install kernel and the packages required to run vm with its own kernel:
 
 .. code:: console
 
-  [root@fedora-vm ~]# dnf install kernel qubes-kernel-vm-support grub2
+  [root@antix-vm ~]# dnf install kernel qubes-kernel-vm-support grub2
 
 
 
@@ -321,26 +321,26 @@ Once the kernel is installed, you need to setup ``grub2`` by running:
 
 .. code:: console
 
-  [root@fedora-vm ~]# grub2-install /dev/xvda
+  [root@antix-vm ~]# grub2-install /dev/xvda
 
 
 
-Finally, you need to create a GRUB configuration. You may want to adjust some settings in ``/etc/default/grub``; for example, lower ``GRUB_TIMEOUT`` to speed up VM startup. Then, you need to generate the actual configuration. In Fedora it can be done using the ``grub2-mkconfig`` tool:
+Finally, you need to create a GRUB configuration. You may want to adjust some settings in ``/etc/default/grub``; for example, lower ``GRUB_TIMEOUT`` to speed up VM startup. Then, you need to generate the actual configuration. In antiX it can be done using the ``grub2-mkconfig`` tool:
 
 .. code:: console
 
-  [root@fedora-vm ~]# grub2-mkconfig -o /boot/grub2/grub.cfg
+  [root@antix-vm ~]# grub2-mkconfig -o /boot/grub2/grub.cfg
 
 
 
-Fedora custom kernel
+antiX custom kernel
 ^^^^^^^^^^^^^^^^^^^^
 
 If you are using a manually built kernel, you need to handle the initramfs and kernel modules on your own. Take a look at the ``dkms`` documentation, especially the ``dkms autoinstall`` command may be useful. If you did not see the ``kernel`` install rebuild your initramfs, or are using a manually built kernel, you will need to rebuild it yourself. Replace the version numbers in the example below with the ones appropriate to the kernel you are installing:
 
 .. code:: console
 
-  [root@fedora-vm ~]# dracut -f /boot/initramfs-4.15.14-200.fc26.x86_64.img 4.15.14-200.fc26.x86_64
+  [root@antix-vm ~]# dracut -f /boot/initramfs-4.15.14-200.fc26.x86_64.img 4.15.14-200.fc26.x86_64
 
 
 
@@ -348,15 +348,15 @@ Once the kernel is installed, you need to setup ``grub2`` by running:
 
 .. code:: console
 
-  [root@fedora-vm ~]# grub2-install /dev/xvda
+  [root@antix-vm ~]# grub2-install /dev/xvda
 
 
 
-Finally, you need to create a GRUB configuration. You may want to adjust some settings in ``/etc/default/grub``; for example, lower ``GRUB_TIMEOUT`` to speed up VM startup. Then, you need to generate the actual configuration. In Fedora it can be done using the ``grub2-mkconfig`` tool:
+Finally, you need to create a GRUB configuration. You may want to adjust some settings in ``/etc/default/grub``; for example, lower ``GRUB_TIMEOUT`` to speed up VM startup. Then, you need to generate the actual configuration. In antiX it can be done using the ``grub2-mkconfig`` tool:
 
 .. code:: console
 
-  [root@fedora-vm ~]# grub2-mkconfig -o /boot/grub2/grub.cfg
+  [root@antix-vm ~]# grub2-mkconfig -o /boot/grub2/grub.cfg
 
 
 
@@ -378,7 +378,7 @@ Then shutdown the VM.
 
 - If you require ``PVH`` mode, install ``grub2-xen-pvh`` in dom0 and change the kernel to ``pvgrub2-pvh``.
 
-- To install ``grub2-xen-pvh`` run the command ``sudo qubes-dom0-update pvgrub2-pvh`` in dom0.
+- To install ``grub2-xen-pvh`` run the command ``doas qubes-dom0-update pvgrub2-pvh`` in dom0.
 
 
 
@@ -412,7 +412,7 @@ If you are doing that on a qube based on “Debian Minimal” template, a grub g
 
 You can safely ignore this error message: ``grub2-probe: error: cannot find a GRUB drive for /dev/mapper/dmroot. Check your device.map``
 
-You may want to adjust some settings in ``/etc/default/grub`` (or better ``/etc/default/grub.d``). For example, lower ``GRUB_TIMEOUT`` to speed up VM startup. You need to re-run ``sudo update-grub`` after making grub configuration changes.
+You may want to adjust some settings in ``/etc/default/grub`` (or better ``/etc/default/grub.d``). For example, lower ``GRUB_TIMEOUT`` to speed up VM startup. You need to re-run ``doas update-grub`` after making grub configuration changes.
 
 Then shutdown the VM.
 
@@ -422,7 +422,7 @@ Depends on ``Virtualization`` mode setting:
 
 - ``Virtualization`` mode ``PV``: Possible, however use of ``Virtualization`` mode ``PV`` is discouraged for security purposes.
 
-  - If you require ``Virtualization`` mode ``PV``, install ``grub2-xen-pvh`` in dom0. This can be done by running command ``sudo qubes-dom0-update pvgrub2-pvh`` in dom0.
+  - If you require ``Virtualization`` mode ``PV``, install ``grub2-xen-pvh`` in dom0. This can be done by running command ``doas qubes-dom0-update pvgrub2-pvh`` in dom0.
 
 
 
@@ -497,7 +497,7 @@ The output should look like this:
       depmod....
 
         DKMS: install completed.
-      $ sudo update-initramfs -u
+      $ doas update-initramfs -u
       update-initramfs: Generating /boot/initrd.img-3.16.0-4-amd64
 
 

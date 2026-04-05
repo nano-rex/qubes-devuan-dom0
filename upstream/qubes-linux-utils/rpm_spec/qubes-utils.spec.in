@@ -13,11 +13,11 @@ Requires:	%{name}-libs
 Requires:	GraphicsMagick
 Requires:	python%{python3_pkgversion}-qubesimgconverter
 Requires:	(%{name}-selinux if selinux-policy)
-%{?systemd_requires}
+%{?runit_requires}
 %if 0%{?is_opensuse}
-BuildRequires:  (systemd or systemd-mini)
+BuildRequires:  (runit or runit-mini)
 %else
-BuildRequires:  systemd
+BuildRequires:  runit
 %endif
 BuildRequires:  python%{python3_pkgversion}-setuptools
 BuildRequires:  python3-rpm-macros
@@ -103,7 +103,7 @@ make all selinux BACKEND_VMM=@BACKEND_VMM@ PYTHON=%{__python3} NO_REBUILD_TABLE=
 
 %check
 make -C qrexec-lib check NO_REBUILD_TABLE=1
-%if 0%{?fedora} == 38
+%if 0%{?antix} == 38
 make -C qrexec-lib check-table-up-to-date NO_REBUILD_TABLE=1
 %endif
 
@@ -112,17 +112,17 @@ make install install-selinux DESTDIR=%{buildroot} PYTHON=%{__python3} NO_REBUILD
 
 %post
 # dom0
-%systemd_post qubes-meminfo-writer-dom0.service
+%runit_post qubes-meminfo-writer-dom0.service
 # VM
-%systemd_post qubes-meminfo-writer.service
+%runit_post qubes-meminfo-writer.service
 
 %preun
-%systemd_preun qubes-meminfo-writer-dom0.service
-%systemd_preun qubes-meminfo-writer.service
+%runit_preun qubes-meminfo-writer-dom0.service
+%runit_preun qubes-meminfo-writer.service
 
 %postun
-%systemd_postun_with_restart qubes-meminfo-writer-dom0.service
-%systemd_postun_with_restart qubes-meminfo-writer.service
+%runit_postun_with_restart qubes-meminfo-writer-dom0.service
+%runit_postun_with_restart qubes-meminfo-writer.service
 
 %post libs -p /sbin/ldconfig
 %postun libs -p /sbin/ldconfig

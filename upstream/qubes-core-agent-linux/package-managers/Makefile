@@ -12,9 +12,9 @@ QUBESLIBDIR = $(LIBDIR)/qubes
 QUBESSTATEDIR = $(STATEDIR)/qubes
 
 DIST_NAME =
-ifneq (,$(wildcard /etc/fedora-release))
-DIST = fc$(shell rpm --eval %{fedora})
-DIST_NAME = fedora
+ifneq (,$(wildcard /etc/antix-release))
+DIST = fc$(shell rpm --eval %{antix})
+DIST_NAME = antix
 else ifneq (,$(wildcard /etc/centos-release))
 ifeq (CentOSStream, $(shell lsb_release -is))
 DIST = centos-stream

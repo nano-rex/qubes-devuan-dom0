@@ -46,7 +46,7 @@ build() {
 #This package provides:
 # * qubes rpc scripts
 # * core linux tools and scripts
-# * core systemd services and drop-ins
+# * core runit services and drop-ins
 # * basic network functionality (setting IP address, DNS, default gateway)
 package_qubes-vm-core() {
     local release
@@ -101,8 +101,8 @@ package_qubes-vm-core() {
     cd "${_pkgnvr}"
 
     # shellcheck disable=SC2154
-    make -C boot DESTDIR="$pkgdir" SYSTEM_DROPIN_DIR=/usr/lib/systemd/system install
-    make install-corevm DESTDIR="$pkgdir" SBINDIR=/usr/bin LIBDIR=/usr/lib SYSLIBDIR=/usr/lib SYSTEM_DROPIN_DIR=/usr/lib/systemd/system USER_DROPIN_DIR=/usr/lib/systemd/user DIST=archlinux
+    make -C boot DESTDIR="$pkgdir" SYSTEM_DROPIN_DIR=/usr/lib/runit/system install
+    make install-corevm DESTDIR="$pkgdir" SBINDIR=/usr/bin LIBDIR=/usr/lib SYSLIBDIR=/usr/lib SYSTEM_DROPIN_DIR=/usr/lib/runit/system USER_DROPIN_DIR=/usr/lib/runit/user DIST=archlinux
     make -C app-menu install DESTDIR="$pkgdir" install LIBDIR=/usr/lib SYSLIBDIR=/usr/lib
     make -C misc install DESTDIR="$pkgdir" install LIBDIR=/usr/lib SYSLIBDIR=/usr/lib
     make -C qubes-rpc DESTDIR="$pkgdir" install
@@ -116,8 +116,8 @@ package_qubes-vm-core() {
 # (allows root access) and must not be leaked to disk.
 tmpfs                   /etc/pacman.d/gnupg/private-keys-v1.d       ramfs   defaults,noexec,nosuid,nodev,mode=600    0 0" >> "$pkgdir/etc/fstab.qubes"
 
-    # Install systemd script allowing to automount /lib/modules
-    install -m 644 "archlinux/PKGBUILD.qubes-ensure-lib-modules.service" "${pkgdir}/usr/lib/systemd/system/qubes-ensure-lib-modules.service"
+    # Install runit script allowing to automount /lib/modules
+    install -m 644 "archlinux/PKGBUILD.qubes-ensure-lib-modules.service" "${pkgdir}/usr/lib/runit/system/qubes-ensure-lib-modules.service"
 
     # Install pacman hook to update desktop icons
     mkdir -p "${pkgdir}/usr/share/libalpm/hooks/"
@@ -134,13 +134,13 @@ tmpfs                   /etc/pacman.d/gnupg/private-keys-v1.d       ramfs   defa
     install -m 0755 "package-managers/upgrades-installed-check" "${pkgdir}/usr/lib/qubes/"
     install -m 0755 "package-managers/upgrades-status-notify" "${pkgdir}/usr/lib/qubes/"
 
-    # Patch for /etc/sudoers default secure_path
-    install -d -m 0750 "${pkgdir}/etc/sudoers.d"
-    install -m 0440 "archlinux/PKGBUILD.qubes-secure-path.sudo" "${pkgdir}/etc/sudoers.d/qubes_secure_path"
+    # Patch for /etc/doasers default secure_path
+    install -d -m 0750 "${pkgdir}/etc/doasers.d"
+    install -m 0440 "archlinux/PKGBUILD.qubes-secure-path.doas" "${pkgdir}/etc/doasers.d/qubes_secure_path"
 
     # Archlinux specific: enable autologin on tty1
-    mkdir -p "$pkgdir/etc/systemd/system/getty@tty1.service.d/"
-    cat <<EOF > "$pkgdir/etc/systemd/system/getty@tty1.service.d/autologin.conf"
+    mkdir -p "$pkgdir/etc/runit/system/getty@tty1.service.d/"
+    cat <<EOF > "$pkgdir/etc/runit/system/getty@tty1.service.d/autologin.conf"
 [Service]
 ExecStart=
 ExecStart=-/sbin/agetty -o '-f -p -- \\u' --keep-baud 115200,38400,9600 %I linux
@@ -183,16 +183,16 @@ package_qubes-vm-networking() {
         SBINDIR=/usr/bin \
         LIBDIR=/usr/lib \
         SYSLIBDIR=/usr/lib \
-        SYSTEM_DROPIN_DIR=/usr/lib/systemd/system \
-        USER_DROPIN_DIR=/usr/lib/systemd/user \
+        SYSTEM_DROPIN_DIR=/usr/lib/runit/system \
+        USER_DROPIN_DIR=/usr/lib/runit/user \
         DIST=archlinux
     make install-netvm \
         DESTDIR="$pkgdir" \
         SBINDIR=/usr/bin \
         LIBDIR=/usr/lib \
         SYSLIBDIR=/usr/lib \
-        SYSTEM_DROPIN_DIR=/usr/lib/systemd/system \
-        USER_DROPIN_DIR=/usr/lib/systemd/user \
+        SYSTEM_DROPIN_DIR=/usr/lib/runit/system \
+        USER_DROPIN_DIR=/usr/lib/runit/user \
         DIST=archlinux
 }
 
@@ -224,8 +224,8 @@ package_qubes-vm-caja() {
         SBINDIR=/usr/bin \
         LIBDIR=/usr/lib \
         SYSLIBDIR=/usr/lib \
-        SYSTEM_DROPIN_DIR=/usr/lib/systemd/system \
-        USER_DROPIN_DIR=/usr/lib/systemd/user \
+        SYSTEM_DROPIN_DIR=/usr/lib/runit/system \
+        USER_DROPIN_DIR=/usr/lib/runit/user \
         DIST=archlinux
 }
 
@@ -249,8 +249,8 @@ package_qubes-vm-thunar() {
         SBINDIR=/usr/bin \
         LIBDIR=/usr/lib \
         SYSLIBDIR=/usr/lib \
-        SYSTEM_DROPIN_DIR=/usr/lib/systemd/system \
-        USER_DROPIN_DIR=/usr/lib/systemd/user \
+        SYSTEM_DROPIN_DIR=/usr/lib/runit/system \
+        USER_DROPIN_DIR=/usr/lib/runit/user \
         DIST=archlinux
 }
 
@@ -272,8 +272,8 @@ package_qubes-vm-nautilus() {
         SBINDIR=/usr/bin \
         LIBDIR=/usr/lib \
         SYSLIBDIR=/usr/lib \
-        SYSTEM_DROPIN_DIR=/usr/lib/systemd/system \
-        USER_DROPIN_DIR=/usr/lib/systemd/user \
+        SYSTEM_DROPIN_DIR=/usr/lib/runit/system \
+        USER_DROPIN_DIR=/usr/lib/runit/user \
         DIST=archlinux
 }
 
@@ -287,8 +287,8 @@ package_qubes-vm-passwordless-root() {
         SBINDIR=/usr/bin \
         LIBDIR=/usr/lib \
         SYSLIBDIR=/usr/lib \
-        SYSTEM_DROPIN_DIR=/usr/lib/systemd/system \
-        USER_DROPIN_DIR=/usr/lib/systemd/user \
+        SYSTEM_DROPIN_DIR=/usr/lib/runit/system \
+        USER_DROPIN_DIR=/usr/lib/runit/user \
         DIST=archlinux
 }
 
@@ -308,8 +308,8 @@ package_qubes-vm-dom0-updates() {
         SBINDIR=/usr/bin \
         LIBDIR=/usr/lib \
         SYSLIBDIR=/usr/lib \
-        SYSTEM_DROPIN_DIR=/usr/lib/systemd/system \
-        USER_DROPIN_DIR=/usr/lib/systemd/user \
+        SYSTEM_DROPIN_DIR=/usr/lib/runit/system \
+        USER_DROPIN_DIR=/usr/lib/runit/user \
         DIST=archlinux
 
     # already included in the main package

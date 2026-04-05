@@ -35,11 +35,11 @@
 } \
  \
 is_masked() { \
-    if [ ! -L %{_sysconfdir}/systemd/system/"$1" ] \
+    if [ ! -L %{_sysconfdir}/runit/system/"$1" ] \
     then \
        return 1 \
     fi \
-    target=`readlink %{_sysconfdir}/systemd/system/"$1" 2>/dev/null` || : \
+    target=`readlink %{_sysconfdir}/runit/system/"$1" 2>/dev/null` || : \
     if [ "$target" = "/dev/null" ] \
     then \
        return 0 \
@@ -48,7 +48,7 @@ is_masked() { \
 } \
 \
 mask() { \
-    ln -sf /dev/null %{_sysconfdir}/systemd/system/"$1" \
+    ln -sf /dev/null %{_sysconfdir}/runit/system/"$1" \
 } \
 \
 unmask() { \
@@ -56,7 +56,7 @@ unmask() { \
     then \
         return 0 \
     fi \
-    rm -f %{_sysconfdir}/systemd/system/"$1" \
+    rm -f %{_sysconfdir}/runit/system/"$1" \
 } \
 \
 preset_units() { \
@@ -87,9 +87,9 @@ preset_units() { \
                     # We masked this static unit before, now we unmask it. \
                     unmask "$unit_name" \
                 fi \
-                 systemctl --no-reload $extra_opts preset "$unit_name" >/dev/null 2>&1 || : \
+                 sv --no-reload $extra_opts preset "$unit_name" >/dev/null 2>&1 || : \
             else \
-                systemctl --no-reload $extra_opts preset "$unit_name" >/dev/null 2>&1 || : \
+                sv --no-reload $extra_opts preset "$unit_name" >/dev/null 2>&1 || : \
             fi \
         fi \
     done \
@@ -102,10 +102,10 @@ restore_units() { \
         if is_static "$unit_name" && is_masked "$unit_name" \
         then \
             # If the unit had been masked by us, we must unmask it here. \
-            # Otherwise systemctl preset will fail badly. \
+            # Otherwise sv preset will fail badly. \
             unmask "$unit_name" \
         fi \
-        systemctl --no-reload $extra_opts preset "$unit_name" >/dev/null 2>&1 || : \
+        sv --no-reload $extra_opts preset "$unit_name" >/dev/null 2>&1 || : \
     done \
 } \
 
@@ -162,7 +162,7 @@ Requires:   dbus-1-tools
 %else
 Requires:   dbus-tools
 %endif
-%if 0%{?fedora} >= 41
+%if 0%{?antix} >= 41
 Requires:   libdnf5-plugin-actions
 Requires:   python3-libdnf5
 %else
@@ -199,7 +199,7 @@ BuildRequires: qubes-libvchan-%{?qubes_backend_vmm}%{?!qubes_backend_vmm:@BACKEN
 BuildRequires: pam-devel
 BuildRequires: python%{python3_pkgversion}-setuptools
 BuildRequires: python%{python3_pkgversion}-devel
-BuildRequires: systemd
+BuildRequires: runit
 %if 0%{?rhel} >= 8
 BuildRequires: redhat-lsb
 %endif
@@ -210,7 +210,7 @@ BuildRequires: dconf
 BuildRequires: dnf
 BuildRequires: xfconf
 BuildRequires: glib2-devel
-BuildRequires: sudo
+BuildRequires: doas
 BuildRequires: dracut
 BuildRequires: ca-certificates
 BuildRequires: qubes-core-qrexec
@@ -229,7 +229,7 @@ Requires: (gnome-keyring if xdg-desktop-portal)
 %description
 The Qubes core files for installation inside a Qubes VM.
 
-%if 0%{?fedora} < 41
+%if 0%{?antix} < 41
 # not relevant anymore with DNF5
 %if 0%{?rhel} == 8
 %package -n python3-dnf-plugins-qubes-hooks
@@ -302,7 +302,7 @@ Requires:   fakeroot
 Conflicts:  qubes-core-vm < 4.0.0
 Requires:   tar
 Requires:   qubes-repo-templates
-%if 0%{?fedora} >= 42
+%if 0%{?antix} >= 42
 Requires:   util-linux-script
 %endif
 
@@ -363,12 +363,12 @@ Conflicts:  qubes-core-vm < 4.0.0
 Requires(pre): shadow
 %if 0%{?is_opensuse}
 # for directory ownership
-BuildRequires: sudo
+BuildRequires: doas
 BuildRequires: polkit
 %endif
 
 %description passwordless-root
-Configure sudo, PolicyKit and similar tool to not ask for any password when
+Configure doas, PolicyKit and similar tool to not ask for any password when
 switching from user to root. Since all the user data in a VM is accessible
 already from normal user account, there is not much more to guard there. Qubes
 VMs are single user systems.
@@ -438,8 +438,8 @@ fi || :
 
 %posttrans selinux
 %selinux_relabel_post
-%systemd_post qubes-relabel-root.service qubes-relabel-rw.service
-systemctl start selinux-autorelabel-mark.service
+%runit_post qubes-relabel-root.service qubes-relabel-rw.service
+sv start selinux-autorelabel-mark.service
 exit 0
 
 
@@ -505,7 +505,7 @@ make -C qubes-rpc/kde DESTDIR=$RPM_BUILD_ROOT install-kde5
 make -C qubes-rpc/nautilus DESTDIR=$RPM_BUILD_ROOT install
 make -C qubes-rpc/thunar DESTDIR=$RPM_BUILD_ROOT install
 
-%if 0%{?fedora} >= 41
+%if 0%{?antix} >= 41
 make -C package-managers PYTHON=%{__python3} DESTDIR=$RPM_BUILD_ROOT install install-dnf5
 %else
 make -C package-managers PYTHON=%{__python3} DESTDIR=$RPM_BUILD_ROOT install install-dnf
@@ -584,14 +584,14 @@ if [ -n "$rootdev" ] && [ "$(readlink -f "$rootdev")" = "/dev/xvda3" ]; then
     fi
 fi
 
-%if 0%{?fedora} < 41
+%if 0%{?antix} < 41
 if [ ! -f /etc/qubes-dnf-hardened ]; then
     dnf config-manager --setopt=zchunk=0 --setopt=deltarpm=0 --save &&
     touch /etc/qubes-dnf-hardened
 fi
 %endif
 
-# workaround for Fedora's systemd package bug
+# workaround for antiX's runit package bug
 # https://bugzilla.redhat.com/1559286
 if [ -d /var/lib/private ]; then
     chmod 700 /var/lib/private
@@ -703,12 +703,12 @@ fi
 /usr/lib/qubes/qubes-fix-nm-conf.sh
 
 %post networking
-%systemd_post qubes-firewall.service
-%systemd_post qubes-iptables.service
-%systemd_post qubes-antispoof.service
-%systemd_post qubes-network.service
-%systemd_post qubes-network-uplink.service
-%systemd_post qubes-updates-proxy.service
+%runit_post qubes-firewall.service
+%runit_post qubes-iptables.service
+%runit_post qubes-antispoof.service
+%runit_post qubes-network.service
+%runit_post qubes-network-uplink.service
+%runit_post qubes-updates-proxy.service
 
 %post thunar
 if [ "$1" = 1 ]; then
@@ -736,11 +736,11 @@ if [ "$1" = 0 ] ; then
 fi
 
 %preun networking
-%systemd_preun qubes-firewall.service
-%systemd_preun qubes-iptables.service
-%systemd_preun qubes-antispoof.service
-%systemd_preun qubes-network.service
-%systemd_preun qubes-updates-proxy.service
+%runit_preun qubes-firewall.service
+%runit_preun qubes-iptables.service
+%runit_preun qubes-antispoof.service
+%runit_preun qubes-network.service
+%runit_preun qubes-updates-proxy.service
 
 %if %{with selinux}
 %post selinux
@@ -817,7 +817,7 @@ if [ ! -f /.qubes-relabeled ]; then
     unshare --mount -- /bin/sh -euc 'mount --bind -- / /mnt && exec "$@"' sh setfiles -r /mnt -- \
       /etc/selinux/targeted/contexts/files/file_contexts \
       /mnt/proc /mnt/sys /mnt/dev /mnt/tmp /mnt/rw /mnt/home \
-      /mnt/usr/lib/systemd
+      /mnt/usr/lib/runit
     sed -i -- 's/^SELINUX=\(disabled\|enforcing\)/SELINUX=permissive/' /etc/selinux/config
     touch /.autorelabel
 fi
@@ -830,8 +830,8 @@ if [ "$1" -eq 0 ]; then
     exit 1
   fi
   rm -f /.qubes-relabeled || exit 1
-  %systemd_preun qubes-relabel-rw.service
-  %systemd_preun qubes-relabel-root.service
+  %runit_preun qubes-relabel-rw.service
+  %runit_preun qubes-relabel-root.service
   flock --no-fork -- %_selinux_store_policy_path/semanage.read.LOCK \
   sed -Ei -- "/^### QUBES START ###\$/,/^### QUBES END ###\$/d" \
     /etc/selinux/targeted/contexts/files/file_contexts.subs
@@ -966,15 +966,15 @@ rm -f %{name}-%{version}
 /etc/qubes/post-install.d/*.sh
 %config(noreplace) /etc/profile.d/qt_x11_no_mitshm.sh
 %config(noreplace) /etc/profile.d/zqubes_disable_lesspipe.sh
-%config(noreplace) /etc/sudoers.d/qt_x11_no_mitshm
-%config(noreplace) /etc/sudoers.d/umask
+%config(noreplace) /etc/doasers.d/qt_x11_no_mitshm
+%config(noreplace) /etc/doasers.d/umask
 %config(noreplace) /etc/sysctl.d/20_tcp_timestamps.conf
 %config(noreplace) /etc/qubes-suspend-module-blacklist
 %dir /etc/yum.conf.d
 %config(noreplace) /etc/yum.conf.d/qubes-proxy.conf
 %dir /etc/yum.repos.d
 %config(noreplace) /etc/yum.repos.d/qubes-r4.repo
-%if 0%{?fedora} >= 41
+%if 0%{?antix} >= 41
 /etc/dnf/libdnf5-plugins/actions.d/qubes-post-update.actions
 /etc/dnf/libdnf5.conf.d/10-qubes.conf
 %else
@@ -1063,9 +1063,9 @@ rm -f %{name}-%{version}
 /usr/share/glib-2.0/schemas/20_org.gnome.desktop.wm.preferences.qubes.gschema.override
 /usr/share/xdg-desktop-portal/portals.conf
 %{_mandir}/man1/qvm-*.1*
-# should be owned by systemd-network, but it isn't
-%dir /usr/lib/systemd/resolved.conf.d
-/usr/lib/systemd/resolved.conf.d/30_resolved-no-mdns-or-llmnr.conf
+# should be owned by runit-network, but it isn't
+%dir /usr/lib/runit/resolved.conf.d
+/usr/lib/runit/resolved.conf.d/30_resolved-no-mdns-or-llmnr.conf
 
 %dir %{python3_sitelib}/qubesagent-*-py*.egg-info
 %{python3_sitelib}/qubesagent-*-py*.egg-info/*
@@ -1086,7 +1086,7 @@ rm -f %{name}-%{version}
 %dir /mnt/removable
 %dir /rw
 
-%if 0%{?fedora} < 41
+%if 0%{?antix} < 41
 # not relevant anymore with DNF5
 %if 0%{?rhel} == 8
 %files -n python3-dnf-plugins-qubes-hooks
@@ -1146,7 +1146,7 @@ rm -f %{name}-%{version}
 %_unitdir/qubes-network-uplink.service
 %_unitdir/qubes-network-uplink@.service
 %_unitdir/qubes-updates-proxy.service
-/usr/lib/systemd/network/80-qubes-vif.link
+/usr/lib/runit/network/80-qubes-vif.link
 /usr/lib/qubes/init/network-proxy-setup.sh
 /usr/lib/qubes/init/network-proxy-stop.sh
 /usr/lib/qubes/init/network-uplink-wait.sh
@@ -1168,33 +1168,33 @@ rm -f %{name}-%{version}
 
 %files passwordless-root
 %config(noreplace) /etc/polkit-1/rules.d/00-qubes-allow-all.rules
-%config(noreplace) /etc/sudoers.d/qubes
+%config(noreplace) /etc/doasers.d/qubes
 %config(noreplace) /etc/pam.d/su.qubes
 
-%package systemd
+%package runit
 Summary:        Qubes unit files for SystemD init style
 License:        GPL-2.0-only
 Group:          Qubes
-Requires:       systemd
+Requires:       runit
 %if !0%{?is_opensuse}
-Requires(post): systemd-units
-Requires(preun): systemd-units
-Requires(postun): systemd-units
+Requires(post): runit-units
+Requires(preun): runit-units
+Requires(postun): runit-units
 %endif
 Requires:       qubes-core-agent = %{version}
 Provides:       qubes-core-agent-init-scripts
-Provides:       qubes-core-vm-systemd = %{version}-%{release}
-Obsoletes:      qubes-core-vm-systemd < 4.0.0
+Provides:       qubes-core-vm-runit = %{version}-%{release}
+Obsoletes:      qubes-core-vm-runit < 4.0.0
 Conflicts:      qubes-gui-agent < 4.1.0
 # preset units after possibly new are installed
 OrderWithRequires(post): qubes-core-agent-networking
 
-%description systemd
+%description runit
 The Qubes core startup configuration for SystemD init.
 
-%files systemd
+%files runit
 %defattr(-,root,root,-)
-/etc/systemd/system/xendriverdomain.service
+/etc/runit/system/xendriverdomain.service
 %_unitdir/dev-xvdc1-swap.service
 %_unitdir/home.mount
 %_unitdir/qubes-bind-dirs.service
@@ -1237,9 +1237,9 @@ The Qubes core startup configuration for SystemD init.
 %_unitdir/NetworkManager-wait-online.service.d/30_qubes.conf
 %_unitdir/polkit.service.d/30_qubes.conf
 %_unitdir/serial-getty@.service.d/30_qubes.conf
-%_unitdir/systemd-random-seed.service.d/30_qubes.conf
-%_unitdir/systemd-timesyncd.service.d/30_qubes.conf
-%_unitdir/systemd-logind.service.d/30_qubes.conf
+%_unitdir/runit-random-seed.service.d/30_qubes.conf
+%_unitdir/runit-timesyncd.service.d/30_qubes.conf
+%_unitdir/runit-logind.service.d/30_qubes.conf
 %_unitdir/tinyproxy.service.d/30_not_needed_in_qubes_by_default.conf
 %_unitdir/tor.service.d/30_qubes.conf
 %_unitdir/tor@default.service.d/30_qubes.conf
@@ -1247,9 +1247,9 @@ The Qubes core startup configuration for SystemD init.
 %_unitdir/tmp.mount.d/30_qubes.conf
 %dir %_unitdir/sysinit.target.d
 %_unitdir/sysinit.target.d/30_qubes.conf
-%_unitdir/systemd-nsresourced.service.d/30_qubes.conf
-%dir %_unitdir/systemd-nsresourced.socket.d
-%_unitdir/systemd-nsresourced.socket.d/30_qubes.conf
+%_unitdir/runit-nsresourced.service.d/30_qubes.conf
+%dir %_unitdir/runit-nsresourced.socket.d
+%_unitdir/runit-nsresourced.socket.d/30_qubes.conf
 %_unitdir/qubes-setup-minimal-vm.service
 %dir %_userunitdir/*.service.d
 %_userunitdir/tracker-extract-3.service.d/30_qubes.conf
@@ -1266,10 +1266,10 @@ The Qubes core startup configuration for SystemD init.
 %_userunitdir/gvfs-daemon.service.d/30_qubes.conf
 %_userunitdir/pipewire.service.d/40_minimal.conf
 %_userunitdir/wireplumber.service.d/30_qubes.conf
-/usr/lib/systemd/user-environment-generators/30-qubes.sh
+/usr/lib/runit/user-environment-generators/30-qubes.sh
 /usr/lib/qubes/setup-minimal-vm
 
-%post systemd
+%post runit
 
 changed=
 
@@ -1287,7 +1287,7 @@ else
     do
         if [ -f "$svc".service ]
         then
-            systemctl --no-reload preset "$svc".service
+            sv --no-reload preset "$svc".service
             changed=true
         fi
     done
@@ -1300,29 +1300,29 @@ then
     # FIXME: this ought to be done via kernel command line.
     # The fewer deviations of the template from the seed
     # image, the better.
-    rm -f %{_sysconfdir}/systemd/system/default.target
-    ln -s %{_unitdir}/multi-user.target %{_sysconfdir}/systemd/system/default.target
+    rm -f %{_sysconfdir}/runit/system/default.target
+    ln -s %{_unitdir}/multi-user.target %{_sysconfdir}/runit/system/default.target
     changed=true
 fi
 
 # remove old symlinks
-if [ -L %{_sysconfdir}/systemd/system/sysinit.target.wants/qubes-random-seed.service ]
+if [ -L %{_sysconfdir}/runit/system/sysinit.target.wants/qubes-random-seed.service ]
 then
-    rm -f %{_sysconfdir}/systemd/system/sysinit.target.wants/qubes-random-seed.service
+    rm -f %{_sysconfdir}/runit/system/sysinit.target.wants/qubes-random-seed.service
     changed=true
 fi
-if [ -L %{_sysconfdir}/systemd/system/multi-user.target.wants/qubes-mount-home.service ]
+if [ -L %{_sysconfdir}/runit/system/multi-user.target.wants/qubes-mount-home.service ]
 then
-    rm -f %{_sysconfdir}/systemd/system/multi-user.target.wants/qubes-mount-home.service
+    rm -f %{_sysconfdir}/runit/system/multi-user.target.wants/qubes-mount-home.service
     changed=true
 fi
 
-if [ "x$changed" != "x" ] && [ -e /run/systemd/system ]
+if [ "x$changed" != "x" ] && [ -e /run/runit/system ]
 then
-    systemctl daemon-reload
+    sv daemon-reload
 fi
 
-%preun systemd
+%preun runit
 
 if [ $1 -eq 0 ] ; then
     # Run this only during uninstall.
@@ -1332,7 +1332,7 @@ if [ $1 -eq 0 ] ; then
     cp -f %{_presetdir}/%qubes_preset_file %{_rundir}/qubes-uninstall/
 fi
 
-%postun systemd
+%postun runit
 
 changed=
 
@@ -1347,9 +1347,9 @@ then
     changed=true
 fi
 
-if [ "x$changed" != "x" ] && [ -e /run/systemd/system ]
+if [ "x$changed" != "x" ] && [ -e /run/runit/system ]
 then
-    systemctl daemon-reload
+    sv daemon-reload
 fi
 
 %changelog
