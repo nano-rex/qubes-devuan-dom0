@@ -44,7 +44,9 @@ if [[ ! -f /usr/share/keyrings/devuan-archive-keyring.gpg ]]; then
     exit 1
 fi
 
-export PYTHONPATH="$BUILDER_DIR${PYTHONPATH:+:$PYTHONPATH}"
+PYTHONPATH="$BUILDER_DIR${PYTHONPATH:+:$PYTHONPATH}"
+export PYTHONPATH
+export QUBES_SERVICE_MANAGER=${QUBES_SERVICE_MANAGER:-runit}
 
 cd "$BUILDER_DIR"
 exec ./qubesbuilder-cli --builder-conf "$CONFIG_FILE" "$@"
