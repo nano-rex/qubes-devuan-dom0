@@ -5,6 +5,7 @@ Maintainer: nano-rex <opensource@nano-rex.local>
 Build-Depends:
  debhelper-compat (= 13),
  acpica-tools,
+ bison,
  libglib2.0-dev,
  libncurses-dev,
  libpixman-1-dev,
