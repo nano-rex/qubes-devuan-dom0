@@ -13,7 +13,6 @@ Build-Depends:
  python3-jinja2,
  python3-docutils,
  python3-dbus,
- python3-xen,
  python3-libvirt,
  graphicsmagick,
  make

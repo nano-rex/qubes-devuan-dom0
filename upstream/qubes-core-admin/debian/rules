@@ -14,12 +14,15 @@ override_dh_auto_build:
 override_dh_auto_install:
 	$(MAKE) install -C linux/aux-tools DESTDIR=$(DESTDIR)
 	$(MAKE) install -C linux/system-config DESTDIR=$(DESTDIR)
-	$(PYTHON) setup.py install -O1 --skip-build --root $(DESTDIR)
+	$(PYTHON) setup.py install -O1 --skip-build --root $(DESTDIR) --prefix=/usr --install-layout=deb
 	$(MAKE) install -C relaxng DESTDIR=$(DESTDIR)
 	mkdir -p $(DESTDIR)/etc/qubes
 	cp -f etc/qmemman.conf $(DESTDIR)/etc/qubes/
 	mkdir -p $(DESTDIR)/etc/qubes-rpc
 	mkdir -p $(DESTDIR)/etc/qubes/policy.d/include
+	mkdir -p $(DESTDIR)/var/lib/qubes
+	mkdir -p $(DESTDIR)/var/log/qubes
+	mkdir -p $(DESTDIR)/var/run/qubes
 	install -m 0644 qubes-rpc-policy/90-default.policy \
 		$(DESTDIR)/etc/qubes/policy.d/90-default.policy
 	install -m 0644 qubes-rpc-policy/85-admin-backup-restore.policy \
@@ -39,14 +42,20 @@ override_dh_auto_install:
 	install -m 0755 qvm-tools/qubes-hcl-report $(DESTDIR)/usr/bin/qubes-hcl-report
 	install -m 0755 qvm-tools/qvm-sync-clock $(DESTDIR)/usr/bin/qvm-sync-clock
 	install -m 0755 qvm-tools/qvm-console-dispvm $(DESTDIR)/usr/bin/qvm-console-dispvm
+	mkdir -p $(DESTDIR)/usr/share/qubes
+	cp -a templates $(DESTDIR)/usr/share/qubes/
+	cp -a tests-data $(DESTDIR)/usr/share/qubes/
+	rm -f $(DESTDIR)/usr/share/qubes/templates/README
+	mkdir -p $(DESTDIR)/usr/lib/qubes
+	cp -a tests $(DESTDIR)/usr/lib/qubes/
 	install -d $(DESTDIR)/etc/qubes
 	printf 'runit\n' > $(DESTDIR)/etc/qubes/service-manager
 	install -d $(DESTDIR)/etc/sv
-	cp -a $(CURDIR)/../../porting/runit/dom0/qubesd $(DESTDIR)/etc/sv/
-	cp -a $(CURDIR)/../../porting/runit/dom0/qubes-core $(DESTDIR)/etc/sv/
-	cp -a $(CURDIR)/../../porting/runit/dom0/qubes-preload-dispvm $(DESTDIR)/etc/sv/
-	cp -a $(CURDIR)/../../porting/runit/dom0/qubes-qrexec-policy-daemon $(DESTDIR)/etc/sv/
-	cp -a $(CURDIR)/../../porting/runit/dom0/qubes-meminfo-writer-dom0 $(DESTDIR)/etc/sv/
+	cp -a $(CURDIR)/debian/runit/dom0/qubesd $(DESTDIR)/etc/sv/
+	cp -a $(CURDIR)/debian/runit/dom0/qubes-core $(DESTDIR)/etc/sv/
+	cp -a $(CURDIR)/debian/runit/dom0/qubes-preload-dispvm $(DESTDIR)/etc/sv/
+	cp -a $(CURDIR)/debian/runit/dom0/qubes-qrexec-policy-daemon $(DESTDIR)/etc/sv/
+	cp -a $(CURDIR)/debian/runit/dom0/qubes-meminfo-writer-dom0 $(DESTDIR)/etc/sv/
 
 override_dh_auto_clean:
 	:
