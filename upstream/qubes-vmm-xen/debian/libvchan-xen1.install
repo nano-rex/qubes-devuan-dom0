@@ -1,6 +1,6 @@
-debian/tmp/usr/lib/*/libxentoolcore.so.*
-debian/tmp/usr/lib/*/libxentoollog.so.*
-debian/tmp/usr/lib/*/libxenstore.so.*
-debian/tmp/usr/lib/*/libxenevtchn.so.*
-debian/tmp/usr/lib/*/libxengnttab.so.*
-debian/tmp/usr/lib/*/libxenvchan.so.*
+usr/lib/*/libxentoolcore.so.*
+usr/lib/*/libxentoollog.so.*
+usr/lib/*/libxenstore.so.*
+usr/lib/*/libxenevtchn.so.*
+usr/lib/*/libxengnttab.so.*
+usr/lib/*/libxenvchan.so.*
