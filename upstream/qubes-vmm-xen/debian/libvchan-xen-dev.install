@@ -1,6 +1,8 @@
 usr/include/libxenvchan.h
 usr/include/xenstore.h
 usr/include/xenstore_lib.h
+usr/include/xenstore-compat/xs.h
+usr/include/xenstore-compat/xs_lib.h
 usr/include/xentoolcore.h
 usr/include/xentoollog.h
 usr/include/xs.h
