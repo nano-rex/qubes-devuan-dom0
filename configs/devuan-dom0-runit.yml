@@ -28,11 +28,15 @@ distributions:
 components:
   - builder-debian:
       packages: false
-  - vmm-xen
+  - vmm-xen:
+      url: /home/user/github/qubes-devuan-dom0/upstream/qubes-vmm-xen
+      verification-mode: insecure
   - qubes-release
   - linux-kernel
   - linux-utils
-  - core-qrexec
+  - core-qrexec:
+      url: /home/user/github/qubes-devuan-dom0/upstream/qubes-core-qrexec
+      verification-mode: insecure
   - core-admin
   - gui-daemon
   - core-agent-linux
