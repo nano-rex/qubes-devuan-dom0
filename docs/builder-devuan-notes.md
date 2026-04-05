@@ -1,9 +1,9 @@
-# Builder Devuan Notes
+# Builder antiX Notes
 
 ## Scope
 
 This note tracks the minimum builder changes needed so the imported Debian
-build pipeline can recognize and provision a `Devuan` target.
+build pipeline can recognize and provision a `antiX` target.
 
 ## Changes made in this repo
 
@@ -23,11 +23,11 @@ build pipeline can recognize and provision a `Devuan` target.
 
 ## Remaining builder work
 
-1. validate whether the selected Devuan mirror and keyring approach are enough
+1. validate whether the selected antiX mirror and keyring approach are enough
    for `pbuilder create`
-2. add Devuan archive keyrings to the builder key directory if current
+2. add antiX archive keyrings to the builder key directory if current
    debootstrap verification expects them by filename
-3. test publish skeleton generation for the Devuan release tree
+3. test publish skeleton generation for the antiX release tree
 
 ## Practical implication
 

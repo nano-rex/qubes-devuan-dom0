@@ -2,12 +2,12 @@
 
 ## qubes-qubes-release
 
-The imported package is Fedora/RPM-centric.
-Main replacements needed for a Devuan dom0 path:
+The imported package is RPM-centric.
+Main replacements needed for a antiX dom0 path:
 - yum/dnf repo definitions -> apt repository definitions
 - rpm GPG key import flow -> apt trust/signing flow
-- Fedora release identity -> project-specific Devuan dom0 identity
-- rpm macros/sysusers assumptions -> Debian/Devuan equivalents or removals
+- upstream release identity -> project-specific antiX dom0 identity
+- rpm macros/sysusers assumptions -> Debian/antiX equivalents or removals
 
 This repo now includes a minimal Debian package scaffold for:
 - `qubes-release-dom0`

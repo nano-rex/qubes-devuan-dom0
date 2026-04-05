@@ -25,7 +25,7 @@ if [[ ! -x "$CLI" ]]; then
 fi
 
 missing=()
-for cmd in python3 sudo pbuilder; do
+for cmd in python3 doas pbuilder; do
     if ! command -v "$cmd" >/dev/null 2>&1; then
         missing+=("$cmd")
     fi
@@ -37,25 +37,15 @@ if [[ ${#missing[@]} -gt 0 ]]; then
     exit 1
 fi
 
-sudo_output=""
-if ! sudo_output="$(sudo -n true 2>&1)"; then
-    first_line="${sudo_output%%$'\n'*}"
-    if [[ -z "$first_line" ]]; then
-        first_line="<no output>"
-    fi
-    echo "Unable to run sudo: $first_line" >&2
-    if [[ "$sudo_output" == *"no new privileges"* ]]; then
-        echo "The build host is using the 'no new privileges' flag, so sudo cannot elevate to root." >&2
-        echo "Run the builder on a host that allows sudo (or doas) to execute commands as root." >&2
-    elif [[ "$sudo_output" == *"password is required"* ]] || [[ "$sudo_output" == *"Authentication is required"* ]] || [[ "$sudo_output" == *"a password is required"* ]]; then
-        echo "Configure passwordless sudo (or install doas) so the builder can create pbuilder chroots without interactive prompts." >&2
-    fi
+if ! doas -n true >/dev/null 2>&1; then
+    echo "Unable to run doas non-interactively." >&2
+    echo "Configure /etc/doas.conf to allow your user elevated access, or install doas if missing." >&2
     exit 1
 fi
 
 if [[ ! -f /usr/share/keyrings/devuan-archive-keyring.gpg ]]; then
     echo "Missing /usr/share/keyrings/devuan-archive-keyring.gpg" >&2
-    echo "The Devuan builder config expects a real Devuan archive keyring on the host." >&2
+    echo "The antiX builder config expects a real antiX archive keyring on the host." >&2
     echo "Set QUBES_DEVUAN_CONFIG to an alternate config if you need a different keyring path." >&2
     exit 1
 fi

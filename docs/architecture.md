@@ -2,7 +2,7 @@
 
 ## Objective
 
-Build a Qubes-derived platform that preserves the core security model while replacing the default `dom0` userspace base with `Devuan + runit`.
+Build a Qubes-derived platform that preserves the core security model while replacing the default `dom0` userspace base with `antiX + runit`.
 
 ## Security model
 
@@ -21,7 +21,7 @@ The target system keeps the upstream Qubes model:
 - bootloader and early userspace
 
 2. Dom0 base system
-- Devuan userspace
+- antiX userspace
 - `runit` as init/service supervision
 - `/usr/bin/doas` as the privilege escalator for dom0 and builder scripts
 - Qubes admin tooling packaged for the dom0 base
@@ -59,7 +59,7 @@ Required work:
 ## First milestone definition
 
 A successful first milestone means:
-- custom build metadata exists for Devuan+runit dom0
+- custom build metadata exists for antiX+runit dom0
 - required Qubes components are mapped to packages/services
 - boot path and service startup order are defined
 - initial builder pipeline tasks are identified

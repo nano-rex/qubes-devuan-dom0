@@ -30,7 +30,7 @@ check_doas() {
 
 if ! check_doas; then
     echo "Please install doas and mark it setuid-root." >&2
-    echo "  sudo chown root:root /usr/bin/doas" >&2
-    echo "  sudo chmod 4755 /usr/bin/doas" >&2
+    echo "  su -c 'chown root:root /usr/bin/doas'" >&2
+    echo "  su -c 'chmod 4755 /usr/bin/doas'" >&2
     exit 1
 fi

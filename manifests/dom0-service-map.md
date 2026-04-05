@@ -1,7 +1,7 @@
 # Dom0 Service Map
 
 This file identifies the first `dom0` services that need explicit `runit`
-ports for a `Devuan + runit` target.
+ports for a `antiX + runit` target.
 
 ## Priority 1
 

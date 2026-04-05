@@ -20,7 +20,7 @@ bash -n "$ROOT_DIR"/scripts/*.sh
 
 echo "== Python syntax =="
 python3 -m py_compile \
-    "$ROOT_DIR/tools/sudo" \
+    "$ROOT_DIR/tools/doas-shim" \
     "$ROOT_DIR/upstream/qubes-builderv2/qubesbuilder/plugins/build_deb/__init__.py"
 
 echo "== Runit asset permissions =="

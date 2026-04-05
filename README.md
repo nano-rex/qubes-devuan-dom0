@@ -1,6 +1,6 @@
 # qubesos-runit
 
-A standalone project workspace that builds a Qubes-derived system using Devuan + runit + doas in dom0.
+A standalone project workspace that builds a Qubes-derived system using antiX + runit + doas in dom0.
 
 ## Scope
 
@@ -9,7 +9,7 @@ It is not a contribution branch for the upstream Qubes OS repositories.
 Official Qubes sources are imported locally as vendor snapshots and will be modified here as needed.
 
 Primary target:
-- `dom0`: Devuan with `runit` and `doas`
+- `dom0`: antiX with `runit` and `doas`
 
 Non-goals for the first milestone:
 - Artix / OpenRC dom0
@@ -21,12 +21,12 @@ Non-goals for the first milestone:
 
 1. Define a custom `dom0` distro target.
 2. Adapt the Qubes build workflow needed to build a bootable system.
-3. Rework the Qubes core components for a Devuan-based `dom0`.
+3. Rework the Qubes core components for a antiX-based `dom0`.
 4. Prove a minimal boot path with Xen and core admin services.
 
-## Why Devuan first
+## Why antiX first
 
-Compared with Artix/OpenRC, Devuan is closer to Debian-family packaging and a more realistic base for a first Qubes-style dom0 fork.
+Compared with Artix/OpenRC, antiX is closer to Debian-family packaging and a more realistic base for a first Qubes-style dom0 fork.
 
 ## Planned phases
 
@@ -47,15 +47,15 @@ Compared with Artix/OpenRC, Devuan is closer to Debian-family packaging and a mo
 - `docs/devuan-port-notes.md`: first-pass builder and init blockers
 - `docs/whonix-templates.md`: plan for the Whonix gateway/workstation templates
 - `docs/runit-vm-autostart.md`: proposal for replacing `qubes-vm@.service` with runit
-- `docs/devuan-build-host.md`: Devuan host bootstrap path for local builder execution
-- `manifests/dom0-packages.md`: Devuan+runit dom0 package plan
-- `manifests/devuan-build-host-packages.txt`: Devuan build host prerequisites
+- `docs/devuan-build-host.md`: antiX host bootstrap path for local builder execution
+- `manifests/dom0-packages.md`: antiX+runit dom0 package plan
+- `manifests/devuan-build-host-packages.txt`: antiX build host prerequisites
 - `manifests/dom0-service-map.md`: dom0 services that must be ported to runit
 - `notes/research.md`: current assumptions and unresolved questions
 - `upstream/`: imported upstream Qubes source snapshots tracked directly in this repo
 - `configs/`: local build/config scaffolding for this standalone project
 - `scripts/run-devuan-builder.sh`: local wrapper for the vendored builder
-- `scripts/check-devuan-build-host.sh`: checks the current Devuan host against required packages
+- `scripts/check-devuan-build-host.sh`: checks the current antiX host against required packages
 
 ## Imported upstream sources
 
@@ -77,7 +77,7 @@ These directories were imported from official Qubes repositories and are now tra
 
 ## Current status
 
-Planning scaffold plus imported source trees, initial Devuan-aware builder patches,
+Planning scaffold plus imported source trees, initial antiX-aware builder patches,
 first packaging scaffolds, and a concrete local builder wrapper.
 
 ## Build workflow
@@ -92,7 +92,7 @@ cd /home/user/github/qubesos-runit
 ```
 
 The installer stages are required before an ISO can be generated, and they rely on
-the Devuan-aware mock configuration added under `upstream/qubes-builderv2/qubesbuilder/plugins/installer/mock/`.
+the antiX-aware mock configuration added under `upstream/qubes-builderv2/qubesbuilder/plugins/installer/mock/`.
 
 Details and assumptions:
 - [`docs/build-devuan-dom0.md`](/home/user/github/qubesos-runit/docs/build-devuan-dom0.md)
@@ -111,7 +111,7 @@ temporary `qubes.xml` fixture.
 
 ## Host validation
 
-Before running the builder, make sure the workstation satisfies the Devuan host manifest.
+Before running the builder, make sure the workstation satisfies the antiX host manifest.
 Read [`docs/devuan-build-host.md`](/home/user/github/qubesos-runit/docs/devuan-build-host.md)
 for the recommended packages and use `scripts/check-devuan-build-host.sh` to verify the current state.
 It enumerates the packages listed in `manifests/devuan-build-host-packages.txt`
@@ -147,7 +147,7 @@ point, and adjust the `root`/`:wheel` lines to match your personal `wheel` group
 
 ## Whonix templates
 
-The Whonix gateway and workstation templates will also ride on the Devuan + runit foundation.
+The Whonix gateway and workstation templates will also ride on the antiX + runit foundation.
 Each template should reuse the dom0 runit assets wherever possible and rely on the `doas`-based root helpers
 rather than the upstream init stack. The long-term plan is to mirror the upstream Whonix packaging
 while swapping the backend distro and init stack; once the dom0 packages are running under runit we can extend

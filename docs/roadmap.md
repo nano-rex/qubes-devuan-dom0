@@ -11,7 +11,7 @@
 - identify which components build for dom0
 - identify build-time distro assumptions
 
-## Phase 3: Devuan dom0 packaging plan
+## Phase 3: antiX dom0 packaging plan
 - define package names and dependency strategy
 - define `runit` service layout
 - define filesystem/service conventions

@@ -1,6 +1,6 @@
 # Runit-based VM autostart
 
-Upstream Qubes uses `qubes-vm@.service` to orchestrate autostarted qubes and to drive orderly shutdowns. In this Devuan+Runit port we need an equivalent that:
+Upstream Qubes uses `qubes-vm@.service` to orchestrate autostarted qubes and to drive orderly shutdowns. In this antiX+Runit port we need an equivalent that:
 
 1. Starts on boot and reads the `autostart.yml` config from `qubes-core-admin`.
 2. Starts the configured VMs via the existing `qubes-core-admin/qubes/qubesvm.py` APIs instead of calling `systemctl`.

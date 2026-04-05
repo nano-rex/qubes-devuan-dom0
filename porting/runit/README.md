@@ -1,6 +1,6 @@
 # runit porting scaffold
 
-This directory contains early `runit` service scaffolding for the Devuan dom0 port.
+This directory contains early `runit` service scaffolding for the antiX dom0 port.
 
 These service directories are not wired into packages yet.
 They exist to define the first supervision model that will replace imported

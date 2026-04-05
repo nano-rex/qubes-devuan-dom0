@@ -1,7 +1,7 @@
 # Dom0 Package Gap
 
 This file tracks the current packaging state of the imported sources for a
-`Devuan + runit` dom0 target.
+`antiX + runit` dom0 target.
 
 ## Already has Debian packaging
 
@@ -38,18 +38,18 @@ This file tracks the current packaging state of the imported sources for a
 - Debian packaging:
   - absent before this repo's local scaffold
 - implication:
-  - this is the main packaging gap for Devuan dom0
+  - this is the main packaging gap for antiX dom0
 
 ### qubes-vmm-xen
 - current packaging path is RPM-oriented
 - implication:
-  - likely needs dedicated Debian/Devuan package adaptation or reuse from an
+  - likely needs dedicated Debian/antiX package adaptation or reuse from an
     external Debian Xen package base plus Qubes patches
 
 ### qubes-qubes-release
 - current packaging path is RPM-oriented
 - implication:
-  - Devuan release/repository metadata path must be redesigned
+  - antiX release/repository metadata path must be redesigned
 
 ## Recommended packaging order
 

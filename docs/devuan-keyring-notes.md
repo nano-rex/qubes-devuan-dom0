@@ -1,4 +1,4 @@
-# Devuan keyring notes
+# antiX keyring notes
 
 ## Why this exists
 
@@ -7,9 +7,9 @@ distribution family had a matching archive keyring file vendored under:
 
 - `qubesbuilder/plugins/chroot_deb/keys/`
 
-That is not a good default for this project's Devuan target because:
+That is not a good default for this project's antiX target because:
 
-1. no Devuan archive keyring was present in the imported builder tree
+1. no antiX archive keyring was present in the imported builder tree
 2. inventing a fake local keyring file would undermine bootstrap trust
 
 ## Approach used in this repo
@@ -23,10 +23,10 @@ deb:
 ```
 
 This keeps the bootstrap path honest:
-- use a real Devuan archive keyring from the build environment
+- use a real antiX archive keyring from the build environment
 - do not pretend an imported placeholder key is trustworthy
 
 ## Current implication
 
-The next actual build attempt for a Devuan chroot depends on the build host or
+The next actual build attempt for a antiX chroot depends on the build host or
 executor image having the referenced keyring available at the configured path.

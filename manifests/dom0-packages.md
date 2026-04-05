@@ -1,4 +1,4 @@
-# Devuan+runit dom0 package plan
+# antiX+runit dom0 package plan
 
 ## Core base
 - xen

@@ -1,7 +1,7 @@
 # Whonix Templates
 
 The Whonix gateway and workstation templates should mirror the upstream Qubes packaging but start from
-the Devuan + runit base so they end up running under the same init stack as dom0. That means:
+the antiX + runit base so they end up running under the same init stack as dom0. That means:
 
 1. The template builder should reuse the dom0 runit helpers (`qubes-guid`, `qrexec-policy-daemon`,
    etc.) so the Whonix VMs don’t assume a Fedora/systemd host.
@@ -11,6 +11,6 @@ the Devuan + runit base so they end up running under the same init stack as dom0
    helpers and autostarted gateways/workstations via the same scripts as dom0.
 
 Until the dom0 packages are fully stable under runit, the template work can target copying the upstream
-Whonix sources into the Devuan builder layout, adding runit service directories under
+Whonix sources into the antiX builder layout, adding runit service directories under
 `debian/runit/dom0/{qubes-guid,qubes-qrexec-policy-daemon,...}`, and keeping the installer aware of the
 doas/runlist requirements so the transition is smooth once the base is ready.

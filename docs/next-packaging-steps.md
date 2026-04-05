@@ -2,20 +2,20 @@
 
 ## Phase target
 
-Create the first Devuan-oriented dom0 package path for `qubes-core-admin` and
-prepare the existing Debian packages to stop assuming `systemd`.
+Create the first antiX-oriented dom0 package path for `qubes-core-admin` and
+prepare the existing Debian packages to stop assuming a specific init manager.
 
 ## Concrete tasks
 
 1. Draft `upstream/qubes-core-admin/debian/control`
 - define the dom0 package name
-- define build dependencies for Devuan
-- strip Fedora/RPM assumptions
+- define build dependencies for antiX
+- strip RPM-specific assumptions
 
 2. Draft `upstream/qubes-core-admin/debian/rules`
 - build/install core admin files
 - install `runit` service assets from `porting/runit/`
-- avoid `dh --with=systemd`
+- avoid `dh --with=` wrappers that tie the package to a specific init manager
 
 3. Audit Debian package installs for:
 - `qubes-core-qrexec`

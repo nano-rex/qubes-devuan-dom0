@@ -7,7 +7,7 @@ Python modules and helper scripts expect. The resolution order is:
 2. `/etc/qubes/service-manager` file contents
 3. Defaults to `systemd`
 
-For the Devuan + runit dom0 this repository installs:
+For the antiX + runit dom0 this repository installs:
 
 - `/etc/qubes/service-manager` containing the string `runit`
 - runit directories under `/etc/sv/` for:

@@ -1,10 +1,10 @@
-# Devuan Port Notes
+# antiX Port Notes
 
 ## What the first inspection shows
 
 1. `qubes-builderv2` already supports Debian-family package builds through the
    `build_deb` and `chroot_deb` plugins.
-2. The builder did not recognize `Devuan` as a distribution before this repo's
+2. The builder did not recognize `antiX` as a distribution before this repo's
    local patch.
 3. The imported `dom0` packaging path is still heavily RPM- and `systemd`-based.
 
@@ -13,11 +13,10 @@
 ### Builder
 
 - `upstream/qubes-builderv2/qubesbuilder/distribution.py`
-  - needed a new `Devuan` distribution family entry
+  - needed a new `antiX` distribution family entry
 - Wrapper hitch
-  - `scripts/run-devuan-builder.sh` now prepends `tools` exposing a `sudo` shim that delegates to `/usr/bin/doas`.
-  - The installer `mock` stages now rely on `doas` being setuid/root; the shim falls back to the host `sudo` if it is not available.
-  - `scripts/check-doas.sh` is executed before installer stages too, so build courses fail fast if `doas` isn't configured.
+  - `scripts/run-devuan-builder.sh` now prepends `tools` exposing the `doas` shim (also reachable as `tools/sudo` for compatibility) so every privilege request runs through `/usr/bin/doas`.
+  - The installer `mock` stages now rely on `doas` being setuid/root, and `scripts/check-doas.sh` runs before those stages so you see a clear error when the helper is missing or misconfigured.
 
 ### Packaging
 
@@ -70,7 +69,7 @@ It should prove:
 
 ## Immediate next code targets
 
-1. add a `Devuan`-oriented builder config
+1. add a `antiX`-oriented builder config
 2. draft `runit` service directories for:
    - `qubesd`
    - `qubes-core`

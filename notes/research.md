@@ -2,7 +2,7 @@
 
 ## Current assumptions
 - upstream Qubes architecture remains the base model
-- the first serious target is Devuan+runit dom0
+- the first serious target is antiX+runit dom0
 - Artix/OpenRC is deferred because it is a less stable starting point for a Qubes fork
 
 ## Open questions
