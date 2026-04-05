@@ -41,7 +41,7 @@
 #include <sys/socket.h>
 #include <sys/un.h>
 #include <fcntl.h>
-#include <libvchan.h>
+#include "libvchan-compat.h"
 
 #include "qrexec.h"
 #include "libqrexec-utils.h"

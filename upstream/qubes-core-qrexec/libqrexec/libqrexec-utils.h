@@ -29,12 +29,11 @@
 #define _GNU_SOURCE 1
 #include <signal.h>
 #include <stdbool.h>
-#include <libvchan.h>
+#include "libvchan-compat.h"
 #include <errno.h>
 #include <poll.h>
 #include <sys/socket.h>
 
-#include <libvchan.h>
 #include <qrexec.h>
 
 #ifdef FUZZING_BUILD_MODE_UNSAFE_FOR_PRODUCTION

@@ -21,7 +21,7 @@
  */
 
 #include <stdbool.h>
-#include <libvchan.h>
+#include "libvchan-compat.h"
 
 #pragma GCC visibility push(hidden)
 

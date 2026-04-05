@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <signal.h>
 #include <errno.h>
-#include <libvchan.h>
+#include "libvchan-compat.h"
 #include <assert.h>
 
 #include "libqrexec-utils.h"

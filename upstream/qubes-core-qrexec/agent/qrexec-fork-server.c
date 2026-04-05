@@ -30,7 +30,7 @@
 #include <sys/un.h>
 #include <stddef.h>
 #include "qrexec.h"
-#include <libvchan.h>
+#include "libvchan-compat.h"
 #include "libqrexec-utils.h"
 #include "qrexec-agent.h"
 

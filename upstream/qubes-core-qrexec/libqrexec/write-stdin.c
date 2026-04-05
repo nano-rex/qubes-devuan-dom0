@@ -24,7 +24,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <stdlib.h>
-#include <libvchan.h>
+#include "libvchan-compat.h"
 #include "qrexec.h"
 #include "libqrexec-utils.h"
 
