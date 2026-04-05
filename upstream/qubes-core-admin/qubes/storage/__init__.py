@@ -254,7 +254,7 @@ class Volume:
                 "of=" + path,
                 "count=1",
                 "bs=" + str(BYTES_TO_ZERO),
-                sudo=True,
+                doas=True,
             )
 
     async def stop_encrypted(self, name):

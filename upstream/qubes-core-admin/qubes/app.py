@@ -1560,7 +1560,7 @@ class Qubes(qubes.PropertyHolder):
         )
         finished = ()
         while future:
-            qubes.utils.systemd_extend_timeout()
+            qubes.utils.service_extend_timeout()
             finished, future = await asyncio.wait(future, timeout=30)
             for i in finished:
                 try:

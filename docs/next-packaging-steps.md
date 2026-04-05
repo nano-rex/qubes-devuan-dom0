@@ -22,7 +22,7 @@ prepare the existing Debian packages to stop assuming a specific init manager.
 - `qubes-linux-utils`
 - `qubes-gui-daemon`
 
-4. Replace package-level `systemd` hooks with:
+4. Replace package-level legacy init hooks with:
 - neutral install logic where possible
 - explicit `runit` service installation where needed
 

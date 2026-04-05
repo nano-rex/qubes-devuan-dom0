@@ -82,7 +82,7 @@ def main(args=None):
             args.app,
         )
 
-    qubes.utils.systemd_notify()
+    qubes.utils.service_notify_ready()
     # make sure children will not inherit this
     os.environ.pop("NOTIFY_SOCKET", None)
 

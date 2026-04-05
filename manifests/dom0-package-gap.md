@@ -9,7 +9,7 @@ This file tracks the current packaging state of the imported sources for a
 - path: `upstream/qubes-core-qrexec/debian/`
 - status:
   - Debian packaging exists
-  - still contains `systemd` integration in `rules` and installed unit files
+  - still contains legacy init integration in `rules` and installed unit files
 - implication:
   - adapt existing Debian packaging instead of creating from scratch
 
@@ -17,10 +17,10 @@ This file tracks the current packaging state of the imported sources for a
 - path: `upstream/qubes-linux-utils/debian/`
 - status:
   - Debian packaging exists
-  - still uses `dh --with=systemd`
+  - still uses init-specific `dh` helpers
   - installs `qubes-meminfo-writer*.service`
 - implication:
-  - adapt existing Debian packaging and replace `systemd` unit handling
+  - adapt existing Debian packaging and replace legacy unit handling
 
 ### qubes-gui-daemon
 - path: `upstream/qubes-gui-daemon/debian/`

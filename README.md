@@ -130,7 +130,7 @@ for every core dom0 daemon before booting `runsvdir`.
 
 The dom0 services and builder workflow expect `doas` as the privileged runner.
 `scripts/run-devuan-builder.sh` prepends `tools` (which now contains the `tools/doas-shim`
-helper and a compatibility `tools/sudo` link) so every upstream `sudo` invocation flows through
+helper) so every privileged helper invocation flows through
 the shim and executes via `doas`.
 
 Make sure `/usr/bin/doas` is owned by `root` and marked `setuid` before running the installer stages:

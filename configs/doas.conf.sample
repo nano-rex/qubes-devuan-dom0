@@ -1,4 +1,4 @@
-# Sample doas configuration for the devuan-runit-dom0 worktree.
+# Sample doas configuration for the antix-runit-dom0 worktree.
 # Adjust the user/group entries to match your local build account.
 
 # Allow the root user to execute commands while keeping environment variables intact.

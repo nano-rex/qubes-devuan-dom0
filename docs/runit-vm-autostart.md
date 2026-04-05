@@ -3,7 +3,7 @@
 Upstream Qubes uses `qubes-vm@.service` to orchestrate autostarted qubes and to drive orderly shutdowns. In this antiX+Runit port we need an equivalent that:
 
 1. Starts on boot and reads the `autostart.yml` config from `qubes-core-admin`.
-2. Starts the configured VMs via the existing `qubes-core-admin/qubes/qubesvm.py` APIs instead of calling `systemctl`.
+2. Starts the configured VMs via the existing `qubes-core-admin` APIs instead of calling a legacy service controller.
 3. Monitors runtime state and triggers `qvm-shutdown` for each running VM during shutdown, matching the existing `ExecStop` behavior.
 
 Proposed structure:
@@ -25,4 +25,4 @@ Current repo status:
 - both helpers accept `QUBES_XML` overrides for testing, plus `QVM_START_CMD` /
   `QVM_SHUTDOWN_CMD` overrides for local smoke tests
 
-Once this service is packaged into `qubes-core-admin-dom0`, we can remove the remaining `systemd` unit references and ensure the runit supervisor starts the service at boot. The builder installs the runit bits under `/etc/sv/qubes-vm-autostart` and links the service into `/etc/service`.
+Once this service is packaged into `qubes-core-admin-dom0`, we can remove the remaining legacy unit references and ensure the runit supervisor starts the service at boot. The builder installs the runit bits under `/etc/sv/qubes-vm-autostart` and links the service into `/etc/service`.

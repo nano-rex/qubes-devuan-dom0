@@ -5,7 +5,7 @@ Python modules and helper scripts expect. The resolution order is:
 
 1. `QUBES_SERVICE_MANAGER` environment variable
 2. `/etc/qubes/service-manager` file contents
-3. Defaults to `systemd`
+3. Defaults to `runit`
 
 For the antiX + runit dom0 this repository installs:
 
@@ -25,10 +25,9 @@ both `run` and `finish` helpers so all autostarted VMs are started during boot
 and gracefully shut down when the service stops.
 
 The autostart helpers in `qubes-core-admin/qubes/utils.py` consult
-`get_service_manager()` before invoking `systemctl`, `ln`, or the runit helper
-scripts, so having the service manager configured consistently ensures the
-right control path runs in dom0.
+`get_service_manager()` before invoking the runit helper scripts, so having the
+service manager configured consistently ensures the right control path runs in dom0.
 
 When running the builder or installer, set `QUBES_SERVICE_MANAGER=runit` if you
 want the tooling to exercise the runit-specific code paths; otherwise the
-default `systemd` flow will be executed.
+default `runit` flow will be executed.

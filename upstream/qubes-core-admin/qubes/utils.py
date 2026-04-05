@@ -193,8 +193,8 @@ def random_string(length=5):
     )
 
 
-def systemd_notify():
-    """Notify systemd"""
+def service_notify_ready():
+    """Notify the service supervisor when readiness is available."""
     nofity_socket = os.getenv("NOTIFY_SOCKET")
     if not nofity_socket:
         return
@@ -206,8 +206,8 @@ def systemd_notify():
     sock.close()
 
 
-def systemd_extend_timeout():
-    """Extend systemd startup timeout by 60s"""
+def service_extend_timeout():
+    """Extend startup timeout by 60s when a supervisor socket is present."""
     notify_socket = os.getenv("NOTIFY_SOCKET")
     if not notify_socket:
         return
@@ -228,7 +228,7 @@ def get_service_manager():
     Resolution order:
     1. ``QUBES_SERVICE_MANAGER`` environment variable
     2. ``/etc/qubes/service-manager`` file
-    3. default to ``systemd``
+    3. default to ``runit``
     """
     manager = os.getenv("QUBES_SERVICE_MANAGER", "").strip().lower()
     if manager:
@@ -239,14 +239,14 @@ def get_service_manager():
             manager = config_file.read().strip().lower()
     except OSError:
         manager = ""
-    return manager or "systemd"
+    return manager or "runit"
 
 
 def _root_call(command):
-    helper = shutil.which("doas") or shutil.which("sudo")
+    helper = shutil.which("doas")
     if not helper:
         raise qubes.exc.QubesException(
-            "No privilege escalation helper installed (doas or sudo)."
+            "No privilege escalation helper installed (doas)."
         )
     return subprocess.call([helper] + command)
 
@@ -255,25 +255,6 @@ def _service_manager_error(manager, action, name):
     raise qubes.exc.QubesException(
         f"Failed to {action} autostart for VM '{name}' using {manager}"
     )
-
-
-def _enable_systemd_vm_autostart(name):
-    return _root_call(
-        [
-            "ln",
-            "-sf",
-            "/usr/lib/systemd/system/qubes-vm@.service",
-            f"/etc/systemd/system/multi-user.target.wants/qubes-vm@{name}.service",
-        ]
-    )
-
-
-def _disable_systemd_vm_autostart(name):
-    return _root_call([
-        "systemctl",
-        "disable",
-        f"qubes-vm@{name}.service",
-    ])
 
 
 def _enable_runit_vm_autostart(name):
@@ -310,28 +291,22 @@ def _disable_runit_vm_autostart(name):
 
 def enable_vm_autostart(name):
     manager = get_service_manager()
-    if manager == "systemd":
-        retcode = _enable_systemd_vm_autostart(name)
-    elif manager == "runit":
-        retcode = _enable_runit_vm_autostart(name)
-    else:
+    if manager != "runit":
         raise qubes.exc.QubesException(
             f"Unsupported dom0 service manager '{manager}'"
         )
+    retcode = _enable_runit_vm_autostart(name)
     if retcode:
         _service_manager_error(manager, "enable", name)
 
 
 def disable_vm_autostart(name):
     manager = get_service_manager()
-    if manager == "systemd":
-        retcode = _disable_systemd_vm_autostart(name)
-    elif manager == "runit":
-        retcode = _disable_runit_vm_autostart(name)
-    else:
+    if manager != "runit":
         raise qubes.exc.QubesException(
             f"Unsupported dom0 service manager '{manager}'"
         )
+    retcode = _disable_runit_vm_autostart(name)
     if retcode:
         _service_manager_error(manager, "disable", name)
 
@@ -416,10 +391,10 @@ _am_root = os.getuid() == 0
 
 
 # pylint: disable=redefined-builtin
-async def run_program(*args, check=True, input=None, sudo=False, **kwargs):
+async def run_program(*args, check=True, input=None, doas=False, **kwargs):
     """Async version of subprocess.run()"""
-    if not _am_root and sudo:
-        args = ["sudo"] + list(args)
+    if not _am_root and doas:
+        args = ["doas"] + list(args)
     p = await asyncio.create_subprocess_exec(*args, **kwargs)
     stdouterr = await p.communicate(input=input)
     if check and p.returncode:
@@ -454,7 +429,7 @@ def cryptsetup(*args):
         cwd="/",
         stdin=subprocess.DEVNULL,
         check=True,
-        sudo=True,
+        doas=True,
     )
 
 

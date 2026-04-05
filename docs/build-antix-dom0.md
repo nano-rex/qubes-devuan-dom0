@@ -19,7 +19,7 @@ What it does not prove yet:
 ## Host assumptions
 
 - `python3`
-- `doas` (the repo ships `tools/doas-shim`, plus a compatibility `tools/sudo` link, so existing scripts still run)
+- `doas` (the repo ships `tools/doas-shim` so privileged helper calls go through `doas`)
 - `pbuilder`
 - a real antiX archive keyring at:
   - `/usr/share/keyrings/devuan-archive-keyring.gpg`
