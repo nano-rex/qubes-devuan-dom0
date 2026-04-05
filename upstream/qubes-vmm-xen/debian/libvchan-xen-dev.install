@@ -6,6 +6,9 @@ usr/include/xen/xen.h
 usr/include/xen/xencomm.h
 usr/include/xen/xenoprof.h
 usr/include/xen/io/*
+usr/include/xen/grant_table.h
+usr/include/xen/hvm/*
+usr/include/xen/hypfs.h
 usr/include/xen/kexec.h
 usr/include/xen/memory.h
 usr/include/xen/nmi.h
