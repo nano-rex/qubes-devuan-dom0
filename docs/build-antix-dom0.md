@@ -78,7 +78,7 @@ Use:
 
 ```bash
 cd /home/user/github/qubesos-runit
-./scripts/validate-devuan-dom0.sh
+./scripts/validate-antix-dom0.sh
 ./scripts/run-devuan-builder.sh package init-cache
 ./scripts/run-devuan-builder.sh package fetch prep build
 ```

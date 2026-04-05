@@ -35,9 +35,10 @@ Depends:
  dmidecode,
  cron,
  scrypt,
+ runit,
  ${misc:Depends},
  ${python3:Depends}
-Description: Devuan dom0 admin package for the Qubes-derived port
+Description: antiX dom0 admin package for the Qubes-derived port
  Devuan-oriented dom0 administrative package for this Qubes-derived project.
  It installs the core admin Python stack, dom0 helper tools, default policy,
  auxiliary dom0 scripts, and the first runit service assets needed for a

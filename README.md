@@ -40,18 +40,18 @@ Compared with Artix/OpenRC, antiX is closer to Debian-family packaging and a mor
 
 ## Repository layout
 
-- `docs/architecture.md`: system design and trust boundaries
-- `docs/roadmap.md`: phased implementation plan
-- `docs/component-map.md`: upstream Qubes components and required adaptations
-- `docs/build-devuan-dom0.md`: current build bootstrap path and host requirements
-- `docs/devuan-port-notes.md`: first-pass builder and init blockers
-- `docs/whonix-templates.md`: plan for the Whonix gateway/workstation templates
-- `docs/runit-vm-autostart.md`: proposal for replacing `qubes-vm@.service` with runit
-- `docs/antix-build-host.md`: antiX host bootstrap path for local builder execution
-- `manifests/dom0-packages.md`: antiX+runit dom0 package plan
-- `manifests/antix-build-host-packages.txt`: antiX build host prerequisites
-- `manifests/dom0-service-map.md`: dom0 services that must be ported to runit
-- `notes/research.md`: current assumptions and unresolved questions
+-- `docs/architecture.md`: system design and trust boundaries
+-- `docs/roadmap.md`: phased implementation plan
+-- `docs/component-map.md`: upstream Qubes components and required adaptations
+-- `docs/build-antix-dom0.md`: current antiX build bootstrap path and host requirements
+-- `docs/whonix-templates.md`: plan for the Whonix gateway/workstation templates
+-- `docs/runit-vm-autostart.md`: proposal for replacing `qubes-vm@.service` with runit
+-- `docs/service-manager.md`: explains the runit service wiring for dom0
+-- `docs/antix-build-host.md`: antiX host bootstrap path for local builder execution
+-- `manifests/dom0-packages.md`: antiX+runit dom0 package plan
+-- `manifests/antix-build-host-packages.txt`: antiX build host prerequisites
+-- `manifests/dom0-service-map.md`: dom0 services that must be ported to runit
+-- `notes/research.md`: current assumptions and unresolved questions
 - `upstream/`: imported upstream Qubes source snapshots tracked directly in this repo
 - `configs/`: local build/config scaffolding for this standalone project
 - `scripts/run-devuan-builder.sh`: local wrapper for the vendored builder
@@ -94,15 +94,15 @@ cd /home/user/github/qubesos-runit
 The installer stages are required before an ISO can be generated, and they rely on
 the antiX-aware mock configuration added under `upstream/qubes-builderv2/qubesbuilder/plugins/installer/mock/`.
 
-Details and assumptions:
-- [`docs/build-devuan-dom0.md`](/home/user/github/qubesos-runit/docs/build-devuan-dom0.md)
+- Detail and assumptions:
+- [`docs/build-antix-dom0.md`](/home/user/github/qubesos-runit/docs/build-antix-dom0.md)
 - [`docs/antix-build-host.md`](/home/user/github/qubesos-runit/docs/antix-build-host.md)
 
 Before attempting package or installer stages, run the local validation pass:
 
 ```bash
 cd /home/user/github/qubesos-runit
-./scripts/validate-devuan-dom0.sh
+./scripts/validate-antix-dom0.sh
 ```
 
 That script checks shell/Python syntax, verifies the packaged runit assets are

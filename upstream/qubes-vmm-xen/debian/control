@@ -22,7 +22,7 @@ Homepage: https://github.com/nano-rex/qubes-devuan-dom0
 Package: xen-qubes-dom0
 Architecture: any
 Depends: ${misc:Depends}, ${shlibs:Depends}
-Description: Devuan dom0 Xen package scaffold for the Qubes-derived port
+Description: antiX dom0 Xen package scaffold for the Qubes-derived port
  Packaging scaffold for the Xen and Qubes-specific patch stack used by the
  Devuan+runit dom0 target. This is currently a porting placeholder, not a
  build-complete Debian package.
@@ -39,6 +39,6 @@ Package: libvchan-xen-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, libvchan-xen1 (= ${binary:Version})
-Description: Xen libvchan development scaffold for the Devuan dom0 port
+Description: Xen libvchan development scaffold for the antiX dom0 port
  Development package placeholder for the Xen libvchan headers and pkg-config
  metadata required to build Qubes dom0 components such as qrexec.

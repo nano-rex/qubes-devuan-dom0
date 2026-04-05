@@ -33,7 +33,7 @@ done
 
 if [[ ${#missing[@]} -gt 0 ]]; then
     echo "Missing required host commands: ${missing[*]}" >&2
-    echo "See docs/build-devuan-dom0.md for the expected bootstrap environment." >&2
+    echo "See docs/build-antix-dom0.md for the expected bootstrap environment." >&2
     exit 1
 fi
 
