@@ -1,14 +1,16 @@
 # Whonix Templates
 
-The Whonix gateway and workstation templates should mirror the upstream Qubes packaging but use the
-Devuan + runit base instead of Fedora + systemd. That means:
+The Whonix gateway and workstation templates should mirror the upstream Qubes packaging but start from
+the Devuan + runit base so they end up running under the same init stack as dom0. That means:
 
-1. The template builder should install the same runit helpers that the dom0 packages use, so the
-   gateway/workstation VMs can be started with expectations compatible with the rest of the system.
-2. Packaging should rely on `/usr/bin/doas` for privileged operations inside the template build, matching
-   the dom0 workflow.
-3. Installer kickstarts that include the Whonix templates must be aware that the template VMs expect the
-   Dom0 to provide `runit` services and `doas` helpers.
+1. The template builder should reuse the dom0 runit helpers (`qubes-guid`, `qrexec-policy-daemon`,
+   etc.) so the Whonix VMs don’t assume a Fedora/systemd host.
+2. Template packaging must invoke `/usr/bin/doas` for privileged operations and ship `/etc/qubes/service-manager`
+   containing `runit`, so the watchdog code inside each VM can switch over to runit without extra patches.
+3. Installer kickstarts that include Whonix templates need to know that `runsvdir` will bring up GUI/qrexec
+   helpers and autostarted gateways/workstations via the same scripts as dom0.
 
-Until the dom0 packages are fully running under runit, the template work can focus on copying the upstream
-Whonix contents into the new Devuan builder layout so the transition is smooth once the base is ready.
+Until the dom0 packages are fully stable under runit, the template work can target copying the upstream
+Whonix sources into the Devuan builder layout, adding runit service directories under
+`debian/runit/dom0/{qubes-guid,qubes-qrexec-policy-daemon,...}`, and keeping the installer aware of the
+doas/runlist requirements so the transition is smooth once the base is ready.
