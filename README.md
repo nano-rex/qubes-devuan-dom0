@@ -103,6 +103,10 @@ Details and assumptions:
 See `docs/service-manager.md` for how this fork configures the dom0 service manager
 and runit wiring so the builder/autostart helpers talk to the expected controller.
 
+Run `scripts/check-runit-services.sh` inside an installed dom0 to ensure the
+packaging produced `/etc/sv/<service>` directories and `/etc/service` symlinks
+for every core dom0 daemon before booting `runsvdir`.
+
 ## Privilege escalation
 
 The dom0 services and builder workflow expect `doas` as the privileged runner instead of `sudo`.
