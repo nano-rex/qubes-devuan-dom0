@@ -14,9 +14,7 @@
 #include <stdlib.h>
 
 #if defined(__has_include)
-# if __has_include(<libvchan.h>)
-#  include <libvchan.h>
-# elif __has_include(<libxenvchan.h>)
+# if __has_include(<libxenvchan.h>)
 #  include <libxenvchan.h>
 #  include <xenstore.h>
 
@@ -123,6 +121,8 @@ static inline int libvchan_client_init_async_finish(libvchan_t *ctrl, bool block
 #  define libvchan_is_open libxenvchan_is_open
 #  define libvchan_data_ready libxenvchan_data_ready
 #  define libvchan_buffer_space libxenvchan_buffer_space
+# elif __has_include(<libvchan.h>)
+#  include <libvchan.h>
 # else
 #  error "Neither libvchan.h nor libxenvchan.h is available"
 # endif
