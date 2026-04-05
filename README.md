@@ -1,4 +1,4 @@
-# qubes-devuan-dom0
+# qubesos-runit
 
 A standalone research and engineering workspace for a Qubes-derived system with a `Devuan + runit` `dom0`.
 
@@ -85,7 +85,7 @@ first packaging scaffolds, and a concrete local builder wrapper.
 Use the local wrapper to run both the package build pipeline and the installer flow.
 
 ```bash
-cd /home/user/github/qubes-devuan-dom0
+cd /home/user/github/qubesos-runit
 . ./scripts/run-devuan-builder.sh package init-cache
 . ./scripts/run-devuan-builder.sh package fetch prep build
 . ./scripts/run-devuan-builder.sh installer init-cache
@@ -95,8 +95,8 @@ The installer stages are required before an ISO can be generated, and they rely 
 the Devuan-aware mock configuration added under `upstream/qubes-builderv2/qubesbuilder/plugins/installer/mock/`.
 
 Details and assumptions:
-- [`docs/build-devuan-dom0.md`](/home/user/github/qubes-devuan-dom0/docs/build-devuan-dom0.md)
-- [`docs/fedora-build-host.md`](/home/user/github/qubes-devuan-dom0/docs/fedora-build-host.md)
+- [`docs/build-devuan-dom0.md`](/home/user/github/qubesos-runit/docs/build-devuan-dom0.md)
+- [`docs/fedora-build-host.md`](/home/user/github/qubesos-runit/docs/fedora-build-host.md)
 
 ## Service manager setup
 
