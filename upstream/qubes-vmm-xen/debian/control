@@ -5,6 +5,7 @@ Maintainer: nano-rex <opensource@nano-rex.local>
 Build-Depends:
  debhelper-compat (= 13),
  acpica-tools,
+ libglib2.0-dev,
  libncurses-dev,
  pkg-config,
  python3,
