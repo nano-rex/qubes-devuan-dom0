@@ -30,13 +30,17 @@ override_dh_auto_build:
 	make all-vm
 	make all-vim
 
-override_dh_auto_install:
+	override_dh_auto_install:
 	make install-base
 	make install-dom0
 	make install-vm
 	make install-vim
 	install -d debian/tmp/etc/sv
 	cp -a $(CURDIR)/debian/runit/dom0/qubes-qrexec-policy-daemon debian/tmp/etc/sv/
+	cp -a $(CURDIR)/debian/runit/dom0/qubes-qrexec-agent debian/tmp/etc/sv/
+	install -d debian/tmp/etc/service
+	ln -snf /etc/sv/qubes-qrexec-policy-daemon debian/tmp/etc/service/qubes-qrexec-policy-daemon
+	ln -snf /etc/sv/qubes-qrexec-agent debian/tmp/etc/service/qubes-qrexec-agent
 
 override_dh_install:
 	dh_install --fail-missing
