@@ -1,4 +1,5 @@
 usr/include/libxenvchan.h
+usr/include/libvchan.h
 usr/include/xen/COPYING
 usr/include/xen/arch-arm.h
 usr/include/xen/arch-arm/hvm/save.h

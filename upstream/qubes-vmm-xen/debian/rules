@@ -31,6 +31,9 @@ override_dh_auto_install:
 	$(MAKE) -C tools/libs/evtchn install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C tools/libs/gnttab install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C tools/libs/vchan install DESTDIR=$(CURDIR)/debian/tmp
+	if [ -f "$(CURDIR)/debian/tmp/usr/include/libxenvchan.h" ]; then \
+		cp -a "$(CURDIR)/debian/tmp/usr/include/libxenvchan.h" "$(CURDIR)/debian/tmp/usr/include/libvchan.h"; \
+	fi
 	if [ -f "$(CURDIR)/debian/tmp$(libdir)/pkgconfig" ]; then \
 		mv "$(CURDIR)/debian/tmp$(libdir)/pkgconfig" "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)/xenvchan.pc"; \
 	fi
