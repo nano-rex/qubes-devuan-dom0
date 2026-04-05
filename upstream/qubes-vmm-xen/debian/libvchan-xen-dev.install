@@ -1,0 +1,4 @@
+debian/tmp/usr/include/libxenvchan.h
+debian/tmp/usr/lib/*/libxenvchan.a
+debian/tmp/usr/lib/*/libxenvchan.so
+debian/tmp/usr/lib/*/pkgconfig/xenvchan.pc

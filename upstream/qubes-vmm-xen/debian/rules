@@ -1,7 +1,29 @@
 #!/usr/bin/make -f
 
+export DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+export prefix := /usr
+export libdir := /usr/lib/$(DEB_HOST_MULTIARCH)
+export includedir := /usr/include
+export PKG_INSTALLDIR := /usr/lib/$(DEB_HOST_MULTIARCH)/pkgconfig
+export PYTHON := python3
+
 %:
 	dh $@
 
 override_dh_auto_build:
-	@echo "xen-qubes-dom0 packaging scaffold only; build rules not implemented yet"
+	$(MAKE) -C tools/include build PYTHON=$(PYTHON)
+	$(MAKE) -C tools/libs/toolcore
+	$(MAKE) -C tools/libs/toollog
+	$(MAKE) -C tools/libs/store
+	$(MAKE) -C tools/libs/evtchn
+	$(MAKE) -C tools/libs/gnttab
+	$(MAKE) -C tools/libs/vchan
+
+override_dh_auto_install:
+	$(MAKE) -C tools/include install PYTHON=$(PYTHON) DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C tools/libs/toolcore install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C tools/libs/toollog install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C tools/libs/store install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C tools/libs/evtchn install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C tools/libs/gnttab install DESTDIR=$(CURDIR)/debian/tmp
+	$(MAKE) -C tools/libs/vchan install DESTDIR=$(CURDIR)/debian/tmp
