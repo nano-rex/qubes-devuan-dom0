@@ -2,7 +2,7 @@ MAKEFLAGS=-r
 CC ?= gcc
 PANDOC ?= pandoc
 DESTDIR ?= /
-VCHAN_PKG = $(if $(BACKEND_VMM),vchan-$(BACKEND_VMM),vchan)
+VCHAN_PKG = $(if $(BACKEND_VMM),$(if $(filter xen,$(BACKEND_VMM)),xenvchan,vchan-$(BACKEND_VMM)),vchan)
 HAVE_PAM_APPL = $(or $(and $(wildcard /usr/include/security/pam_appl.h),1),)
 .SUFFIXES:
 os := $(shell lsb_release -is)

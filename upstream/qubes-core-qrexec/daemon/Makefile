@@ -1,5 +1,5 @@
 CC ?=gcc
-VCHAN_PKG = $(if $(BACKEND_VMM),vchan-$(BACKEND_VMM),vchan)
+VCHAN_PKG = $(if $(BACKEND_VMM),$(if $(filter xen,$(BACKEND_VMM)),xenvchan,vchan-$(BACKEND_VMM)),vchan)
 CFLAGS += -I../libqrexec -g -O2 -Wall -Wextra -Werror -fPIC \
    $(shell pkg-config --cflags $(VCHAN_PKG)) -fstack-protector \
    -fstack-protector-strong -std=gnu11 -D_POSIX_C_SOURCE=200809L \

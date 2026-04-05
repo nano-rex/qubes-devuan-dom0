@@ -1,5 +1,5 @@
 CC ?=gcc
-VCHAN_PKG = $(if $(BACKEND_VMM),vchan-$(BACKEND_VMM),vchan)
+VCHAN_PKG = $(if $(BACKEND_VMM),$(if $(filter xen,$(BACKEND_VMM)),xenvchan,vchan-$(BACKEND_VMM)),vchan)
 CFLAGS += -I. -I../libqrexec -g -O2 -Wall -Wextra -Werror \
    $(shell pkg-config --cflags $(VCHAN_PKG)) -fstack-protector \
    -fstack-protector-strong -fPIC -std=gnu11 -D_POSIX_C_SOURCE=200809L \
@@ -11,7 +11,7 @@ CFLAGS += -I. -I../libqrexec -g -O2 -Wall -Wextra -Werror \
 LDFLAGS += -pie -Wl,-z,relro,-z,now -shared
 
 SO_VER=4
-VCHANLIBS := $(shell pkg-config --libs vchan)
+VCHANLIBS := $(shell pkg-config --libs $(VCHAN_PKG))
 LIBDIR ?= /usr/lib
 INCLUDEDIR ?= /usr/include
 
