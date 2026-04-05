@@ -4,6 +4,9 @@ host:
     - rpm_spec/qubes-qrexec.spec
     - rpm_spec/qubes-qrexec-vim.spec
     - rpm_spec/qubes-qrexec-dom0.spec
+  deb:
+    build:
+    - debian
 vm:
   rpm:
     build:

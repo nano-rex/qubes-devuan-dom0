@@ -33,7 +33,7 @@ override_dh_auto_install:
 	make install-vm
 	make install-vim
 	install -d debian/tmp/etc/sv
-	cp -a $(CURDIR)/../../porting/runit/dom0/qubes-qrexec-policy-daemon debian/tmp/etc/sv/
+	cp -a $(CURDIR)/debian/runit/dom0/qubes-qrexec-policy-daemon debian/tmp/etc/sv/
 
 override_dh_install:
 	dh_install --fail-missing
