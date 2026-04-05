@@ -34,3 +34,7 @@ override_dh_auto_install:
 	if [ -f "$(CURDIR)/debian/tmp$(libdir)/pkgconfig" ]; then \
 		mv "$(CURDIR)/debian/tmp$(libdir)/pkgconfig" "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)/xenvchan.pc"; \
 	fi
+	if [ -f "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)/xenvchan.pc" ]; then \
+		cp -a "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)/xenvchan.pc" "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)/vchan.pc"; \
+		cp -a "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)/xenvchan.pc" "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)/vchan-xen.pc"; \
+	fi

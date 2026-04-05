@@ -72,4 +72,6 @@ usr/lib/*/pkgconfig/xengnttab.pc
 usr/lib/*/pkgconfig/xenstore.pc
 usr/lib/*/pkgconfig/xentoolcore.pc
 usr/lib/*/pkgconfig/xentoollog.pc
+usr/lib/*/pkgconfig/vchan.pc
+usr/lib/*/pkgconfig/vchan-xen.pc
 usr/lib/*/pkgconfig/xenvchan.pc
