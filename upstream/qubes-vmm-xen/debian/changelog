@@ -1,4 +1,4 @@
-xen-qubes (4.19.4-0devuan1) unstable; urgency=medium
+xen-qubes (4.19.4-5) unstable; urgency=medium
 
   * Initial Devuan dom0 Xen packaging scaffold.
 
