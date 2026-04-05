@@ -25,6 +25,8 @@ The current wrapper script assumes a Linux host with:
 - a real Devuan archive keyring at:
   - `/usr/share/keyrings/devuan-archive-keyring.gpg`
 
+The wrapper now runs `sudo -n true` before any builder stages to verify the current user can escalate to root. If the host enforces the `no new privileges` flag or still requires an interactive password, the wrapper exits immediately and asks you to move to a machine where `sudo` (or `doas`) can run as root so that `pbuilder` can create its chroots.
+
 The builder also expects `doas` to be installed and marked `setuid` so that the installer stage
 can run inside the restricted container (the shim will fall back to `sudo` temporarily if `doas` is
 missing or not setuid, but the target dom0 assumes `doas` for user-visible escalation).  
