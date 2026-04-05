@@ -1,4 +1,15 @@
 usr/include/libxenvchan.h
+usr/lib/*/libxenstore.a
+usr/lib/*/libxenstore.so
+usr/lib/*/libxentoolcore.a
+usr/lib/*/libxentoolcore.so
+usr/lib/*/libxentoollog.a
+usr/lib/*/libxentoollog.so
 usr/lib/*/libxenvchan.a
 usr/lib/*/libxenvchan.so
+usr/lib/*/pkgconfig/xenevtchn.pc
+usr/lib/*/pkgconfig/xengnttab.pc
+usr/lib/*/pkgconfig/xenstore.pc
+usr/lib/*/pkgconfig/xentoolcore.pc
+usr/lib/*/pkgconfig/xentoollog.pc
 usr/lib/*/pkgconfig/xenvchan.pc
