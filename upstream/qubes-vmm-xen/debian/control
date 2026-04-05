@@ -4,6 +4,7 @@ Priority: optional
 Maintainer: nano-rex <opensource@nano-rex.local>
 Build-Depends:
  debhelper-compat (= 13),
+ acpica-tools,
  python3,
  python3-dev
 Standards-Version: 4.6.2
