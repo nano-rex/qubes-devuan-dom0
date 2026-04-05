@@ -1,6 +1,6 @@
 # qubesos-runit
 
-A standalone research and engineering workspace for a Qubes-derived system with a `Devuan + runit` `dom0`.
+A standalone project workspace that builds a Qubes-derived system using Devuan + runit + doas in dom0.
 
 ## Scope
 
@@ -9,7 +9,7 @@ It is not a contribution branch for the upstream Qubes OS repositories.
 Official Qubes sources are imported locally as vendor snapshots and will be modified here as needed.
 
 Primary target:
-- `dom0`: Devuan with `runit`
+- `dom0`: Devuan with `runit` and `doas`
 
 Non-goals for the first milestone:
 - Artix / OpenRC dom0
@@ -47,15 +47,15 @@ Compared with Artix/OpenRC, Devuan is closer to Debian-family packaging and a mo
 - `docs/devuan-port-notes.md`: first-pass builder and init blockers
 - `docs/whonix-templates.md`: plan for the Whonix gateway/workstation templates
 - `docs/runit-vm-autostart.md`: proposal for replacing `qubes-vm@.service` with runit
-- `docs/fedora-build-host.md`: Fedora host bootstrap path for local builder execution
+- `docs/devuan-build-host.md`: Devuan host bootstrap path for local builder execution
 - `manifests/dom0-packages.md`: Devuan+runit dom0 package plan
-- `manifests/fedora-build-host-packages.txt`: Fedora-side package prerequisites for local builder use
+- `manifests/devuan-build-host-packages.txt`: Devuan build host prerequisites
 - `manifests/dom0-service-map.md`: dom0 services that must be ported to runit
 - `notes/research.md`: current assumptions and unresolved questions
 - `upstream/`: imported upstream Qubes source snapshots tracked directly in this repo
 - `configs/`: local build/config scaffolding for this standalone project
 - `scripts/run-devuan-builder.sh`: local wrapper for the vendored builder
-- `scripts/check-fedora-build-host.sh`: checks the current Fedora host against required packages
+- `scripts/check-devuan-build-host.sh`: checks the current Devuan host against required packages
 
 ## Imported upstream sources
 
@@ -96,7 +96,7 @@ the Devuan-aware mock configuration added under `upstream/qubes-builderv2/qubesb
 
 Details and assumptions:
 - [`docs/build-devuan-dom0.md`](/home/user/github/qubesos-runit/docs/build-devuan-dom0.md)
-- [`docs/fedora-build-host.md`](/home/user/github/qubesos-runit/docs/fedora-build-host.md)
+- [`docs/devuan-build-host.md`](/home/user/github/qubesos-runit/docs/devuan-build-host.md)
 
 Before attempting package or installer stages, run the local validation pass:
 
@@ -109,6 +109,14 @@ That script checks shell/Python syntax, verifies the packaged runit assets are
 executable, and smoke-tests the `qubes-vm-autostart` service logic against a
 temporary `qubes.xml` fixture.
 
+## Host validation
+
+Before running the builder, make sure the workstation satisfies the Devuan host manifest.
+Read [`docs/devuan-build-host.md`](/home/user/github/qubesos-runit/docs/devuan-build-host.md)
+for the recommended packages and use `scripts/check-devuan-build-host.sh` to verify the current state.
+It enumerates the packages listed in `manifests/devuan-build-host-packages.txt`
+and suggests an `apt install` command when something is missing.
+
 ## Service manager setup
 
 See `docs/service-manager.md` for how this fork configures the dom0 service manager
@@ -120,17 +128,16 @@ for every core dom0 daemon before booting `runsvdir`.
 
 ## Privilege escalation
 
-The dom0 services and builder workflow expect `doas` as the privileged runner instead of `sudo`.
-The repository ships `tools/sudo`, which is prepended to `PATH` by `scripts/run-devuan-builder.sh`
-and proxies `sudo --preserve-env` calls into `doas` when the binary is available and installed with
-`setuid` enabled. When `doas` is missing or not setuid, the shim falls back to the system `sudo` binary
-so the build can still finish, but the produced dom0 artifacts are tailored for `doas` from within the installer.
+The dom0 services and builder workflow expect `doas` as the privileged runner.
+`scripts/run-devuan-builder.sh` prepends `tools` (which now contains the `tools/doas-shim`
+helper and a compatibility `tools/sudo` link) so every upstream `sudo` invocation flows through
+the shim and executes via `doas`.
 
 Make sure `/usr/bin/doas` is owned by `root` and marked `setuid` before running the installer stages:
 
 ```bash
-sudo chown root:root /usr/bin/doas
-sudo chmod 4755 /usr/bin/doas
+su -c 'chown root:root /usr/bin/doas'
+su -c 'chmod 4755 /usr/bin/doas'
 ```
 
 The wrapper now runs `scripts/check-doas.sh` and the new `scripts/check-doas-config.sh` before any
@@ -142,6 +149,6 @@ point, and adjust the `root`/`:wheel` lines to match your personal `wheel` group
 
 The Whonix gateway and workstation templates will also ride on the Devuan + runit foundation.
 Each template should reuse the dom0 runit assets wherever possible and rely on the `doas`-based root helpers
-instead of Fedora’s `sudo`+`systemd` setup. The long-term plan is to mirror the upstream Whonix packaging
-but swap the backend distro and init stack; once the dom0 packages are running under runit we can extend the
-template builder to use the same `doas` shim in the installer stages.
+rather than the upstream init stack. The long-term plan is to mirror the upstream Whonix packaging
+while swapping the backend distro and init stack; once the dom0 packages are running under runit we can extend
+the template builder to use the same `doas` shim in the installer stages.
