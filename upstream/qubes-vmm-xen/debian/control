@@ -39,7 +39,6 @@ Package: libvchan-xen-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends}, libvchan-xen1 (= ${binary:Version})
-Provides: libvchan-xen-dev
 Description: Xen libvchan development scaffold for the Devuan dom0 port
  Development package placeholder for the Xen libvchan headers and pkg-config
  metadata required to build Qubes dom0 components such as qrexec.
