@@ -23,6 +23,7 @@ The target system keeps the upstream Qubes model:
 2. Dom0 base system
 - Devuan userspace
 - `runit` as init/service supervision
+- `/usr/bin/doas` as the privilege escalator for dom0 and builder scripts
 - Qubes admin tooling packaged for the dom0 base
 
 3. Qubes control plane

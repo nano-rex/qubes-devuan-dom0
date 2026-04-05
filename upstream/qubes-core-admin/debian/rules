@@ -58,6 +58,13 @@ override_dh_auto_install:
 	cp -a $(CURDIR)/debian/runit/dom0/qubes-meminfo-writer-dom0 $(DESTDIR)/etc/sv/
 	cp -a $(CURDIR)/debian/runit/dom0/qubes-qmemman $(DESTDIR)/etc/sv/
 	cp -a $(CURDIR)/debian/runit/dom0/qubes-vm-autostart $(DESTDIR)/etc/sv/
+	chmod 0755 $(DESTDIR)/etc/sv/qubesd/run
+	chmod 0755 $(DESTDIR)/etc/sv/qubes-core/run $(DESTDIR)/etc/sv/qubes-core/finish
+	chmod 0755 $(DESTDIR)/etc/sv/qubes-preload-dispvm/run
+	chmod 0755 $(DESTDIR)/etc/sv/qubes-qrexec-policy-daemon/run
+	chmod 0755 $(DESTDIR)/etc/sv/qubes-meminfo-writer-dom0/run
+	chmod 0755 $(DESTDIR)/etc/sv/qubes-qmemman/run
+	chmod 0755 $(DESTDIR)/etc/sv/qubes-vm-autostart/run $(DESTDIR)/etc/sv/qubes-vm-autostart/finish
 	install -d $(DESTDIR)/etc/service
 	ln -snf /etc/sv/qubesd $(DESTDIR)/etc/service/qubesd
 	ln -snf /etc/sv/qubes-core $(DESTDIR)/etc/service/qubes-core

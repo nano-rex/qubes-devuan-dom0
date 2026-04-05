@@ -1,7 +1,10 @@
 #!/bin/sh
 set -eu
 
-QUBES_XML=/var/lib/qubes/qubes.xml
+QUBES_XML=${QUBES_XML:-/var/lib/qubes/qubes.xml}
+QUBES_AUTOSTART_DELAY=${QUBES_AUTOSTART_DELAY:-2}
+QUBES_AUTOSTART_ONESHOT=${QUBES_AUTOSTART_ONESHOT:-0}
+QVM_START_CMD=${QVM_START_CMD:-/usr/bin/qvm-start}
 
 wait_for_qubes_xml() {
     while [ ! -s "$QUBES_XML" ]; do
@@ -10,10 +13,11 @@ wait_for_qubes_xml() {
 }
 
 collect_autostart_vms() {
-    python3 <<'PY'
+    QUBES_XML="$QUBES_XML" python3 <<'PY'
 import xml.etree.ElementTree as ET
+import os
 
-path = """$QUBES_XML"""
+path = os.environ["QUBES_XML"]
 try:
     tree = ET.parse(path)
 except (ET.ParseError, FileNotFoundError):
@@ -38,13 +42,16 @@ PY
 autostart_vms() {
     collect_autostart_vms | while IFS= read -r vm; do
         [ -z "$vm" ] && continue
-        /usr/bin/qvm-start --skip-if-running "$vm" || true
+        "$QVM_START_CMD" --skip-if-running "$vm" || true
     done
 }
 
 wait_for_qubes_xml
 # Delay slightly to give qubesd time to prepare
-sleep 2
+sleep "$QUBES_AUTOSTART_DELAY"
 
 autostart_vms
+if [ "$QUBES_AUTOSTART_ONESHOT" = "1" ]; then
+    exit 0
+fi
 exec sleep infinity

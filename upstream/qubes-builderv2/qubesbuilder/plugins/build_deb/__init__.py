@@ -244,6 +244,7 @@ class DEBBuildPlugin(DEBDistributionPlugin, BuildPlugin):
             cmd = [
                 f"mkdir -p {self.executor.get_cache_dir()}/aptcache",
                 f"{self.executor.get_plugins_dir()}/build_deb/scripts/create-local-repo {self.executor.get_repository_dir()} {self.dist.fullname} {self.dist.name}",
+                f"printf '%s\\n' 'OTHERMIRROR=\"{extra_sources}\"' >> {self.executor.get_builder_dir()}/pbuilder/pbuilderrc",
             ]
 
             # If provided, use the first mirror given in builder configuration mirrors list
@@ -266,14 +267,6 @@ class DEBBuildPlugin(DEBDistributionPlugin, BuildPlugin):
                 cmd += [
                     f"sed -E -i 's|--keyring=[^[:space:]]*archive-keyring\\.gpg|--keyring={archive_keyring}|' {self.executor.get_builder_dir()}/pbuilder/pbuilderrc"
                 ]
-            if (
-                self.dist.fullname == "devuan"
-                and self.dist.name in self.DEVUAN_DEBOOTSTRAP_SCRIPT_MAP
-            ):
-                cmd += [
-                    f"printf '%s\\n' 'HOOKDIR={self.executor.get_plugins_dir()}/chroot_deb/debootstrap-scripts' >> {self.executor.get_builder_dir()}/pbuilder/pbuilderrc"
-                ]
-
             if self.config.use_qubes_repo.get("version", None):
                 repo_server = (
                     "debu.qubes-os.org"

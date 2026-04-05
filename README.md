@@ -98,6 +98,17 @@ Details and assumptions:
 - [`docs/build-devuan-dom0.md`](/home/user/github/qubesos-runit/docs/build-devuan-dom0.md)
 - [`docs/fedora-build-host.md`](/home/user/github/qubesos-runit/docs/fedora-build-host.md)
 
+Before attempting package or installer stages, run the local validation pass:
+
+```bash
+cd /home/user/github/qubesos-runit
+./scripts/validate-devuan-dom0.sh
+```
+
+That script checks shell/Python syntax, verifies the packaged runit assets are
+executable, and smoke-tests the `qubes-vm-autostart` service logic against a
+temporary `qubes.xml` fixture.
+
 ## Service manager setup
 
 See `docs/service-manager.md` for how this fork configures the dom0 service manager

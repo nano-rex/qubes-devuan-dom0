@@ -78,6 +78,7 @@ Use:
 
 ```bash
 cd /home/user/github/qubesos-runit
+./scripts/validate-devuan-dom0.sh
 ./scripts/run-devuan-builder.sh package init-cache
 ./scripts/run-devuan-builder.sh package fetch prep build
 ```
@@ -89,6 +90,10 @@ The wrapper:
   - `/home/user/github/qubesos-runit/artifacts/executor`
 - refuses to run if the required host tools are missing
 - refuses to run if the Devuan archive keyring is missing
+
+The validation script is the fastest preflight check before a real builder run.
+It does not prove package builds, but it does catch obvious repo-local problems
+in the runit service assets and helper scripts before `pbuilder` is involved.
 
 ## Alternate config path
 

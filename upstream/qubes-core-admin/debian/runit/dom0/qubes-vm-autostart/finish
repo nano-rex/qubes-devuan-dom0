@@ -1,13 +1,15 @@
 #!/bin/sh
 set -eu
 
-QUBES_XML=/var/lib/qubes/qubes.xml
+QUBES_XML=${QUBES_XML:-/var/lib/qubes/qubes.xml}
+QVM_SHUTDOWN_CMD=${QVM_SHUTDOWN_CMD:-/usr/bin/qvm-shutdown}
 
 collect_autostart_vms() {
-    python3 <<'PY'
+    QUBES_XML="$QUBES_XML" python3 <<'PY'
 import xml.etree.ElementTree as ET
+import os
 
-path = """$QUBES_XML"""
+path = os.environ["QUBES_XML"]
 try:
     tree = ET.parse(path)
 except (ET.ParseError, FileNotFoundError):
@@ -32,7 +34,7 @@ PY
 autostart_vms_shutdown() {
     collect_autostart_vms | while IFS= read -r vm; do
         [ -z "$vm" ] && continue
-        /usr/bin/qvm-shutdown --wait "$vm" || true
+        "$QVM_SHUTDOWN_CMD" --wait "$vm" || true
     done
 }
 

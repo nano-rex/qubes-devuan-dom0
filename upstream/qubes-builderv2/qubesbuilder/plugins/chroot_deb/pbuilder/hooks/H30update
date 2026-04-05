@@ -1,0 +1,12 @@
+#!/bin/sh
+
+local_repo_line='deb [trusted=yes] file:///tmp/qubes-deb daedalus main'
+
+if ! grep -Fq "$local_repo_line" /etc/apt/sources.list; then
+    printf '%s\n' "$local_repo_line" >> /etc/apt/sources.list
+fi
+
+echo "--- /etc/apt/sources.list ---"
+cat /etc/apt/sources.list
+echo "--- end sources.list ---"
+apt-get update

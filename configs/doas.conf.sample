@@ -1,0 +1,8 @@
+# Sample doas configuration for the devuan-runit-dom0 worktree.
+# Adjust the user/group entries to match your local build account.
+
+# Allow the root user to execute commands while keeping environment variables intact.
+permit persist keepenv root
+
+# Allow wheel members to run doas with their environment preserved.
+permit persist keepenv :wheel

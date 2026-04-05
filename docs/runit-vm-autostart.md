@@ -9,11 +9,20 @@ Upstream Qubes uses `qubes-vm@.service` to orchestrate autostarted qubes and to 
 Proposed structure:
 
 - `/etc/sv/qubes-vm-autostart/run`
-  - Loop over configured autostart entries, call a helper script that uses `python3 -m qubes.qubesvm` or the `qcli` command to start each VM in the right order.
+  - Loop over configured autostart entries, parse `/var/lib/qubes/qubes.xml`, and call `qvm-start --skip-if-running` for each autostarted VM.
   - Keep the service running so `runsv` can supervise it.
 - `/etc/sv/qubes-vm-autostart/finish`
-  - On stop, call a shutdown helper that iterates running VMs and calls `qvm-shutdown --wait`.
+  - On stop, parse the same XML and call `qvm-shutdown --wait` for each autostarted VM.
 
 The helper scripts should execute privileged operations through `/usr/bin/doas`, matching the rest of the dom0 admin tooling.
 
-Once this service is packaged into `qubes-core-admin-dom0`, we can remove the `systemd` unit references and ensure the runit supervisor starts the service at boot. The builder should install the runit bits under `/etc/sv/qubes-vm-autostart` (including the `run` and `finish` helpers) and list the service in the `service-manager` manifest so dom0 activation scripts can link it into `runsvdir`.
+Current repo status:
+
+- `upstream/qubes-core-admin/debian/runit/dom0/qubes-vm-autostart/run`
+  - waits for `qubes.xml`, starts each autostart VM, then stays alive under `runsv`
+- `upstream/qubes-core-admin/debian/runit/dom0/qubes-vm-autostart/finish`
+  - shuts down those same VMs on service stop
+- both helpers accept `QUBES_XML` overrides for testing, plus `QVM_START_CMD` /
+  `QVM_SHUTDOWN_CMD` overrides for local smoke tests
+
+Once this service is packaged into `qubes-core-admin-dom0`, we can remove the remaining `systemd` unit references and ensure the runit supervisor starts the service at boot. The builder installs the runit bits under `/etc/sv/qubes-vm-autostart` and links the service into `/etc/service`.
