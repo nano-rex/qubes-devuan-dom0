@@ -1,0 +1,10 @@
+prefix=/usr
+includedir=/usr/include
+libdir=/usr/lib/x86_64-linux-gnu
+
+Name: vchan-xen
+Description: Xen-specific compatibility alias for libvchan
+Version: 4.19.0
+Cflags: -I${includedir}
+Libs: -L${libdir} -lxenvchan
+Requires.private: xentoollog xenstore xengnttab xenevtchn

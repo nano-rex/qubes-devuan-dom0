@@ -18,6 +18,9 @@ export PYTHON_PREFIX_ARG=--install-layout=deb
 
 include /usr/share/dpkg/default.mk
 export DESTDIR=$(shell pwd)/debian/tmp
+export DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+export PKG_CONFIG_PATH := $(CURDIR)/debian/pkgconfig:/usr/lib/$(DEB_HOST_MULTIARCH)/pkgconfig
+export CFLAGS += -I$(CURDIR)/debian/include
 
 %:
 	dh $@ --with python3,vim_addon
