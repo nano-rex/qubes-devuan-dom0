@@ -1,4 +1,10 @@
 usr/include/libxenvchan.h
+usr/include/xen/COPYING
+usr/include/xen/arch-arm.h
+usr/include/xen/arch-arm/hvm/save.h
+usr/include/xen/arch-arm/smccc.h
+usr/include/xen/arch-ppc.h
+usr/include/xen/arch-riscv.h
 usr/include/xen/version.h
 usr/include/xen/vm_event.h
 usr/include/xen/arch-x86/*
