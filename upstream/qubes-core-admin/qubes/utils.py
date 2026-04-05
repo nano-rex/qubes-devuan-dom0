@@ -29,6 +29,7 @@ import shlex
 import string
 import os
 import os.path
+import shutil
 import socket
 import subprocess
 import tempfile
@@ -241,8 +242,13 @@ def get_service_manager():
     return manager or "systemd"
 
 
-def _sudo_call(command):
-    return subprocess.call(["sudo"] + command)
+def _root_call(command):
+    helper = shutil.which("doas") or shutil.which("sudo")
+    if not helper:
+        raise qubes.exc.QubesException(
+            "No privilege escalation helper installed (doas or sudo)."
+        )
+    return subprocess.call([helper] + command)
 
 
 def _service_manager_error(manager, action, name):
@@ -252,7 +258,7 @@ def _service_manager_error(manager, action, name):
 
 
 def _enable_systemd_vm_autostart(name):
-    return _sudo_call(
+    return _root_call(
         [
             "ln",
             "-sf",
@@ -263,7 +269,11 @@ def _enable_systemd_vm_autostart(name):
 
 
 def _disable_systemd_vm_autostart(name):
-    return _sudo_call(["systemctl", "disable", f"qubes-vm@{name}.service"])
+    return _root_call([
+        "systemctl",
+        "disable",
+        f"qubes-vm@{name}.service",
+    ])
 
 
 def _enable_runit_vm_autostart(name):
@@ -272,14 +282,21 @@ def _enable_runit_vm_autostart(name):
 mkdir -p /etc/sv/{shlex.quote(service_name)}
 cat > /etc/sv/{shlex.quote(service_name)}/run <<'EOF'
 #!/bin/sh
+set -eu
 exec 2>&1
 /usr/bin/qvm-start --skip-if-running {shlex.quote(name)}
 exec sleep infinity
 EOF
+cat > /etc/sv/{shlex.quote(service_name)}/finish <<'EOF'
+#!/bin/sh
+set -eu
+/usr/bin/qvm-shutdown --wait {shlex.quote(name)} || true
+EOF
 chmod 0755 /etc/sv/{shlex.quote(service_name)}/run
+chmod 0755 /etc/sv/{shlex.quote(service_name)}/finish
 ln -snf /etc/sv/{shlex.quote(service_name)} /etc/service/{shlex.quote(service_name)}
 """
-    return _sudo_call(["sh", "-c", script])
+    return _root_call(["sh", "-c", script])
 
 
 def _disable_runit_vm_autostart(name):
@@ -288,7 +305,7 @@ def _disable_runit_vm_autostart(name):
         f"rm -f /etc/service/{shlex.quote(service_name)} && "
         f"rm -rf /etc/sv/{shlex.quote(service_name)}"
     )
-    return _sudo_call(["sh", "-c", script])
+    return _root_call(["sh", "-c", script])
 
 
 def enable_vm_autostart(name):

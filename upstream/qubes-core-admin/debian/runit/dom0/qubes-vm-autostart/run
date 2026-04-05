@@ -1,0 +1,50 @@
+#!/bin/sh
+set -eu
+
+QUBES_XML=/var/lib/qubes/qubes.xml
+
+wait_for_qubes_xml() {
+    while [ ! -s "$QUBES_XML" ]; do
+        sleep 1
+    done
+}
+
+collect_autostart_vms() {
+    python3 <<'PY'
+import xml.etree.ElementTree as ET
+
+path = """$QUBES_XML"""
+try:
+    tree = ET.parse(path)
+except (ET.ParseError, FileNotFoundError):
+    exit(0)
+
+names = []
+for dom in tree.findall("domain"):
+    name = dom.find("name")
+    if name is None or not name.text:
+        continue
+    autostart = dom.find("autostart")
+    if autostart is None or not autostart.text:
+        continue
+    val = autostart.text.strip().lower()
+    if val not in {"1", "true", "yes", "on"}:
+        continue
+    names.append(name.text.strip())
+print("\n".join(names))
+PY
+}
+
+autostart_vms() {
+    collect_autostart_vms | while IFS= read -r vm; do
+        [ -z "$vm" ] && continue
+        /usr/bin/qvm-start --skip-if-running "$vm" || true
+    done
+}
+
+wait_for_qubes_xml
+# Delay slightly to give qubesd time to prepare
+sleep 2
+
+autostart_vms
+exec sleep infinity

@@ -3,8 +3,16 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 BUILDER_DIR="$ROOT_DIR/upstream/qubes-builderv2"
+TOOLS_DIR="$ROOT_DIR/tools"
+PATH="$TOOLS_DIR:$PATH"
+export PATH
 CONFIG_FILE="${QUBES_DEVUAN_CONFIG:-$ROOT_DIR/configs/devuan-dom0-runit.yml}"
 CLI="$BUILDER_DIR/qubesbuilder-cli"
+
+if [[ $# -ge 1 && "$1" == "installer" ]]; then
+    "$ROOT_DIR/scripts/check-doas.sh"
+    "$ROOT_DIR/scripts/check-doas-config.sh"
+fi
 
 if [[ ! -f "$CONFIG_FILE" ]]; then
     echo "Missing builder config: $CONFIG_FILE" >&2

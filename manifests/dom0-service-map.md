@@ -8,7 +8,7 @@ ports for a `Devuan + runit` target.
 These services are directly referenced by the imported `dom0` packaging and
 service ordering logic.
 
-1. `qubesd`
+1. `qubesd` (runit version already packaged)
 - upstream source: `upstream/qubes-core-admin/linux/systemd/qubesd.service`
 - role: core admin daemon
 - notes:
@@ -55,9 +55,13 @@ These are not the first blockers, but they are coupled to the above services.
 - upstream source: `upstream/qubes-linux-utils/qmemman/qubes-meminfo-writer-dom0.service`
 - role: dom0 memory info writer service
 
+3. `qubes-vm-autostart`
+- upstream source: `ups` (this runit helper is newly added inside `debian/runit/dom0`)
+- role: monitors `/var/lib/qubes/qubes.xml`, starts autostart VMs via `qvm-start`, and shuts them down via `qvm-shutdown`.
+
 ## Immediate porting implications
 
-1. We need a `runit` service directory layout for each priority-1 service.
-2. We need to remove `systemd` macros from dom0 packaging.
-3. We need to isolate hardcoded `systemctl` usage in Python code.
-4. We need a replacement for the `qubes-vm@.service` autostart model.
+1. The Debian packages already install runit directories for the priority-1 services, so the next step is wiring them into dom0’s `runsvdir` layout (via `/etc/qubes/service-manager` or similar).
+2. Remove the remaining `systemd` macros from the dom0 packages and ensure the runit assets end up under `/etc/sv`.
+3. Isolate `systemctl` usage inside `qubes-core-admin` so those modules can orchestrate runit instead.
+4. Provide a runit-friendly replacement for `qubes-vm@.service` that still supports the existing autostart/shutdown behaviors.
