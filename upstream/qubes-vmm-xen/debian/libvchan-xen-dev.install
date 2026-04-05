@@ -1,4 +1,14 @@
 usr/include/libxenvchan.h
+usr/include/xen/version.h
+usr/include/xen/vm_event.h
+usr/include/xen/xen-compat.h
+usr/include/xen/xen.h
+usr/include/xen/xencomm.h
+usr/include/xen/xenoprof.h
+usr/include/xen/xsm/flask_op.h
+usr/include/xen_list.h
+usr/include/xenevtchn.h
+usr/include/xengnttab.h
 usr/include/xenstore.h
 usr/include/xenstore_lib.h
 usr/include/xenstore-compat/xs.h
