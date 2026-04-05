@@ -59,9 +59,14 @@ These are not the first blockers, but they are coupled to the above services.
 - upstream source: `ups` (this runit helper is newly added inside `debian/runit/dom0`)
 - role: monitors `/var/lib/qubes/qubes.xml`, starts autostart VMs via `qvm-start`, and shuts them down via `qvm-shutdown`.
 
+4. `qubes-guid`
+- upstream source: `upstream/qubes-gui-daemon/gui-daemon/qubes-guid`
+- role: GUI virtualization helper that speaks the Qubes GUI protocol and must run in dom0 under runit to keep GUI threads alive.
+
 ## Immediate porting implications
 
 1. The Debian packages already install runit directories for the priority-1 services, so the next step is wiring them into dom0’s `runsvdir` layout (via `/etc/qubes/service-manager` or similar).
 2. Remove the remaining `systemd` macros from the dom0 packages and ensure the runit assets end up under `/etc/sv`.
 3. Isolate `systemctl` usage inside `qubes-core-admin` so those modules can orchestrate runit instead.
 4. Provide a runit-friendly replacement for `qubes-vm@.service` that still supports the existing autostart/shutdown behaviors.
+5. Confirm dom0 packages install the `qubes-guid` runit service and link it into `/etc/service`, and provide doc guidance for enabling it.
