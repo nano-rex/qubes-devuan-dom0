@@ -1,4 +1,14 @@
 usr/include/libxenvchan.h
+usr/include/xenstore.h
+usr/include/xenstore_lib.h
+usr/include/xentoolcore.h
+usr/include/xentoollog.h
+usr/include/xs.h
+usr/include/xs_lib.h
+usr/lib/*/libxenevtchn.a
+usr/lib/*/libxenevtchn.so
+usr/lib/*/libxengnttab.a
+usr/lib/*/libxengnttab.so
 usr/lib/*/libxenstore.a
 usr/lib/*/libxenstore.so
 usr/lib/*/libxentoolcore.a
