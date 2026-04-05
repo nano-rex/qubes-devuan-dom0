@@ -47,15 +47,15 @@ Compared with Artix/OpenRC, antiX is closer to Debian-family packaging and a mor
 - `docs/devuan-port-notes.md`: first-pass builder and init blockers
 - `docs/whonix-templates.md`: plan for the Whonix gateway/workstation templates
 - `docs/runit-vm-autostart.md`: proposal for replacing `qubes-vm@.service` with runit
-- `docs/devuan-build-host.md`: antiX host bootstrap path for local builder execution
+- `docs/antix-build-host.md`: antiX host bootstrap path for local builder execution
 - `manifests/dom0-packages.md`: antiX+runit dom0 package plan
-- `manifests/devuan-build-host-packages.txt`: antiX build host prerequisites
+- `manifests/antix-build-host-packages.txt`: antiX build host prerequisites
 - `manifests/dom0-service-map.md`: dom0 services that must be ported to runit
 - `notes/research.md`: current assumptions and unresolved questions
 - `upstream/`: imported upstream Qubes source snapshots tracked directly in this repo
 - `configs/`: local build/config scaffolding for this standalone project
 - `scripts/run-devuan-builder.sh`: local wrapper for the vendored builder
-- `scripts/check-devuan-build-host.sh`: checks the current antiX host against required packages
+- `scripts/check-antix-build-host.sh`: checks the current antiX host against required packages
 
 ## Imported upstream sources
 
@@ -96,7 +96,7 @@ the antiX-aware mock configuration added under `upstream/qubes-builderv2/qubesbu
 
 Details and assumptions:
 - [`docs/build-devuan-dom0.md`](/home/user/github/qubesos-runit/docs/build-devuan-dom0.md)
-- [`docs/devuan-build-host.md`](/home/user/github/qubesos-runit/docs/devuan-build-host.md)
+- [`docs/antix-build-host.md`](/home/user/github/qubesos-runit/docs/antix-build-host.md)
 
 Before attempting package or installer stages, run the local validation pass:
 
@@ -112,9 +112,9 @@ temporary `qubes.xml` fixture.
 ## Host validation
 
 Before running the builder, make sure the workstation satisfies the antiX host manifest.
-Read [`docs/devuan-build-host.md`](/home/user/github/qubesos-runit/docs/devuan-build-host.md)
-for the recommended packages and use `scripts/check-devuan-build-host.sh` to verify the current state.
-It enumerates the packages listed in `manifests/devuan-build-host-packages.txt`
+Read [`docs/antix-build-host.md`](/home/user/github/qubesos-runit/docs/antix-build-host.md)
+for the recommended packages and use `scripts/check-antix-build-host.sh` to verify the current state.
+It enumerates the packages listed in `manifests/antix-build-host-packages.txt`
 and suggests an `apt install` command when something is missing.
 
 ## Service manager setup

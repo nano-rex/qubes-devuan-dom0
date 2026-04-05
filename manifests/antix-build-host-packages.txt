@@ -1,13 +1,11 @@
-createrepo_c
 debootstrap
 devscripts
-dnf-plugins-core
-dosfstools
 dpkg-dev
+fakeroot
 git
 hostname
-mock
 pbuilder
+perl
 perl-Digest-MD5
 perl-Digest-SHA
 podman
@@ -23,10 +21,7 @@ python3-podman
 python3-pyyaml
 python3-sh
 reprepro
-rpm-build
-rpmdevtools
-sequoia-sq
-systemd-udev
 tree
 wget2-wget
 which
+devuan-keyring
