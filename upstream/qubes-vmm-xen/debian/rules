@@ -20,13 +20,16 @@ override_dh_auto_build:
 	$(MAKE) -C tools/libs/vchan
 
 override_dh_auto_install:
+	if [ -f "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)" ]; then \
+		rm -f "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)"; \
+	fi
+	install -d $(CURDIR)/debian/tmp$(PKG_INSTALLDIR)
 	$(MAKE) -C tools/include install PYTHON=$(PYTHON) DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C tools/libs/toolcore install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C tools/libs/toollog install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C tools/libs/store install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C tools/libs/evtchn install DESTDIR=$(CURDIR)/debian/tmp
 	$(MAKE) -C tools/libs/gnttab install DESTDIR=$(CURDIR)/debian/tmp
-	install -d $(CURDIR)/debian/tmp$(PKG_INSTALLDIR)
 	$(MAKE) -C tools/libs/vchan install DESTDIR=$(CURDIR)/debian/tmp
 	if [ -f "$(CURDIR)/debian/tmp$(libdir)/pkgconfig" ]; then \
 		mv "$(CURDIR)/debian/tmp$(libdir)/pkgconfig" "$(CURDIR)/debian/tmp$(PKG_INSTALLDIR)/xenvchan.pc"; \
