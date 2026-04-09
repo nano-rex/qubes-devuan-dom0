@@ -1,6 +1,0 @@
-usr/bin/meminfo-writer
-usr/lib/qubes/*
-usr/lib/udev/*
-usr/lib/tmpfiles.d/xen-devices-qubes.conf
-etc/xen/scripts/qubes-block
-etc/sv/qubes-meminfo-writer-dom0

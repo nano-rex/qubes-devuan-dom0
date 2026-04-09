@@ -1,6 +1,0 @@
-#!/bin/sh
-set -eu
-while [ ! -S /run/qubes/qmemman.sock ]; do
-  sleep 1
-done
-exec /usr/bin/meminfo-writer 30000 100000

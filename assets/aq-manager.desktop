@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=AQ Manager
+Comment=Minimal Qubes-like manager for antiX-QEMU runtime
+Exec=__REPO__/scripts/aq-manager-gui.py --root-dir /var/lib/antix-qubes
+Icon=aq-manager
+Terminal=false
+Categories=System;Security;
+StartupNotify=true

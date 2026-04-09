@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=AQ Qube List
+Comment=List service qubes (qvm-ls style)
+Exec=__REPO__/scripts/qvm-ls.sh
+Icon=aq-manager
+Terminal=true
+Categories=System;Security;
+StartupNotify=true

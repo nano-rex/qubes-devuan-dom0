@@ -1,5 +1,0 @@
-# Units below this line will be re-preset on package upgrade
-
-enable pipewire.socket
-enable pipewire.service
-enable wireplumber.service

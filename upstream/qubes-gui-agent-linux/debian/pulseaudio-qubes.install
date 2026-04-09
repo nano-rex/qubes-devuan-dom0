@@ -1,7 +1,0 @@
-etc/pulse/qubes-default.pa
-etc/xdg/autostart/qubes-pulseaudio.desktop
-usr/bin/start-pulseaudio-with-vchan
-usr/lib/pulse-*/modules/module-vchan-sink.so
-usr/lib/tmpfiles.d/qubes-pulseaudio.conf
-usr/lib/runit/user-preset/75-pulseaudio-qubes.preset
-usr/lib/runit/user/pulseaudio.service.d/30_qubes.conf

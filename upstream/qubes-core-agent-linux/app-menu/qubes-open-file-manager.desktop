@@ -1,5 +1,0 @@
-[Desktop Entry]
-Name=Open File Manager
-Exec=xdg-open .
-Icon=system-file-manager
-Type=Application

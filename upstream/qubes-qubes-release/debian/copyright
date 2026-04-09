@@ -1,9 +1,0 @@
-Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: qubes-release
-Source: https://github.com/nano-rex/qubes-devuan-dom0
-
-Files: *
-Copyright:
-  The Qubes OS Project contributors
-  nano-rex project maintainers
-License: GPL-2+

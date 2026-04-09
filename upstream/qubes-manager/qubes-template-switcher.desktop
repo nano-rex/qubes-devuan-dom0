@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Exec=qubes-template-manager
-Icon=qubes-manager
-Terminal=false
-Name=Qubes Template Switcher
-GenericName=Qubes Template Switcher
-StartupNotify=false
-Categories=Settings;X-XFCE-SettingsDialog

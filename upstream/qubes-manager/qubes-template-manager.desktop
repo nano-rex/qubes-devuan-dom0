@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=Application
-Exec=qvm-template-gui
-Icon=qubes-manager
-Terminal=false
-Name=Qubes Template Manager
-GenericName=Qubes Template Manager
-StartupNotify=false
-Categories=Settings;X-XFCE-SettingsDialog

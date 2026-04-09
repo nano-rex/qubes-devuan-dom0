@@ -1,5 +1,0 @@
-[Unit]
-Description=Reload VM firewall to expire its temporary rules
-
-[Timer]
-OnActiveSec=1m

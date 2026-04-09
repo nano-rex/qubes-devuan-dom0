@@ -1,154 +1,47 @@
-# qubesos-runit
+# antiX-QEMU-Runtime
 
-A standalone project workspace that builds a Qubes-derived system using antiX + runit + doas in dom0.
+This repository reboots the previous Qubes-derived workspace into a focused antiX-based control plane that manages template-driven virtual machines with pure QEMU. Qubes OS is referenced only for its security model and VM policies; all materials under this tree are written for an antiX host and a KVM/QEMU hypervisor.
 
-## Scope
+## Objectives
 
-This is a brand new project workspace.
-It is not a contribution branch for the upstream Qubes OS repositories.
-Official Qubes sources are imported locally as vendor snapshots and will be modified here as needed.
+1. Download and sandbox the antiX core image that will become the immutable template root.
+2. Drive VM lifecycle, clone, and overlay logic with hand-written scripts and policies instead of libvirt or Xen tooling.
+3. Document the hardened service architecture (runit, doas, policy helpers) that will sit on top of QEMU overlays.
 
-Primary target:
-- `dom0`: antiX with `runit` and `doas`
+## Getting the antiX core template
 
-Non-goals for the first milestone:
-- Artix / OpenRC dom0
-- production-ready installer
-- production-ready update infrastructure
-- security claims beyond upstream Qubes parity
-
-## Project goals
-
-1. Define a custom `dom0` distro target.
-2. Adapt the Qubes build workflow needed to build a bootable system.
-3. Rework the Qubes core components for a antiX-based `dom0`.
-4. Prove a minimal boot path with Xen and core admin services.
-
-## Why antiX first
-
-Compared with Artix/OpenRC, antiX is closer to Debian-family packaging and a more realistic base for a first Qubes-style dom0 fork.
-
-## Planned phases
-
-1. Architecture and repository layout
-2. Build manifests and source tracking
-3. Dom0 package mapping
-4. Minimal builder pipeline
-5. Bootable test image
-6. Core admin and qrexec integration
-7. Update/signing pipeline
+Run `scripts/fetch-antix-core.sh` to download `antiX-26_x64-core.iso` into the `isos/` directory and validate the SHA256 fingerprint. The script can be re-run; it skips re-downloading if the ISO already exists.
 
 ## Repository layout
 
--- `docs/architecture.md`: system design and trust boundaries
--- `docs/roadmap.md`: phased implementation plan
--- `docs/component-map.md`: upstream Qubes components and required adaptations
--- `docs/build-antix-dom0.md`: current antiX build bootstrap path and host requirements
--- `docs/whonix-templates.md`: plan for the Whonix gateway/workstation templates
--- `docs/runit-vm-autostart.md`: proposal for replacing `qubes-vm@.service` with runit
--- `docs/service-manager.md`: explains the runit service wiring for dom0
--- `docs/antix-build-host.md`: antiX host bootstrap path for local builder execution
--- `manifests/dom0-packages.md`: antiX+runit dom0 package plan
--- `manifests/antix-build-host-packages.txt`: antiX build host prerequisites
--- `manifests/dom0-service-map.md`: dom0 services that must be ported to runit
--- `notes/research.md`: current assumptions and unresolved questions
-- `upstream/`: imported upstream Qubes source snapshots tracked directly in this repo
-- `configs/`: local build/config scaffolding for this standalone project
-- `scripts/run-devuan-builder.sh`: local wrapper for the vendored builder
-- `scripts/check-antix-build-host.sh`: checks the current antiX host against required packages
+- `docs/`: design notes, architecture, and planning for the antiX host plus the QEMU template workflow.
+- `docs/qrexec-parity-spec.md`: Qubes-parity design for file transfer and clipboard mediation.
+- `docs/qrexec-phase1-runbook.md`: how to run the first clipboard mediation implementation.
+- `docs/manager-ui.md`: minimal Qubes-like manager CLI and GUI usage.
+- `scripts/`: helper scripts such as the antiX downloader and future automation.
+- `manifests/`: metadata about the antiX core assets, verification data, and environment requirements.
+- `notes/`: brainstorming, reference summaries (including the Qubes architecture we keep in mind).
+- `isos/`: downloaded images and other bulky assets (not checked into git).
 
-## Imported upstream sources
+## First-phase focus
 
-These directories were imported from official Qubes repositories and are now tracked as part of this standalone project:
-- `qubes-builderv2`
-- `qubes-core-admin`
-- `qubes-core-qrexec`
-- `qubes-gui-daemon`
-- `qubes-gui-agent-linux`
-- `qubes-core-agent-linux`
-- `qubes-linux-kernel`
-- `qubes-linux-utils`
-- `qubes-vmm-xen`
-- `qubes-linux-template-builder`
-- `qubes-installer-qubes-os`
-- `qubes-manager`
-- `qubes-qubes-release`
-- `qubes-doc`
+1. Nail down how the antiX base boots, which services run under runit, and how `doas` intercepts privileged actions.
+2. Design the overlay cloning pattern so every qube boots from an antiX template and cannot mutate it.
+3. Build tooling (scripts, configs) that orchestrates template updates, overlay pruning, and policy enforcement without upstream Qubes components.
 
-## Current status
+## Host bootstrap
 
-Planning scaffold plus imported source trees, initial antiX-aware builder patches,
-first packaging scaffolds, and a concrete local builder wrapper.
+Run `scripts/bootstrap-qubes.sh [TARGET_ROOT]` from this repo to download the antiX core ISO plus the Whonix gateway/workstation KVM images, verify them, and lay out the `templates/`, `overlays/`, and `metadata/` state described in `docs/system-setup.md`. Once the bootstrap completes, deploy your runit services and policy daemon on top of the generated `metadata/` so they can start the four service qubes (`sys-net`, `sys-usb`, `sys-firewall`, `sys-whonix`) from the intended templates.
+`bootstrap-qubes.sh` now supports dependency installation on apt and pacman hosts by default (`INSTALL_DEPS=1` when run as root).
 
-## Build workflow
+After bootstrap, run `scripts/provision-service-qubes.sh [TARGET_ROOT]` to create per-qube overlays and runit service stubs under `runit/` for the four service qubes.
+Then run `AQ_SHARED_TOKEN=change-me scripts/provision-aq-services.sh [TARGET_ROOT]` and `sudo scripts/install-runit-services.sh [TARGET_ROOT]` to provision and install qrexec phase-1 runit services.
+Use `scripts/aq-manager.py` (or `scripts/aq-manager-gui.py`) for minimal qube control plus clipboard and file copy/move actions.
+Use `scripts/install-desktop-entry.sh` to install an app-menu launcher and icon for `AQ Manager`.
 
-Use the local wrapper to run both the package build pipeline and the installer flow.
+For host updates through a service qube, configure `configs/host-update-route.env.sample`, then use:
+- `scripts/host-update-route.sh on firewall|whonix`
+- `scripts/host-update-route.sh off`
+- `scripts/host-update-via.sh firewall|whonix <command...>` (auto rollback on exit)
 
-```bash
-cd /home/user/github/qubesos-runit
-. ./scripts/run-devuan-builder.sh package init-cache
-. ./scripts/run-devuan-builder.sh package fetch prep build
-. ./scripts/run-devuan-builder.sh installer init-cache
-```
-
-The installer stages are required before an ISO can be generated, and they rely on
-the antiX-aware mock configuration added under `upstream/qubes-builderv2/qubesbuilder/plugins/installer/mock/`.
-
-- Detail and assumptions:
-- [`docs/build-antix-dom0.md`](/home/user/github/qubesos-runit/docs/build-antix-dom0.md)
-- [`docs/antix-build-host.md`](/home/user/github/qubesos-runit/docs/antix-build-host.md)
-
-Before attempting package or installer stages, run the local validation pass:
-
-```bash
-cd /home/user/github/qubesos-runit
-./scripts/validate-antix-dom0.sh
-```
-
-That script checks shell/Python syntax, verifies the packaged runit assets are
-executable, and smoke-tests the `qubes-vm-autostart` service logic against a
-temporary `qubes.xml` fixture.
-
-## Host validation
-
-Before running the builder, make sure the workstation satisfies the antiX host manifest.
-Read [`docs/antix-build-host.md`](/home/user/github/qubesos-runit/docs/antix-build-host.md)
-for the recommended packages and use `scripts/check-antix-build-host.sh` to verify the current state.
-It enumerates the packages listed in `manifests/antix-build-host-packages.txt`
-and suggests an `apt install` command when something is missing.
-
-## Service manager setup
-
-See `docs/service-manager.md` for how this fork configures the dom0 service manager
-and runit wiring so the builder/autostart helpers talk to the expected controller.
-
-Run `scripts/check-runit-services.sh` inside an installed dom0 to ensure the
-packaging produced `/etc/sv/<service>` directories and `/etc/service` symlinks
-for every core dom0 daemon before booting `runsvdir`.
-
-## Privilege escalation
-
-The dom0 services and builder workflow expect `doas` as the privileged runner.
-`scripts/run-devuan-builder.sh` prepends `tools` (which now contains the `tools/doas-shim`
-helper) so every privileged helper invocation flows through
-the shim and executes via `doas`.
-
-Make sure `/usr/bin/doas` is owned by `root` and marked `setuid` before running the installer stages:
-
-```bash
-su -c 'chown root:root /usr/bin/doas'
-su -c 'chmod 4755 /usr/bin/doas'
-```
-
-The wrapper now runs `scripts/check-doas.sh` and the new `scripts/check-doas-config.sh` before any
-`installer` stage so you get an upfront error message if either the `doas` binary or its configuration
-is missing or out of sync with the recommended entries. Use `configs/doas.conf.sample` as a starting
-point, and adjust the `root`/`:wheel` lines to match your personal `wheel` group if needed.
-
-## Whonix templates
-
-The Whonix gateway and workstation templates will also ride on the antiX + runit foundation.
-Each template should reuse the dom0 runit assets wherever possible and rely on the `doas`-based root helpers
-rather than the upstream init stack. The long-term plan is to mirror the upstream Whonix packaging
-while swapping the backend distro and init stack; once the dom0 packages are running under runit we can extend
-the template builder to use the same `doas` shim in the installer stages.
+Armed with these artifacts we can iterate toward a minimal antiX-plus-QEMU control plane that mirrors Qubes semantics without depending on Xen or libvirt.

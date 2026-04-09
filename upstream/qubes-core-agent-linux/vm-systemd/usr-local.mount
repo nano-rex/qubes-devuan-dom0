@@ -1,8 +1,0 @@
-[Unit]
-ConditionPathExists=!/var/run/qubes/disable_persistent_usrlocal_dir
-
-[Mount]
-What=/rw/usrlocal
-Where=/usr/local
-Type=none
-Options=noauto,bind,defaults

@@ -1,3 +1,0 @@
-usr/bin/qubes-run-x11vnc
-etc/X11/xorg-qubes-x11vnc.conf.template
-lib/runit/system/lightdm.service.d/qubes-guivm-vnc.conf

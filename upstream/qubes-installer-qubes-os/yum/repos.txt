@@ -1,4 +1,0 @@
-dom0-update   <-- select update packages from Dom0, such as new Xorg drivers 
-                  (see dom0-updates repo)
-qubes-dom0    <-- all qubes-related packages
-installer     <-- packages needed for anaconda

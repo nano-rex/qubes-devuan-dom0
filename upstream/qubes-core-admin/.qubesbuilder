@@ -1,7 +1,0 @@
-host:
-  rpm:
-    build:
-    - rpm_spec/core-dom0.spec
-  deb:
-    build:
-    - debian

@@ -1,5 +1,0 @@
-#!/bin/sh
-set -eu
-# Placeholder oneshot wrapper for the dom0 startup sequence.
-/usr/lib/qubes/startup-misc.sh
-exec sleep infinity

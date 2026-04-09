@@ -1,4 +1,0 @@
-This package path is currently narrowed to the Xen tools libraries needed to
-bootstrap the Devuan dom0 port, especially libxenvchan for qrexec builds.
-
-It does not yet represent a complete Xen hypervisor or stubdom Debian port.

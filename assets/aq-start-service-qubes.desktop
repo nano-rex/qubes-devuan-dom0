@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=AQ Start Service Qubes
+Comment=Start sys-net, sys-usb, sys-firewall, sys-whonix
+Exec=__REPO__/scripts/qvm-start-defaults.sh
+Icon=aq-manager
+Terminal=true
+Categories=System;Security;
+StartupNotify=true

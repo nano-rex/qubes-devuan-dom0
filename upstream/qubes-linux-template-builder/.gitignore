@@ -1,9 +1,0 @@
-*~
-appmenus
-template.conf
-build_timestamp_*
-*.iso
-*.img
-install-templates.sh
-pkgs-for-template/*
-cache_*/

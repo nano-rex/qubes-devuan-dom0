@@ -1,2 +1,0 @@
-All executable files with `.sh` suffix in this directory will be executed as
-root just after host resume from suspend.

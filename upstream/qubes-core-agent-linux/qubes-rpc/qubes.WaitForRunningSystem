@@ -1,4 +1,0 @@
-#!/bin/sh
-set -eu
-sv --wait --quiet is-system-running
-exit 0

@@ -1,0 +1,11 @@
+# action src dst decision
+# decision: allow | ask | deny
+
+clip.copy @any @host ask
+clip.paste @any @any ask
+file.copy @any @any ask
+file.move @any @any ask
+
+# Tighten this as you classify qubes:
+# clip.paste @any sys-whonix deny
+# file.move @any sys-whonix deny

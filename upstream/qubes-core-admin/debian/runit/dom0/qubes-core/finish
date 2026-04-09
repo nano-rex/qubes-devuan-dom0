@@ -1,3 +1,0 @@
-#!/bin/sh
-/usr/bin/qvm-shutdown -q --all --wait || true
-/usr/bin/killall qubesdb-daemon || true

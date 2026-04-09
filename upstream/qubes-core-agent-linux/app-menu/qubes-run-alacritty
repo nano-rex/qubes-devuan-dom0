@@ -1,4 +1,0 @@
-#!/usr/bin/sh
-# Wrapper around alacritty that creates a new window if alacritty is already
-# running, otherwise starts alacritty.
-alacritty msg create-window || exec alacritty

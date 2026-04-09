@@ -1,3 +1,0 @@
-Defaults secure_path="/run/qubes/bin:/usr/local/sbin:/usr/local/bin:/usr/bin"
-
-# vim: ft=doasers

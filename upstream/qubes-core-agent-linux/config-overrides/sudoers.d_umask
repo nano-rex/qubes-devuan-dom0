@@ -1,3 +1,0 @@
-# Doas's defualt umask is 077 so set sane default of 022
-Defaults umask = 0022
-Defaults umask_override

@@ -1,2 +1,0 @@
-# Don't allow QT to used shared memory to prevent errors
-Defaults env_keep += "QT_X11_NO_MITSHM"

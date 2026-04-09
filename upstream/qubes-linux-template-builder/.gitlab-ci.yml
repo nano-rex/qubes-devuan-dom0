@@ -1,3 +1,0 @@
-include:
-  - project: 'QubesOS/qubes-continuous-integration'
-    file: '/r4.1/gitlab-linux-template-builder.yml'

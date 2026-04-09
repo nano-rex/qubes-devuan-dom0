@@ -1,5 +1,0 @@
-[org.mate.NotificationDaemon]
-theme='slider'
-
-[org.freedesktop.ibus.panel]
-show-icon-on-systray=false

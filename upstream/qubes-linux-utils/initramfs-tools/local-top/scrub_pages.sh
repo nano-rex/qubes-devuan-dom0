@@ -1,1 +1,0 @@
-../../dracut/xen-balloon-scrub-pages/scrub_pages.sh

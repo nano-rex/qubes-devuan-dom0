@@ -1,5 +1,0 @@
-qubes-core-admin (4.3.44-1) unstable; urgency=medium
-
-  * Initial Devuan dom0 packaging scaffold.
-
- -- nano-rex <opensource@nano-rex.local>  Sat, 04 Apr 2026 12:00:00 -0400

@@ -1,1 +1,0 @@
-ATTRS{name}=="Qubes Virtual Input Device", ACTION=="add", GROUP="qubes"

@@ -1,7 +1,0 @@
-*.pyc
-*.pyo
-*~
-rpm/
-pkgs/
-debian/changelog.*
-.coverage

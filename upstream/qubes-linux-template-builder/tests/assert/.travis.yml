@@ -1,4 +1,0 @@
-language: bash
-script: bash tests.sh
-before_install:
-    - doas apt-get install bc

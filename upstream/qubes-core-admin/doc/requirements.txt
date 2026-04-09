@@ -1,3 +1,0 @@
-# WARNING: those requirements are used only for readthedocs.org
-# they SHOULD NOT be used under normal conditions; use system package manager
-lxml
