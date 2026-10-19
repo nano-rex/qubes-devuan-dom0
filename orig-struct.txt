@@ -1,0 +1,241 @@
+
+ qubes_dom0/root
+ qubes_dom0/swap
+ qubes_dom0/vm-anon-whonix-private
+ qubes_dom0/vm-anon-whonix-private-1774801390-back
+ qubes_dom0/vm-anon-whonix-private-1775907704-back
+ qubes_dom0/vm-debian-13-xfce-private
+ qubes_dom0/vm-debian-13-xfce-private-1775053230-back
+ qubes_dom0/vm-debian-13-xfce-private-1775231893-back
+ qubes_dom0/vm-debian-13-xfce-root
+ qubes_dom0/vm-debian-13-xfce-root-1775053230-back
+ qubes_dom0/vm-debian-13-xfce-root-1775231893-back
+ qubes_dom0/vm-debian-dvm-private
+ qubes_dom0/vm-debian-dvm-private-1772980889-back
+ qubes_dom0/vm-default-dvm-private
+ qubes_dom0/vm-default-dvm-private-1772899005-back
+ qubes_dom0/vm-default-mgmt-dvm-private
+ qubes_dom0/vm-dev-private
+ qubes_dom0/vm-dev-private-1774964826-back
+ qubes_dom0/vm-dev-private-1775900407-back
+ qubes_dom0/vm-fedora-42-xfce-private
+ qubes_dom0/vm-fedora-42-xfce-private-1774958386-back
+ qubes_dom0/vm-fedora-42-xfce-private-1775245368-back
+ qubes_dom0/vm-fedora-42-xfce-root
+ qubes_dom0/vm-fedora-42-xfce-root-1774958386-back
+ qubes_dom0/vm-fedora-42-xfce-root-1775245368-back
+
+    ├─qubes_dom0-root--pool_tmeta       253:1    0    40M  0 lvm   
+    │ └─qubes_dom0-root--pool-tpool     253:3    0    20G  0 lvm   
+    │   ├─qubes_dom0-root--pool         253:4    0    20G  1 lvm   
+    │   └─qubes_dom0-root               253:5    0    20G  0 lvm   
+    ├─qubes_dom0-root--pool_tdata       253:2    0    20G  0 lvm   
+    │ └─qubes_dom0-root--pool-tpool     253:3    0    20G  0 lvm   
+    │   ├─qubes_dom0-root--pool         253:4    0    20G  1 lvm   
+    │   └─qubes_dom0-root               253:5    0    20G  0 lvm   
+    ├─qubes_dom0-swap                   253:6    0   3.9G  0 lvm   
+    ├─qubes_dom0-vm--pool_tmeta         253:7    0   100M  0 lvm   
+    │ └─qubes_dom0-vm--pool-tpool       253:9    0 396.5G  0 lvm   
+    │   ├─qubes_dom0-vm--pool           253:10   0 396.5G  1 lvm   
+    │   ├─qubes_dom0-vm--default--dvm--private--1772899005--back
+    │   │                               253:11   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--untrusted--private
+    │   │                               253:12   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--default--mgmt--dvm--private
+    │   │                               253:13   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--work--private  253:14   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--workstation--18--dvm--private--1772873417--back
+    │   │                               253:15   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--default--dvm--private
+    │   │                               253:16   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--workstation--18--dvm--private
+    │   │                               253:17   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--debian--dvm--private--1772980889--back
+    │   │                               253:18   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--debian--dvm--private
+    │   │                               253:19   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--gateway--18--root--1774195256--back
+    │   │                               253:20   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--gateway--18--private--1774195256--back
+    │   │                               253:21   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--anon--whonix--private--1774801390--back
+    │   │                               253:22   0   128G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--gateway--18--private--1774883456--back
+    │   │                               253:23   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--gateway--18--root--1774883456--back
+    │   │                               253:24   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--anon--whonix--private--1775907704--back
+    │   │                               253:25   0   128G  0 lvm   
+    │   ├─qubes_dom0-vm--dev--private--1774964826--back
+    │   │                               253:26   0    61G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--gateway--18--root
+    │   │                               253:27   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--gateway--18--private
+    │   │                               253:28   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--workstation--18--private--1774958290--back
+    │   │                               253:29   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--workstation--18--root--1774958290--back
+    │   │                               253:30   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--sys--whonix--private--1774975526--back
+    │   │                               253:31   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--sys--net--private--1775047949--back
+    │   │                               253:32   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--sys--whonix--private--1775907869--back
+    │   │                               253:33   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--dev--private--1775900407--back
+    │   │                               253:34   0    61G  0 lvm   
+    │   ├─qubes_dom0-vm--vault--private--1774969676--back
+    │   │                               253:35   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--personal--private--1774968747--back
+    │   │                               253:36   0     8G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--workstation--18--root--1774958374--back
+    │   │                               253:37   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--workstation--18--private--1774958374--back
+    │   │                               253:38   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--fedora--42--xfce--root--1774958386--back
+    │   │                               253:39   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--fedora--42--xfce--private--1774958386--back
+    │   │                               253:40   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--workstation--18--private
+    │   │                               253:41   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--whonix--workstation--18--root
+    │   │                               253:42   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--debian--13--xfce--root--1775053230--back
+    │   │                               253:43   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--debian--13--xfce--private--1775053230--back
+    │   │                               253:44   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--fedora--42--xfce--private--1775245368--back
+    │   │                               253:45   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--fedora--42--xfce--root--1775245368--back
+    │   │                               253:46   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--personal--private--1775900565--back
+    │   │                               253:47   0     8G  0 lvm   
+    │   ├─qubes_dom0-vm--vault--private--1775900386--back
+    │   │                               253:48   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--sys--net--private--1775907864--back
+    │   │                               253:49   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--sys--net--private
+    │   │                               253:50   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--debian--13--xfce--private--1775231893--back
+    │   │                               253:51   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--debian--13--xfce--root--1775231893--back
+    │   │                               253:52   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--sys--whonix--private
+    │   │                               253:53   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--vault--private 253:54   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--dev--private   253:55   0    61G  0 lvm   
+    │   ├─qubes_dom0-vm--debian--13--xfce--private
+    │   │                               253:56   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--debian--13--xfce--root
+    │   │                               253:57   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--fedora--42--xfce--root
+    │   │                               253:58   0    20G  0 lvm   
+    │   ├─qubes_dom0-vm--fedora--42--xfce--private
+    │   │                               253:59   0     2G  0 lvm   
+    │   ├─qubes_dom0-vm--anon--whonix--private
+    │   │                               253:60   0   128G  0 lvm   
+    │   └─qubes_dom0-vm--personal--private
+    │                                   253:61   0     8G  0 lvm   
+    └─qubes_dom0-vm--pool_tdata         253:8    0 396.5G  0 lvm   
+      └─qubes_dom0-vm--pool-tpool       253:9    0 396.5G  0 lvm   
+        ├─qubes_dom0-vm--pool           253:10   0 396.5G  1 lvm   
+        ├─qubes_dom0-vm--default--dvm--private--1772899005--back
+        │                               253:11   0     2G  0 lvm   
+        ├─qubes_dom0-vm--untrusted--private
+        │                               253:12   0     2G  0 lvm   
+        ├─qubes_dom0-vm--default--mgmt--dvm--private
+        │                               253:13   0     2G  0 lvm   
+        ├─qubes_dom0-vm--work--private  253:14   0     2G  0 lvm   
+        ├─qubes_dom0-vm--whonix--workstation--18--dvm--private--1772873417--back
+        │                               253:15   0     2G  0 lvm   
+        ├─qubes_dom0-vm--default--dvm--private
+        │                               253:16   0     2G  0 lvm   
+        ├─qubes_dom0-vm--whonix--workstation--18--dvm--private
+        │                               253:17   0     2G  0 lvm   
+        ├─qubes_dom0-vm--debian--dvm--private--1772980889--back
+        │                               253:18   0     2G  0 lvm   
+        ├─qubes_dom0-vm--debian--dvm--private
+        │                               253:19   0     2G  0 lvm   
+        ├─qubes_dom0-vm--whonix--gateway--18--root--1774195256--back
+        │                               253:20   0    20G  0 lvm   
+        ├─qubes_dom0-vm--whonix--gateway--18--private--1774195256--back
+        │                               253:21   0     2G  0 lvm   
+        ├─qubes_dom0-vm--anon--whonix--private--1774801390--back
+        │                               253:22   0   128G  0 lvm   
+        ├─qubes_dom0-vm--whonix--gateway--18--private--1774883456--back
+        │                               253:23   0     2G  0 lvm   
+        ├─qubes_dom0-vm--whonix--gateway--18--root--1774883456--back
+        │                               253:24   0    20G  0 lvm   
+        ├─qubes_dom0-vm--anon--whonix--private--1775907704--back
+        │                               253:25   0   128G  0 lvm   
+        ├─qubes_dom0-vm--dev--private--1774964826--back
+        │                               253:26   0    61G  0 lvm   
+        ├─qubes_dom0-vm--whonix--gateway--18--root
+        │                               253:27   0    20G  0 lvm   
+        ├─qubes_dom0-vm--whonix--gateway--18--private
+        │                               253:28   0     2G  0 lvm   
+        ├─qubes_dom0-vm--whonix--workstation--18--private--1774958290--back
+        │                               253:29   0     2G  0 lvm   
+        ├─qubes_dom0-vm--whonix--workstation--18--root--1774958290--back
+        │                               253:30   0    20G  0 lvm   
+        ├─qubes_dom0-vm--sys--whonix--private--1774975526--back
+        │                               253:31   0     2G  0 lvm   
+        ├─qubes_dom0-vm--sys--net--private--1775047949--back
+        │                               253:32   0     2G  0 lvm   
+        ├─qubes_dom0-vm--sys--whonix--private--1775907869--back
+        │                               253:33   0     2G  0 lvm   
+        ├─qubes_dom0-vm--dev--private--1775900407--back
+        │                               253:34   0    61G  0 lvm   
+        ├─qubes_dom0-vm--vault--private--1774969676--back
+        │                               253:35   0     2G  0 lvm   
+        ├─qubes_dom0-vm--personal--private--1774968747--back
+        │                               253:36   0     8G  0 lvm   
+        ├─qubes_dom0-vm--whonix--workstation--18--root--1774958374--back
+        │                               253:37   0    20G  0 lvm   
+        ├─qubes_dom0-vm--whonix--workstation--18--private--1774958374--back
+        │                               253:38   0     2G  0 lvm   
+        ├─qubes_dom0-vm--fedora--42--xfce--root--1774958386--back
+        │                               253:39   0    20G  0 lvm   
+        ├─qubes_dom0-vm--fedora--42--xfce--private--1774958386--back
+        │                               253:40   0     2G  0 lvm   
+        ├─qubes_dom0-vm--whonix--workstation--18--private
+        │                               253:41   0     2G  0 lvm   
+        ├─qubes_dom0-vm--whonix--workstation--18--root
+        │                               253:42   0    20G  0 lvm   
+        ├─qubes_dom0-vm--debian--13--xfce--root--1775053230--back
+        │                               253:43   0    20G  0 lvm   
+        ├─qubes_dom0-vm--debian--13--xfce--private--1775053230--back
+        │                               253:44   0     2G  0 lvm   
+        ├─qubes_dom0-vm--fedora--42--xfce--private--1775245368--back
+        │                               253:45   0     2G  0 lvm   
+        ├─qubes_dom0-vm--fedora--42--xfce--root--1775245368--back
+        │                               253:46   0    20G  0 lvm   
+        ├─qubes_dom0-vm--personal--private--1775900565--back
+        │                               253:47   0     8G  0 lvm   
+        ├─qubes_dom0-vm--vault--private--1775900386--back
+        │                               253:48   0     2G  0 lvm   
+        ├─qubes_dom0-vm--sys--net--private--1775907864--back
+        │                               253:49   0     2G  0 lvm   
+        ├─qubes_dom0-vm--sys--net--private
+        │                               253:50   0     2G  0 lvm   
+        ├─qubes_dom0-vm--debian--13--xfce--private--1775231893--back
+        │                               253:51   0     2G  0 lvm   
+        ├─qubes_dom0-vm--debian--13--xfce--root--1775231893--back
+        │                               253:52   0    20G  0 lvm   
+        ├─qubes_dom0-vm--sys--whonix--private
+        │                               253:53   0     2G  0 lvm   
+        ├─qubes_dom0-vm--vault--private 253:54   0     2G  0 lvm   
+        ├─qubes_dom0-vm--dev--private   253:55   0    61G  0 lvm   
+        ├─qubes_dom0-vm--debian--13--xfce--private
+        │                               253:56   0     2G  0 lvm   
+        ├─qubes_dom0-vm--debian--13--xfce--root
+        │                               253:57   0    20G  0 lvm   
+        ├─qubes_dom0-vm--fedora--42--xfce--root
+        │                               253:58   0    20G  0 lvm   
+        ├─qubes_dom0-vm--fedora--42--xfce--private
+        │                               253:59   0     2G  0 lvm   
+        ├─qubes_dom0-vm--anon--whonix--private
+        │                               253:60   0   128G  0 lvm   
+        └─qubes_dom0-vm--personal--private
+                                        253:61   0     8G  0 lvm
+
