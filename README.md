@@ -12,6 +12,51 @@ This repository reboots the previous Qubes-derived workspace into a focused anti
 
 Run `scripts/fetch-antix-core.sh` to download `antiX-26_x64-core.iso` into the `isos/` directory and validate the SHA256 fingerprint. The script can be re-run; it skips re-downloading if the ISO already exists.
 
+## Quick start
+
+Requirements: a Linux host with KVM (Devuan/antiX/Debian with `apt`, or Arch with
+`pacman`), root access, and runit for the service layer. `bootstrap-qubes.sh` installs
+the QEMU and helper packages itself when run as root (`INSTALL_DEPS=0` to skip).
+Nothing is compiled; everything is shell and Python scripts.
+
+```bash
+git clone https://github.com/nano-rex/qubes-devuan-dom0.git
+cd qubes-devuan-dom0
+
+sudo scripts/bootstrap-qubes.sh                 # antiX core ISO + Whonix images, verified, into /var/lib/antix-qubes
+sudo scripts/provision-service-qubes.sh         # overlays + runit stubs: sys-net, sys-usb, sys-firewall, sys-whonix
+sudo AQ_SHARED_TOKEN=change-me scripts/provision-aq-services.sh
+sudo scripts/install-runit-services.sh          # clipboard/file-copy (qrexec phase 1) services
+scripts/install-desktop-entry.sh                # optional: "AQ Manager" in the app menu
+```
+
+Both provisioning scripts accept a different root as their first argument
+(default `/var/lib/antix-qubes`).
+
+## Example
+
+Start the firewall qube, then move clipboard text and a file from it to the Whonix qube
+through the mediated (policy-checked) channel:
+
+```bash
+R=/var/lib/antix-qubes
+scripts/aq-manager.py --root-dir $R list
+scripts/aq-manager.py --root-dir $R start sys-firewall
+scripts/aq-manager.py --root-dir $R status
+
+token="$(scripts/aq-manager.py --root-dir $R clip-copy sys-firewall)"
+scripts/aq-manager.py --root-dir $R clip-paste sys-whonix --token "$token"
+
+scripts/aq-manager.py --root-dir $R copy-to sys-firewall sys-whonix docs/test.txt
+```
+
+Qubes-style shortcuts do the same: `scripts/qvm-ls.sh`, `scripts/qvm-start.sh sys-firewall`,
+`scripts/qvm-copy-to-vm.sh sys-firewall sys-whonix docs/test.txt`. The GUI is
+`scripts/aq-manager-gui.py`. Route host updates through a service qube with
+`scripts/host-update-via.sh whonix apt-get update` (rolled back on exit). Full details:
+[`docs/manager-ui.md`](docs/manager-ui.md) and
+[`docs/qrexec-phase1-runbook.md`](docs/qrexec-phase1-runbook.md).
+
 ## Repository layout
 
 - `docs/`: design notes, architecture, and planning for the antiX host plus the QEMU template workflow.
